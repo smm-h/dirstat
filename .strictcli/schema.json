@@ -258,5 +258,5 @@
   "name": "dirstat",
   "project_id": "github.com/smm-h/dirstat",
   "schema_version": 1,
-  "version": "0.1.1-0.20260704185952-2f5aa019867b+dirty"
+  "version": "dev"
 }
