@@ -17,7 +17,8 @@ Summarize the files under a directory tree, grouped by format, with counts, size
 | --- | --- | --- | --- | --- | --- |
 | `--method` |  | str | hybrid |  | grouping method: ext (extension only, no sniffing), type (content-sniff every file), hybrid (sniff extensionless files only) |
 | `--depth` |  | int | -1 |  | maximum directory depth below the root; -1 = unlimited; the root is depth 0 |
-| `--exclude` |  | str |  |  | exact base name to skip, matching directories and files; repeatable |
+| `--exclude` |  | str | ['.git', 'node_modules', '.venv', 'vendor', 'build', 'dist', 'target', 'zig-out', 'zig-pkg', '.next', '.svelte-kit', '__pycache__', '.mypy_cache', '.ruff_cache', '.pytest_cache', '.hypothesis', '.gradle', '.idea', '.wrangler', '.vscode'] |  | exact base name to skip, matching directories and files; repeatable; passing the flag replaces the built-in default list entirely |
+| `--config` |  | str |  |  | path to a TOML scan-config file (keys: exclude, method, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error |
 | `--ignored` |  | str | exclude |  | gitignored-path handling: include (no matching at all), exclude (drop ignored paths), only (keep only ignored paths); when the target is not inside a git work tree, exclude and only behave as if no patterns exist |
 | `--hidden` |  | str | include |  | dot-prefixed entry handling: include or exclude; the root directory itself is never treated as hidden |
 | `--stats` |  | str |  |  | stat to compute and show (repeatable; default: all): count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc |

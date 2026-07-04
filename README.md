@@ -67,6 +67,24 @@ Every flag is documented in `dirstat scan --help` and in the generated [docs/cli
 | `type` | Content-sniff every file; group by detected MIME type |
 | `hybrid` (default) | Files with an extension behave as in `ext`; extensionless files are sniffed and grouped by MIME type |
 
+## Configuration
+
+`dirstat scan --config <path>` reads scan defaults from a TOML file. There is no default config path and no auto-discovery — dirstat never picks up config from XDG, HOME, the current directory, or the scanned tree; the file is used only when `--config` is passed.
+
+Allowed keys are exactly the scan-semantic flags (names with underscores): `exclude`, `method`, `depth`, `ignored`, `hidden`, `type`, `stats`, `sort_by`, `sort_order`. Rendering and output options (`colors`, `style`, `output`, `top`, ...) cannot be set from a file. Values are validated up front with the same rules as the flags; any unknown key, wrong type, or invalid value is a hard error before scanning starts.
+
+A key may come from the file or from the command line, never both: setting a key in the file and also passing its flag is a hard error, so there is no silent override. Flags for keys the file does not set remain usable alongside `--config`.
+
+```toml
+# scan.toml
+exclude = ["node_modules", ".git", "dist"]  # replaces the built-in default list
+method = "ext"
+depth = 3
+stats = ["count", "total-size"]
+```
+
+By default `--exclude` uses a curated built-in list (`.git`, `node_modules`, `.venv`, `vendor`, `build`, `dist`, `target`, and other common cache/IDE directories — see `dirstat scan --help`). Any explicit `--exclude` or a config-file `exclude` key replaces the list entirely; `exclude = []` scans everything.
+
 ## JSON output
 
 `--output json` writes a single JSON object to stdout: no ANSI codes, raw integer values. The schema is a consumer contract — field names are stable and evolution is additive-only.
