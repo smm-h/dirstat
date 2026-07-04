@@ -15,6 +15,17 @@ import (
 	"golang.org/x/term"
 )
 
+// defaultExcludes is the curated built-in default of --exclude (R45):
+// common VCS, dependency, build-output, cache, and IDE directories. Any
+// explicit --exclude or a config-file exclude key replaces it entirely; there
+// is no additive merging anywhere.
+var defaultExcludes = []interface{}{
+	".git", "node_modules", ".venv", "vendor", "build", "dist", "target",
+	"zig-out", "zig-pkg", ".next", ".svelte-kit", "__pycache__",
+	".mypy_cache", ".ruff_cache", ".pytest_cache", ".hypothesis",
+	".gradle", ".idea", ".wrangler", ".vscode",
+}
+
 func registerScanCmd(app *strictcli.App) {
 	app.Command("scan", "Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.", handleScan,
 		strictcli.WithFlags(
@@ -26,7 +37,7 @@ func registerScanCmd(app *strictcli.App) {
 				strictcli.Default(-1)),
 			strictcli.StringFlag("exclude",
 				"exact base name to skip, matching directories and files; repeatable; passing the flag replaces the built-in default list entirely",
-				strictcli.Repeatable(), strictcli.Unique(true), strictcli.Default(nil)),
+				strictcli.Repeatable(), strictcli.Unique(true), strictcli.Default(defaultExcludes)),
 			strictcli.StringFlag("config",
 				"path to a TOML scan-config file (keys: exclude, method, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error",
 				strictcli.Default("")),

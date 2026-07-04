@@ -158,20 +158,24 @@ func TestNestedGitignore(t *testing.T) {
 		"sub/open.txt":    "visible\n",
 	})
 
+	// This test isolates gitignore semantics: --exclude "" replaces the
+	// curated default excludes (which would otherwise prune build/) with a
+	// list matching nothing (R45).
+
 	// exclude: drop ignored paths, including via nested .gitignore.
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--ignored", "exclude", "--hidden", "exclude")
+	parsed := scanJSON(t, "scan", root, "--output", "json", "--exclude", "", "--ignored", "exclude", "--hidden", "exclude")
 	if got := summaryField(t, parsed, "files"); got != 2 { // keep.go, sub/open.txt
 		t.Errorf("exclude: files = %d, want 2", got)
 	}
 
 	// only: keep only ignored paths; files under ignored dirs count as ignored.
-	parsed = scanJSON(t, "scan", root, "--output", "json", "--ignored", "only", "--hidden", "exclude")
+	parsed = scanJSON(t, "scan", root, "--output", "json", "--exclude", "", "--ignored", "only", "--hidden", "exclude")
 	if got := summaryField(t, parsed, "files"); got != 4 { // trace.log, build/out.bin, build/deep/a.md, sub/secret.txt
 		t.Errorf("only: files = %d, want 4", got)
 	}
 
 	// include: no matching at all (also picks up .git and .gitignore contents).
-	parsed = scanJSON(t, "scan", root, "--output", "json", "--ignored", "include", "--hidden", "exclude")
+	parsed = scanJSON(t, "scan", root, "--output", "json", "--exclude", "", "--ignored", "include", "--hidden", "exclude")
 	if got := summaryField(t, parsed, "files"); got != 6 {
 		t.Errorf("include: files = %d, want 6", got)
 	}

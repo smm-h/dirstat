@@ -28,6 +28,28 @@
           "type": "int"
         },
         {
+          "default": [
+            ".git",
+            "node_modules",
+            ".venv",
+            "vendor",
+            "build",
+            "dist",
+            "target",
+            "zig-out",
+            "zig-pkg",
+            ".next",
+            ".svelte-kit",
+            "__pycache__",
+            ".mypy_cache",
+            ".ruff_cache",
+            ".pytest_cache",
+            ".hypothesis",
+            ".gradle",
+            ".idea",
+            ".wrangler",
+            ".vscode"
+          ],
           "help": "exact base name to skip, matching directories and files; repeatable; passing the flag replaces the built-in default list entirely",
           "name": "exclude",
           "repeatable": true,
@@ -236,5 +258,5 @@
   "name": "dirstat",
   "project_id": "github.com/smm-h/dirstat",
   "schema_version": 1,
-  "version": "0.1.1-0.20260704185737-017cc132c6cd+dirty"
+  "version": "0.1.1-0.20260704185952-2f5aa019867b+dirty"
 }
