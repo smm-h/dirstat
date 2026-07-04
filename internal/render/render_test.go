@@ -300,6 +300,30 @@ func TestRenderNoExtList(t *testing.T) {
 	}
 }
 
+func TestFormatError(t *testing.T) {
+	theme := config.LoadTheme("dark") // dark theme error color: 203
+
+	// Colored (stderr TTY + --colors): the error: prefix carries the theme's
+	// error color (R30).
+	colored := FormatError(true, theme, "invalid stat %q", "bogus")
+	if !strings.Contains(colored, "\033[38;5;203m") {
+		t.Errorf("colored error output missing theme error escape code: %q", colored)
+	}
+	if !strings.Contains(colored, "error:") || !strings.Contains(colored, `invalid stat "bogus"`) {
+		t.Errorf("colored error output missing prefix or message: %q", colored)
+	}
+	if !strings.HasSuffix(colored, "\n") {
+		t.Errorf("error output must end with a newline: %q", colored)
+	}
+
+	// Plain (non-TTY stderr or --no-colors): byte-identical plain output,
+	// no ANSI codes at all.
+	plain := FormatError(false, theme, "invalid stat %q", "bogus")
+	if want := "error: invalid stat \"bogus\"\n"; plain != want {
+		t.Errorf("plain error output = %q, want %q", plain, want)
+	}
+}
+
 func TestDetectThemeName(t *testing.T) {
 	tests := []struct {
 		env  string

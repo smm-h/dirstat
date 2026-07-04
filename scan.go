@@ -81,6 +81,14 @@ func registerScanCmd(app *strictcli.App) {
 	)
 }
 
+// errorf prints a handler error line to stderr. The "error:" prefix is
+// colored with the theme's error color when stderr is a TTY and --colors is
+// true; stderr coloring is independent of --output mode (R30).
+func errorf(colors bool, format string, args ...interface{}) {
+	colored := colors && term.IsTerminal(int(os.Stderr.Fd()))
+	fmt.Fprint(os.Stderr, render.FormatError(colored, config.LoadTheme(render.DetectThemeName()), format, args...))
+}
+
 // stringList extracts a repeatable string flag's values.
 func stringList(kwargs map[string]interface{}, key string) []string {
 	raw, _ := kwargs[key].([]interface{})
@@ -92,19 +100,21 @@ func stringList(kwargs map[string]interface{}, key string) []string {
 }
 
 func handleScan(kwargs map[string]interface{}) int {
+	colorsFlag := kwargs["colors"].(bool)
+
 	where := kwargs["where"].(string)
 	root, err := filepath.Abs(where)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: resolving path %q: %s\n", where, err)
+		errorf(colorsFlag, "resolving path %q: %s", where, err)
 		return ExitUsage
 	}
 	info, err := os.Stat(root)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: directory does not exist: %s\n", root)
+		errorf(colorsFlag, "directory does not exist: %s", root)
 		return ExitUsage
 	}
 	if !info.IsDir() {
-		fmt.Fprintf(os.Stderr, "error: path is not a directory: %s\n", root)
+		errorf(colorsFlag, "path is not a directory: %s", root)
 		return ExitUsage
 	}
 
@@ -122,7 +132,7 @@ func handleScan(kwargs map[string]interface{}) int {
 	} else {
 		for _, s := range statsRaw {
 			if !validStats[s] {
-				fmt.Fprintf(os.Stderr, "error: invalid stat %q; valid: %v\n", s, scan.StatNames)
+				errorf(colorsFlag, "invalid stat %q; valid: %v", s, scan.StatNames)
 				return ExitUsage
 			}
 			selected[s] = true
@@ -143,7 +153,7 @@ func handleScan(kwargs map[string]interface{}) int {
 	}
 	for _, s := range sortBy {
 		if s != "format" && !validStats[s] {
-			fmt.Fprintf(os.Stderr, "error: invalid sort column %q; valid: format, %v\n", s, scan.StatNames)
+			errorf(colorsFlag, "invalid sort column %q; valid: format, %v", s, scan.StatNames)
 			return ExitUsage
 		}
 	}
@@ -180,7 +190,7 @@ func handleScan(kwargs map[string]interface{}) int {
 		TextMimes:  config.TextMimetypes(),
 	})
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %s\n", err)
+		errorf(colorsFlag, "%s", err)
 		return ExitGeneral
 	}
 
@@ -189,7 +199,7 @@ func handleScan(kwargs map[string]interface{}) int {
 		copy(groups, res.Groups)
 		scan.SortGroups(groups, sortBy, sortDesc)
 		if err := jsonout.Write(os.Stdout, version, res, groups, selected, listNoExt); err != nil {
-			fmt.Fprintf(os.Stderr, "error: writing JSON: %s\n", err)
+			errorf(colorsFlag, "writing JSON: %s", err)
 			return ExitGeneral
 		}
 		return ExitSuccess
@@ -198,7 +208,7 @@ func handleScan(kwargs map[string]interface{}) int {
 	// Colors apply only when requested AND stdout is a TTY; without active
 	// colors the width is pinned to 80 so --no-colors output is
 	// byte-identical to non-TTY output (R30).
-	colorsActive := kwargs["colors"].(bool) && term.IsTerminal(int(os.Stdout.Fd()))
+	colorsActive := colorsFlag && term.IsTerminal(int(os.Stdout.Fd()))
 	width := 80
 	if colorsActive {
 		if tw, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil && tw > 0 {
