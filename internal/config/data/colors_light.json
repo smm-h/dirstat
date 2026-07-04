@@ -1,0 +1,12 @@
+{
+    "text_fg": "28",
+    "text_bg": "",
+    "binary_fg": "24",
+    "binary_bg": "",
+    "header_fg": "232",
+    "header_bg": "252",
+    "stat_label": "240",
+    "stat_value": "94",
+    "error": "160",
+    "border": "244"
+}

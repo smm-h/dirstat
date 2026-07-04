@@ -1,0 +1,93 @@
+# Text file extensions (one per line or space-separated)
+# Programming languages
+py rb js ts jsx tsx mjs cjs coffee
+java kt kts scala groovy clj cljs
+c h cpp hpp cc cxx hxx c++ h++
+cs fs vb
+go rs swift
+php pl pm perl
+lua tcl
+r R rmd
+m mm swift
+asm s S
+d nim zig v
+elm hs lhs ml mli ocaml
+erl hrl ex exs
+lisp cl lsp scm ss rkt
+f f90 f95 for ftn
+pas pp inc
+ada adb ads
+cob cbl cpy
+pro P
+awk sed
+ps1 psm1 psd1
+bat cmd
+sh bash zsh fish ksh csh tcsh
+vim vimrc
+el elisp
+
+# Web
+html htm xhtml shtml
+css scss sass less stylus
+svg
+xml xsl xslt xsd dtd
+json json5 jsonl jsonc
+yaml yml
+toml
+ini cfg conf config
+env
+htaccess
+
+# Documentation
+md markdown mdown mkd mkdn
+rst txt text
+tex latex bib
+adoc asciidoc
+org
+pod
+rdoc
+wiki creole textile
+
+# Data/Config
+csv tsv
+sql
+graphql gql
+proto
+avsc
+
+# Build/Project files
+mk makefile cmake
+gradle
+sbt
+cabal
+cargo
+gemfile gemspec
+podfile
+package
+composer
+pipfile
+pyproject
+
+# Git
+gitignore gitattributes gitmodules gitconfig
+
+# Docker
+dockerfile dockerignore
+
+# Other config
+editorconfig
+eslintrc prettierrc babelrc
+npmrc yarnrc
+inputrc
+
+# Misc
+log diff patch
+plist
+service
+desktop
+nix
+dhall
+jsonnet
+hcl tf tfvars
+vue svelte
+
