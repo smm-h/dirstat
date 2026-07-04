@@ -2,11 +2,21 @@
   "targets": [
     "go"
   ],
-  "private": false,
   "pipelines": {
     "go": {
       "type": "go",
-      "local": false
+      "local": true,
+      "install_paths": [
+        "."
+      ]
     }
+  },
+  "private": false,
+  "hooks": {
+    "pre_release": [
+      "go vet ./...",
+      "go build -o /dev/null .",
+      "go test ./... -race -count=1"
+    ]
   }
 }
