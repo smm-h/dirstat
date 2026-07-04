@@ -1,0 +1,86 @@
+{
+  "dirstat_version": "VERSION",
+  "root": "ROOT",
+  "method": "hybrid",
+  "summary": {
+    "directories": 3,
+    "files": 6,
+    "files_without_extension": 1,
+    "max_depth": 2,
+    "symlinks": 0,
+    "executables": 0,
+    "unique_formats": 5,
+    "files_sniffed": 1,
+    "unreadable": 0
+  },
+  "groups": [
+    {
+      "format": "go",
+      "text": true,
+      "count": 2,
+      "total_size": 39,
+      "min_size": 10,
+      "max_size": 29,
+      "avg_size": 20,
+      "total_loc": 4,
+      "min_loc": 1,
+      "max_loc": 3,
+      "avg_loc": 2
+    },
+    {
+      "format": "bin",
+      "text": false,
+      "count": 1,
+      "total_size": 5,
+      "min_size": 5,
+      "max_size": 5,
+      "avg_size": 5,
+      "total_loc": null,
+      "min_loc": null,
+      "max_loc": null,
+      "avg_loc": null
+    },
+    {
+      "format": "md",
+      "text": true,
+      "count": 1,
+      "total_size": 20,
+      "min_size": 20,
+      "max_size": 20,
+      "avg_size": 20,
+      "total_loc": 3,
+      "min_loc": 3,
+      "max_loc": 3,
+      "avg_loc": 3
+    },
+    {
+      "format": "text/plain",
+      "text": true,
+      "count": 1,
+      "total_size": 14,
+      "min_size": 14,
+      "max_size": 14,
+      "avg_size": 14,
+      "total_loc": 2,
+      "min_loc": 2,
+      "max_loc": 2,
+      "avg_loc": 2
+    },
+    {
+      "format": "txt",
+      "text": true,
+      "count": 1,
+      "total_size": 8,
+      "min_size": 8,
+      "max_size": 8,
+      "avg_size": 8,
+      "total_loc": 2,
+      "min_loc": 2,
+      "max_loc": 2,
+      "avg_loc": 2
+    }
+  ],
+  "no_extension_files": [
+    "Makefile"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "dirstat_version": "VERSION",
+  "root": "ROOT",
+  "method": "ext",
+  "summary": {
+    "directories": 3,
+    "files": 6,
+    "files_without_extension": 0,
+    "max_depth": 2,
+    "symlinks": 0,
+    "executables": 0,
+    "unique_formats": 3,
+    "files_sniffed": 0,
+    "unreadable": 0
+  },
+  "groups": [
+    {
+      "format": "go",
+      "text": true,
+      "count": 2,
+      "total_size": 39,
+      "total_loc": 4
+    },
+    {
+      "format": "md",
+      "text": true,
+      "count": 1,
+      "total_size": 20,
+      "total_loc": 3
+    },
+    {
+      "format": "txt",
+      "text": true,
+      "count": 1,
+      "total_size": 8,
+      "total_loc": 2
+    }
+  ]
+}
