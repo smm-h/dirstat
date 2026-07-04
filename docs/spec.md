@@ -50,7 +50,7 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   | `--type` | choice: `text`, `binary`, `both` | `both` | Filter groups by text/binary classification |
   | `--sort-by` | string, repeatable, unique | `count` | Sort columns, in precedence order; valid: `format` plus the nine stat names; invalid = hard error |
   | `--sort-order` | choice: `asc`, `desc` | `desc` | Applied to all sort columns |
-  | `--top` | int | `-1` | Keep only the first N groups after sorting (table only); `-1` or `0` = all |
+  | `--top` | int | `-1` | Keep only the first N groups after sorting (table only); `-1` or `0` = all; in split mode applies per table |
   | `--output` | choice: `table`, `json` | `table` | Output format (§7, §8) |
   | `--show` | choice: `summary`, `table`, `both` | `both` | Which sections to render (table output only) |
   | `--combined` | bool | `true` | One merged table vs separate text/binary tables |
@@ -87,8 +87,8 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   text-extensions list.
 - R15. MIME-classified files are text iff the MIME type starts with `text/` or is in
   the embedded text-mimetypes list. The result is a strict bool.
-- R16. Both lists are embedded via `go:embed`, seeded from the prototype's lists
-  (about 90 extensions incl. `svg`; about 45 mimetypes incl. `image/svg+xml`,
+- R16. Both lists are embedded via `go:embed`, seeded verbatim from the prototype's
+  lists (about 195 extensions incl. `svg`; about 45 mimetypes incl. `image/svg+xml`,
   `application/json`, `application/x-empty`, `inode/x-empty`). No runtime config
   files, no lookup in cwd/HOME/XDG. Changing the lists means a rebuild.
 
@@ -124,7 +124,9 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   text groups `total-loc`, `min-loc`, `max-loc`, `avg-loc`. Binary groups have no
   LOC values (rendered `-`, JSON `null`). Averages are rounded to nearest
   integer, not floored. Stats not requested via `--stats` are neither computed
-  nor shown (LOC is expensive; skipping it must actually skip the file reads).
+  nor shown (LOC is expensive; skipping it must actually skip the file reads),
+  with one exception: sorting by a LOC key via `--sort-by` forces LOC
+  computation even when LOC stats are not displayed.
 - R23. LOC = number of `\n` bytes, plus 1 if the file is non-empty and does not end
   with `\n`. Counted with buffered `bytes.Count`-style reads (no line decoding,
   no size cap). Read errors count the file as unreadable (R20), not LOC 0.
@@ -151,7 +153,9 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   get thousands separators when `--human`.
 - R28. Width adaptation: query terminal width (`x/term`; fallback 80 when not a
   TTY). If the table overflows, shrink only the Format column down to a floor of
-  10, truncating cells with a `..` suffix.
+  10, truncating cells with a `..` suffix. Whenever colors are inactive (non-TTY
+  or `--no-colors`), width is pinned to 80 so that `--no-colors` output is
+  byte-identical to non-TTY output (R30).
 - R29. Border styles: `unicode` (light box-drawing, the prototype's look) and
   `ascii` (`+ - |`). One shared renderer parameterized by charset.
 - R30. Colors: ANSI 256-color themes (dark and light) embedded as data; theme keys:
