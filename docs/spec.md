@@ -50,7 +50,7 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   | `--type` | choice: `text`, `binary`, `both` | `both` | Filter groups by text/binary classification |
   | `--sort-by` | string, repeatable, unique | `count` | Sort columns, in precedence order; valid: `format` plus the nine stat names; invalid = hard error |
   | `--sort-order` | choice: `asc`, `desc` | `desc` | Applied to all sort columns |
-  | `--top` | int | `-1` | Keep only the first N groups after sorting (table only); `-1` or `0` = all; in split mode applies per table |
+  | `--top` | int | `-1` | Keep only the first N groups after sorting (table only); `-1` or `0` = all; values below `-1` are a usage error; in split mode applies per table |
   | `--output` | choice: `table`, `json` | `table` | Output format (§7, §8) |
   | `--show` | choice: `summary`, `table`, `both` | `both` | Which sections to render (table output only) |
   | `--combined` | bool | `true` | One merged table vs separate text/binary tables |
@@ -153,16 +153,20 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   get thousands separators when `--human`.
 - R28. Width adaptation: query terminal width (`x/term`; fallback 80 when not a
   TTY). If the table overflows, shrink only the Format column down to a floor of
-  10, truncating cells with a `..` suffix. Whenever colors are inactive (non-TTY
-  or `--no-colors`), width is pinned to 80 so that `--no-colors` output is
-  byte-identical to non-TTY output (R30).
+  10, truncating cells with a `..` suffix. Column widths are measured in
+  terminal display cells (runewidth), not bytes, and truncation never splits a
+  UTF-8 rune. Whenever colors are inactive (non-TTY or `--no-colors`), width is
+  pinned to 80 so that `--no-colors` output is byte-identical to non-TTY output
+  (R30).
 - R29. Border styles: `unicode` (light box-drawing, the prototype's look) and
   `ascii` (`+ - |`). One shared renderer parameterized by charset.
 - R30. Colors: ANSI 256-color themes (dark and light) embedded as data; theme keys:
   text/binary/header fg+bg, stat label, stat value, error, border. Dark unless
   `COLORFGBG` clearly indicates a light background. Colors apply only when
   `--colors` is true AND stdout is a TTY. `--no-colors` output must be
-  byte-identical to non-TTY output.
+  byte-identical to non-TTY output. The theme's `error` color is applied to the
+  `error:` prefix of stderr error messages when stderr is a TTY and `--colors`
+  is true (stderr coloring is independent of `--output` mode).
 - R31. Legend (`■ Text files ■ Binary files`) renders only when `--legend`,
   `--combined`, `--type both`, and colors are active (it is meaningless
   without color).
