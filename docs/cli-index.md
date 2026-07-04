@@ -12,8 +12,8 @@ order: 91
 
 Summarize files in a directory tree, grouped by format, with aggregate statistics
 
-Version: 0.0.0-20260704170449-59a0721887d9
+Version: 0.0.0-20260704173058-7e27efa68e0e+dirty
 
 ## Commands
 
-- [scan](cli-scan.html) -- Summarize the files under a directory, grouped by format
+- [scan](cli-scan.html) -- Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.

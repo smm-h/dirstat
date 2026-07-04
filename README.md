@@ -53,7 +53,7 @@ Files by Format
 
 | Command | Description |
 | --- | --- |
-| `scan` | Summarize the files under a directory, grouped by format |
+| `scan` | Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON. |
 
 ## Grouping methods
 

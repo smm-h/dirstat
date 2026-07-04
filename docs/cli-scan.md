@@ -9,7 +9,7 @@ nav_order: 1
 
 # dirstat scan
 
-Summarize the files under a directory, grouped by format
+Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.
 
 ## Flags
 
@@ -23,7 +23,7 @@ Summarize the files under a directory, grouped by format
 | `--stats` |  | str |  |  | stat to compute and show (repeatable; default: all): count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc |
 | `--type` |  | str | both |  | filter groups by text/binary classification: text, binary, or both |
 | `--sort-by` |  | str | ['count'] |  | sort column, in precedence order when repeated: format, count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc |
-| `--sort-order` |  | str | desc |  | sort direction, applied to all sort columns |
+| `--sort-order` |  | str | desc |  | sort direction: asc or desc, applied uniformly to every --sort-by column |
 | `--top` |  | int | -1 |  | keep only the first N groups after sorting (table output only); -1 or 0 = all |
 | `--output` |  | str | table |  | output format: table (colored terminal tables) or json (stable machine-readable schema) |
 | `--show` |  | str | both |  | sections to render: summary, table, or both (table output only) |
@@ -33,7 +33,7 @@ Summarize the files under a directory, grouped by format
 | `--legend` |  | bool | True |  | show the text/binary color legend under the combined table (needs active colors) |
 | `--colors` |  | bool | True |  | use ANSI colors; auto-disabled when stdout is not a TTY |
 | `--human` |  | bool | True |  | human-readable sizes and thousands separators (table output only) |
-| `--style` |  | str | unicode |  | table border character set: unicode or ascii |
+| `--style` |  | str | unicode |  | table border character set: unicode box-drawing characters or plain ASCII borders |
 
 ## Arguments
 

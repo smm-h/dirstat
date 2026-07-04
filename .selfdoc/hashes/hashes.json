@@ -1,14 +1,18 @@
 {
   "cli-index.md": {
-    "content": "7bd6ae8a9f08fd60e73e75d1b8caa736843551d5b2a81ae1456a82390fc6b8b0",
+    "content": "d200cd03aef16780dbbb97b1bca45aa98d05322271dd99921e80bfa9bed48310",
     "description": "4abeefd64f1507527847b2a0f0d3ec5090c60594d339d5db19c4d4a63e141785"
   },
   "cli-scan.md": {
-    "content": "4b89553c844bb8c0ad1737166d25a9a2b0923c5f9726ebe4f8e66ef0a42d3fca",
+    "content": "fc5bcf1077ae00cae39493ff763a83b8668286b0f4fe955eac183b5449704066",
     "description": "252d5eaaeded2d5c6f4cba0811e6463ca02f32a78c66eb56b54dce580d11cfe6"
   },
   "gen-index.md": {
     "content": "77b26abe69da3a05549e49ce64a424607918ca7cfb8913353870f1d7ae523870",
     "description": "bb3cd9d34f014c0674a9285c25ee14b5b4abc5cf941f0d83594c301405e8f3b6"
+  },
+  "spec.md": {
+    "content": "65ef1e58d2934ecd4a32bcfead2d9297c24bf998944a68e0e5db91ab1b9068a5",
+    "description": "4ae80649e1bf03f78c8d06d5f88f64be5ef08287c779f518493ae2a69f9dfcd7"
   }
 }
