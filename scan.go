@@ -159,6 +159,14 @@ func handleScan(kwargs map[string]interface{}) int {
 	}
 	sortDesc := kwargs["sort_order"].(string) == "desc"
 
+	// Validate --top before any scanning: -1 and 0 mean "all groups";
+	// anything below -1 is a usage error (R8).
+	top := kwargs["top"].(int)
+	if top < -1 {
+		errorf(colorsFlag, "invalid --top %d; must be -1 (all), 0 (all), or a positive count", top)
+		return ExitUsage
+	}
+
 	// LOC is expensive: read files only when a LOC stat is shown or sorted
 	// by. Sorting by a LOC stat forces the computation even when the stat
 	// is not selected for display.
@@ -222,7 +230,7 @@ func handleScan(kwargs map[string]interface{}) int {
 		Collapse:   kwargs["singletons"].(string) == "collapse",
 		SortBy:     sortBy,
 		SortDesc:   sortDesc,
-		Top:        kwargs["top"].(int),
+		Top:        top,
 		ListNoExt:  listNoExt,
 		Legend:     kwargs["legend"].(bool),
 		Colors:     colorsActive,

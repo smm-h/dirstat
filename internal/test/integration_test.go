@@ -486,6 +486,7 @@ func TestErrorPaths(t *testing.T) {
 		{"missing dir", []string{"scan", "/nonexistent-dirstat-path"}, 2, "does not exist"},
 		{"invalid stat", []string{"scan", ".", "--stats", "bogus"}, 2, "invalid stat"},
 		{"invalid sort", []string{"scan", ".", "--sort-by", "bogus"}, 2, "invalid sort column"},
+		{"top below -1", []string{"scan", ".", "--top", "-5"}, 2, "--top"},
 	}
 	for _, tc := range tests {
 		_, stderr, code := runDirstat(t, tc.args...)
@@ -503,6 +504,31 @@ func TestErrorPaths(t *testing.T) {
 	_, stderr, code := runDirstat(t, "scan", filepath.Join(root, "f.txt"))
 	if code != 2 || !strings.Contains(stderr, "not a directory") {
 		t.Errorf("file target: exit %d, stderr %q", code, stderr)
+	}
+}
+
+func TestTopValidation(t *testing.T) {
+	root := t.TempDir()
+	testutil.WriteTree(t, root, map[string]string{"a.go": "package a\n"})
+
+	// -1 and 0 mean "all groups"; positive values keep the first N (R8).
+	for _, top := range []string{"-1", "0", "3"} {
+		stdout, stderr, code := runDirstat(t, "scan", root, "--top", top)
+		if code != 0 {
+			t.Errorf("--top %s: exit = %d, want 0 (stderr: %s)", top, code, stderr)
+		}
+		if !strings.Contains(stdout, "go") {
+			t.Errorf("--top %s: table missing the go group:\n%s", top, stdout)
+		}
+	}
+
+	// Values below -1 are a usage error: exit 2, error: on stderr (R8).
+	_, stderr, code := runDirstat(t, "scan", root, "--top", "-5")
+	if code != 2 {
+		t.Errorf("--top -5: exit = %d, want 2 (stderr: %s)", code, stderr)
+	}
+	if !strings.Contains(stderr, "error:") || !strings.Contains(stderr, "--top") {
+		t.Errorf("--top -5: stderr %q missing error: prefix or --top mention", stderr)
 	}
 }
 
