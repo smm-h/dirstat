@@ -1,6 +1,6 @@
 ---
 title: dirstat scan
-description: "Summarize the files under a directory, grouped by format"
+description: "Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON."
 generated: true
 nav_group: "CLI Reference"
 nav_order: 1
