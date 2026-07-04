@@ -3,27 +3,34 @@ title: CLAUDE.md
 ---
 # dirstat
 
-Go CLI that summarizes the files in a directory tree, grouped by format, with counts, sizes, and LOC — as colored terminal tables or stable JSON.
+:-: var key="project.description"
 
 The authoritative specification is `docs/spec.md` (numbered requirements R1–R40).
 
 ## Project structure
 
-```
-main.go          -- app setup, registers the scan command via strictcli
-scan.go          -- scan command registration, flag validation, orchestration
-exitcodes.go     -- exit codes: 0 success, 1 general, 2 usage
-version.go       -- version from ldflags or debug.ReadBuildInfo
+Root files:
 
-internal/
-  classify/      -- extension normalization, MIME sniffing, text/binary rules
-  config/        -- go:embed data: text extensions, text mimetypes, color themes
-  jsonout/       -- JSON output (stable consumer schema, ordered fields)
-  render/        -- terminal renderer: summary, tables, legend, palette, humanize
-  scan/          -- walker, gitignore matching, worker pool, aggregation, sorting
-  test/          -- integration tests (build binary once, run as subprocess)
-  testutil/      -- fixture tree helpers
-```
+- `main.go` — app setup, registers the scan command via strictcli
+- `scan.go` — scan command registration, flag validation, orchestration
+- `exitcodes.go` — exit codes: 0 success, 1 general, 2 usage
+- `version.go` — version from ldflags or debug.ReadBuildInfo
+
+Internal packages (each paragraph is the package's doc comment, extracted from source):
+
+:-: prose-desc path="internal/classify"
+
+:-: prose-desc path="internal/config"
+
+:-: prose-desc path="internal/jsonout"
+
+:-: prose-desc path="internal/render"
+
+:-: prose-desc path="internal/scan"
+
+:-: prose-desc path="internal/test"
+
+:-: prose-desc path="internal/testutil"
 
 ## Build and test
 

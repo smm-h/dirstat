@@ -1,5 +1,6 @@
 {
   "version": "0.1.0",
+  "description": "dirstat summarizes the files in a directory tree, grouped by format, with aggregate statistics (counts, sizes, lines of code) rendered as a colored terminal table or as JSON.",
   "source": [
     {
       "path": ".",
