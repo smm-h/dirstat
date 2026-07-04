@@ -1,5 +1,6 @@
 ---
 title: dirstat v1 specification
+description: Authoritative v1 specification for dirstat, with numbered requirements covering CLI, traversal, statistics, rendering, and JSON output.
 ---
 # dirstat — v1 specification
 

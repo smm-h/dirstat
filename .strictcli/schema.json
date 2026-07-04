@@ -89,7 +89,7 @@
             "desc"
           ],
           "default": "desc",
-          "help": "sort direction, applied to all sort columns",
+          "help": "sort direction: asc or desc, applied uniformly to every --sort-by column",
           "name": "sort-order",
           "type": "str"
         },
@@ -171,12 +171,12 @@
             "ascii"
           ],
           "default": "unicode",
-          "help": "table border character set: unicode or ascii",
+          "help": "table border character set: unicode box-drawing characters or plain ASCII borders",
           "name": "style",
           "type": "str"
         }
       ],
-      "help": "Summarize the files under a directory, grouped by format",
+      "help": "Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.",
       "name": "scan"
     }
   },
@@ -230,5 +230,5 @@
   "name": "dirstat",
   "project_id": "github.com/smm-h/dirstat",
   "schema_version": 1,
-  "version": "0.0.0-20260704170449-59a0721887d9"
+  "version": "0.0.0-20260704173058-7e27efa68e0e+dirty"
 }

@@ -14,7 +14,7 @@ import (
 )
 
 func registerScanCmd(app *strictcli.App) {
-	app.Command("scan", "Summarize the files under a directory, grouped by format", handleScan,
+	app.Command("scan", "Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.", handleScan,
 		strictcli.WithFlags(
 			strictcli.StringFlag("method",
 				"grouping method: ext (extension only, no sniffing), type (content-sniff every file), hybrid (sniff extensionless files only)",
@@ -41,7 +41,7 @@ func registerScanCmd(app *strictcli.App) {
 				"sort column, in precedence order when repeated: format, count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc",
 				strictcli.Repeatable(), strictcli.Unique(true), strictcli.Default([]interface{}{"count"})),
 			strictcli.StringFlag("sort-order",
-				"sort direction, applied to all sort columns",
+				"sort direction: asc or desc, applied uniformly to every --sort-by column",
 				strictcli.Choices("asc", "desc"), strictcli.Default("desc")),
 			strictcli.IntFlag("top",
 				"keep only the first N groups after sorting (table output only); -1 or 0 = all",
@@ -71,7 +71,7 @@ func registerScanCmd(app *strictcli.App) {
 				"human-readable sizes and thousands separators (table output only)",
 				strictcli.Default(true)),
 			strictcli.StringFlag("style",
-				"table border character set: unicode or ascii",
+				"table border character set: unicode box-drawing characters or plain ASCII borders",
 				strictcli.Choices("unicode", "ascii"), strictcli.Default("unicode")),
 		),
 		strictcli.WithArgs(
