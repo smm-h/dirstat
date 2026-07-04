@@ -3,7 +3,9 @@ package render
 import (
 	"strings"
 	"testing"
+	"unicode/utf8"
 
+	"github.com/mattn/go-runewidth"
 	"github.com/smm-h/dirstat/internal/config"
 	"github.com/smm-h/dirstat/internal/scan"
 )
@@ -189,6 +191,69 @@ func TestRenderWidthShrinkAndTruncate(t *testing.T) {
 			t.Errorf("format column should be exactly 10 wide at the floor: %q", line)
 		}
 	}
+}
+
+// tableLines returns every border/row line of the rendered table (lines
+// starting with a box-drawing or ASCII border character).
+func tableLines(t *testing.T, out string) []string {
+	t.Helper()
+	var lines []string
+	for _, line := range strings.Split(out, "\n") {
+		if line == "" {
+			continue
+		}
+		switch []rune(line)[0] {
+		case '┌', '├', '└', '│', '+', '|':
+			lines = append(lines, line)
+		}
+	}
+	if len(lines) < 4 { // top border, header, separator, >=1 row, bottom border
+		t.Fatalf("expected at least 4 table lines, got %d:\n%s", len(lines), out)
+	}
+	return lines
+}
+
+// assertAligned asserts every table line has the same terminal display width.
+func assertAligned(t *testing.T, out string) {
+	t.Helper()
+	lines := tableLines(t, out)
+	want := runewidth.StringWidth(lines[0])
+	for i, line := range lines {
+		if got := runewidth.StringWidth(line); got != want {
+			t.Errorf("table line %d display width = %d, want %d: %q", i, got, want, line)
+		}
+	}
+}
+
+func TestRenderMultibyteAlignment(t *testing.T) {
+	// Cyrillic: 2 bytes per rune, 1 display cell per rune. CJK: 3 bytes per
+	// rune, 2 display cells per rune. Byte-based widths misalign both (R28).
+	res := testResult()
+	res.Groups[0].Format = "тест"
+	res.Groups[1].Format = "日本語ファイル"
+	opts := testOpts()
+	opts.Show = "table"
+	assertAligned(t, renderToString(res, opts))
+}
+
+func TestRenderMultibyteTruncation(t *testing.T) {
+	// A wide CJK format name forces Format-column truncation. The truncated
+	// cell plus ".." must fit the column, output must stay valid UTF-8 (no
+	// rune split mid-sequence), and the table must stay aligned (R28).
+	res := testResult()
+	res.Groups[0].Format = strings.Repeat("界", 40)
+	opts := testOpts()
+	opts.Show = "table"
+	opts.Width = 60
+	opts.Stats = []string{"count", "total-size"}
+	out := renderToString(res, opts)
+	if !utf8.ValidString(out) {
+		t.Error("truncated output is not valid UTF-8 (rune split mid-sequence)")
+	}
+	if !strings.Contains(out, "..") {
+		t.Errorf("expected truncated format cell with '..' suffix:\n%s", out)
+	}
+	assertAligned(t, out)
 }
 
 func TestRenderTopAndCollapse(t *testing.T) {

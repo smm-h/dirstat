@@ -7,6 +7,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/mattn/go-runewidth"
 	"github.com/smm-h/dirstat/internal/config"
 	"github.com/smm-h/dirstat/internal/scan"
 )
@@ -213,6 +214,17 @@ func buildRow(g scan.Group, stats []string, human bool, includeLOC bool) []strin
 	return cells
 }
 
+// pad right-pads s with spaces to the given terminal display width. Widths
+// are measured in display cells via runewidth, not bytes: %-*s would pad by
+// byte count and misalign multibyte format names (R28).
+func pad(s string, width int) string {
+	gap := width - runewidth.StringWidth(s)
+	if gap <= 0 {
+		return s
+	}
+	return s + strings.Repeat(" ", gap)
+}
+
 func renderTable(w io.Writer, groups []scan.Group, includeLOC bool, opts Options, p palette, b borderSet) {
 	headers := headersFor(opts.Stats, includeLOC)
 	rows := make([][]string, len(groups))
@@ -222,12 +234,12 @@ func renderTable(w io.Writer, groups []scan.Group, includeLOC bool, opts Options
 
 	widths := make([]int, len(headers))
 	for i, h := range headers {
-		widths[i] = len(h)
+		widths[i] = runewidth.StringWidth(h)
 	}
 	for _, row := range rows {
 		for i, cell := range row {
-			if len(cell) > widths[i] {
-				widths[i] = len(cell)
+			if cw := runewidth.StringWidth(cell); cw > widths[i] {
+				widths[i] = cw
 			}
 		}
 	}
@@ -254,8 +266,8 @@ func renderTable(w io.Writer, groups []scan.Group, includeLOC bool, opts Options
 	var sb strings.Builder
 	sb.WriteString(p.border + b.v + p.reset)
 	for i, h := range headers {
-		sb.WriteString(fmt.Sprintf(" %s%s%s%-*s%s %s%s%s",
-			p.headerFG, p.headerBG, p.bold, widths[i], h, p.reset, p.border, b.v, p.reset))
+		sb.WriteString(fmt.Sprintf(" %s%s%s%s%s %s%s%s",
+			p.headerFG, p.headerBG, p.bold, pad(h, widths[i]), p.reset, p.border, b.v, p.reset))
 	}
 	fmt.Fprintln(w, sb.String())
 	fmt.Fprintln(w, line(b.ml, b.mm, b.mr))
@@ -274,11 +286,13 @@ func renderTable(w io.Writer, groups []scan.Group, includeLOC bool, opts Options
 		sb.Reset()
 		sb.WriteString(p.border + b.v + p.reset)
 		for i, cell := range row {
-			if len(cell) > widths[i] {
-				cell = cell[:widths[i]-2] + ".."
+			if runewidth.StringWidth(cell) > widths[i] {
+				// Rune-safe truncation: the truncated cell plus ".." fits
+				// the column's display width (R28).
+				cell = runewidth.Truncate(cell, widths[i], "..")
 			}
-			sb.WriteString(fmt.Sprintf(" %s%s%-*s%s %s%s%s",
-				fg, bg, widths[i], cell, p.reset, p.border, b.v, p.reset))
+			sb.WriteString(fmt.Sprintf(" %s%s%s%s %s%s%s",
+				fg, bg, pad(cell, widths[i]), p.reset, p.border, b.v, p.reset))
 		}
 		fmt.Fprintln(w, sb.String())
 	}
