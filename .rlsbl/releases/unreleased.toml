@@ -1,9 +1,14 @@
 # Version bump type: patch, minor, major, hotfix, or prerelease
-bump = ""
+bump = "minor"
 # Short description of this release (required)
-description = ""
+description = "Initial release: fast directory statistics with format grouping, size and LOC aggregates, colored tables, and stable JSON output."
 # Optional context explaining why these changes were made
-context = ""
+context = """
+dirstat is a clean-slate Go redesign of an internal Python prototype. The
+rewrite eliminates all subprocesses (in-process gitignore matching and MIME
+sniffing), counts lines of code in parallel, and ships as a single static
+binary. JSON output is a stable consumer contract for downstream tooling.
+"""
 # Pre-release identifier: alpha, beta, rc, or stable
 # preid = ""
 # Set to true to generate a blog post for this release
