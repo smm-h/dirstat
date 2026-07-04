@@ -72,6 +72,28 @@ func TestRenderSections(t *testing.T) {
 	}
 }
 
+func TestRenderSummaryConfigLine(t *testing.T) {
+	// With a config file in effect: "Config: <path>" is the first summary
+	// line (R46).
+	opts := testOpts()
+	opts.Config = "/etc/dirstat.toml"
+	out := renderToString(testResult(), opts)
+	cfgIdx := strings.Index(out, "Config: /etc/dirstat.toml")
+	if cfgIdx < 0 {
+		t.Fatalf("missing Config summary line:\n%s", out)
+	}
+	dirIdx := strings.Index(out, "Directories:")
+	if dirIdx >= 0 && cfgIdx > dirIdx {
+		t.Errorf("Config line must be the first summary line:\n%s", out)
+	}
+
+	// Without --config the line is absent.
+	out = renderToString(testResult(), testOpts())
+	if strings.Contains(out, "Config:") {
+		t.Errorf("Config line must be absent without --config:\n%s", out)
+	}
+}
+
 func TestRenderShowFilter(t *testing.T) {
 	opts := testOpts()
 	opts.Show = "summary"

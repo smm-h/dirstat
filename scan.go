@@ -206,7 +206,7 @@ func handleScan(kwargs map[string]interface{}) int {
 		groups := make([]scan.Group, len(res.Groups))
 		copy(groups, res.Groups)
 		scan.SortGroups(groups, sortBy, sortDesc)
-		if err := jsonout.Write(os.Stdout, version, res, groups, selected, listNoExt); err != nil {
+		if err := jsonout.Write(os.Stdout, version, "", res, groups, selected, listNoExt); err != nil {
 			errorf(colorsFlag, "writing JSON: %s", err)
 			return ExitGeneral
 		}

@@ -36,10 +36,38 @@ func testResult() *scan.Result {
 func writeToString(t *testing.T, res *scan.Result, sel Selection, listNoExt bool) string {
 	t.Helper()
 	var sb strings.Builder
-	if err := Write(&sb, "1.2.3", res, res.Groups, sel, listNoExt); err != nil {
+	if err := Write(&sb, "1.2.3", "", res, res.Groups, sel, listNoExt); err != nil {
 		t.Fatal(err)
 	}
 	return sb.String()
+}
+
+func TestWriteConfigField(t *testing.T) {
+	// With a config path: additive "config" field directly after "method" (R46).
+	var sb strings.Builder
+	if err := Write(&sb, "1.2.3", "/etc/dirstat.toml", testResult(), nil, fullSelection(), false); err != nil {
+		t.Fatal(err)
+	}
+	out := sb.String()
+	var parsed map[string]interface{}
+	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
+		t.Fatalf("invalid JSON: %v\n%s", err, out)
+	}
+	if parsed["config"] != "/etc/dirstat.toml" {
+		t.Errorf("config = %v, want /etc/dirstat.toml", parsed["config"])
+	}
+	method := strings.Index(out, `"method"`)
+	config := strings.Index(out, `"config"`)
+	summary := strings.Index(out, `"summary"`)
+	if !(method < config && config < summary) {
+		t.Errorf("config field must sit between method and summary:\n%s", out)
+	}
+
+	// Without a config path the field is absent entirely (additive schema, R34).
+	out = writeToString(t, testResult(), fullSelection(), false)
+	if strings.Contains(out, `"config"`) {
+		t.Errorf("config field must be omitted when --config is unused:\n%s", out)
+	}
 }
 
 func TestWriteFullSchema(t *testing.T) {

@@ -105,6 +105,7 @@ type doc struct {
 	Version string      `json:"dirstat_version"`
 	Root    string      `json:"root"`
 	Method  string      `json:"method"`
+	Config  string      `json:"config,omitempty"`
 	Summary summaryJSON `json:"summary"`
 	Groups  []groupJSON `json:"groups"`
 	NoExt   *[]string   `json:"no_extension_files,omitempty"`
@@ -112,13 +113,16 @@ type doc struct {
 
 // Write emits the JSON document for a scan result. groups must already be
 // sorted per --sort-by/--sort-order. listNoExt controls the presence of the
-// no_extension_files field.
-func Write(w io.Writer, version string, res *scan.Result, groups []scan.Group, sel Selection, listNoExt bool) error {
+// no_extension_files field. configPath is the absolute path of the scan
+// config file in effect; when empty the additive "config" field is omitted
+// entirely (R46).
+func Write(w io.Writer, version, configPath string, res *scan.Result, groups []scan.Group, sel Selection, listNoExt bool) error {
 	s := res.Summary
 	d := doc{
 		Version: version,
 		Root:    res.Root,
 		Method:  res.Method,
+		Config:  configPath,
 		Summary: summaryJSON{
 			Directories:           s.Directories,
 			Files:                 s.Files,

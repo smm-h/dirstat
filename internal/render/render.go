@@ -30,6 +30,7 @@ type Options struct {
 	Stats      []string // selected stat names in canonical column order
 	Width      int      // terminal width (80 when colors are inactive)
 	Theme      config.Theme
+	Config     string // absolute path of the scan config file; "" = none (R46)
 }
 
 // borderSet is the table border charset for one style.
@@ -73,10 +74,16 @@ func renderSummary(w io.Writer, res *scan.Result, opts Options, p palette, b bor
 	fmt.Fprintln(w)
 	heading(w, "Summary", opts, p, b)
 	s := res.Summary
-	entries := []struct {
+	type entry struct {
 		label string
 		value string
-	}{
+	}
+	var entries []entry
+	if opts.Config != "" {
+		// A config file in effect is announced as the first summary line (R46).
+		entries = append(entries, entry{"Config", opts.Config})
+	}
+	entries = append(entries, []entry{
 		{"Directories", formatCount(int64(s.Directories), opts.Human)},
 		{"Files", formatCount(int64(s.Files), opts.Human)},
 		{"Files without extension", formatCount(int64(s.FilesWithoutExtension), opts.Human)},
@@ -86,7 +93,7 @@ func renderSummary(w io.Writer, res *scan.Result, opts Options, p palette, b bor
 		{"Unique formats", formatCount(int64(s.UniqueFormats), opts.Human)},
 		{"Files sniffed", formatCount(int64(s.FilesSniffed), opts.Human)},
 		{"Unreadable (skipped)", formatCount(int64(s.Unreadable), opts.Human)},
-	}
+	}...)
 	for _, e := range entries {
 		fmt.Fprintf(w, "  %s%s:%s %s%s%s\n", p.statLabel, e.label, p.reset, p.statValue, e.value, p.reset)
 	}
