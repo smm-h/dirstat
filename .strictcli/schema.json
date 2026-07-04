@@ -28,11 +28,17 @@
           "type": "int"
         },
         {
-          "help": "exact base name to skip, matching directories and files; repeatable",
+          "help": "exact base name to skip, matching directories and files; repeatable; passing the flag replaces the built-in default list entirely",
           "name": "exclude",
           "repeatable": true,
           "type": "str",
           "unique": true
+        },
+        {
+          "default": "",
+          "help": "path to a TOML scan-config file (keys: exclude, method, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error",
+          "name": "config",
+          "type": "str"
         },
         {
           "choices": [
@@ -230,5 +236,5 @@
   "name": "dirstat",
   "project_id": "github.com/smm-h/dirstat",
   "schema_version": 1,
-  "version": "dev"
+  "version": "0.1.1-0.20260704185737-017cc132c6cd+dirty"
 }

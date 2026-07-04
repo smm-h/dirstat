@@ -48,8 +48,13 @@ func checkGolden(t *testing.T, goldenName string, args ...string) {
 	if code != 0 {
 		t.Fatalf("dirstat exited %d: %s", code, stderr)
 	}
-	got := normalize(stdout, root)
+	compareGolden(t, goldenName, normalize(stdout, root))
+}
 
+// compareGolden compares normalized output against a committed golden file,
+// rewriting it under -update.
+func compareGolden(t *testing.T, goldenName, got string) {
+	t.Helper()
 	goldenPath := filepath.Join("testdata", goldenName)
 	if *update {
 		if err := os.MkdirAll("testdata", 0o755); err != nil {
@@ -73,6 +78,23 @@ func checkGolden(t *testing.T, goldenName string, args ...string) {
 
 func TestGoldenJSONFull(t *testing.T) {
 	checkGolden(t, "full.json", "--output", "json", "--list-no-ext")
+}
+
+func TestGoldenJSONConfig(t *testing.T) {
+	// Exercises the additive "config" JSON field (R46). The config file
+	// lives inside the fixture root so its path normalizes to ROOT/... and
+	// its own toml group is a deterministic part of the golden output.
+	root := goldenTree(t)
+	cfgPath := filepath.Join(root, "dirstat.toml")
+	content := "method = \"ext\"\nsort_by = [\"format\"]\nsort_order = \"asc\"\n"
+	if err := os.WriteFile(cfgPath, []byte(content), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	stdout, stderr, code := runDirstat(t, "scan", root, "--config", cfgPath, "--output", "json")
+	if code != 0 {
+		t.Fatalf("dirstat exited %d: %s", code, stderr)
+	}
+	compareGolden(t, "config.json", normalize(stdout, root))
 }
 
 func TestGoldenJSONSubset(t *testing.T) {

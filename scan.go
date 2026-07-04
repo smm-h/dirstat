@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/smm-h/dirstat/internal/config"
 	"github.com/smm-h/dirstat/internal/jsonout"
 	"github.com/smm-h/dirstat/internal/render"
 	"github.com/smm-h/dirstat/internal/scan"
+	"github.com/smm-h/dirstat/internal/scanconfig"
 	"github.com/smm-h/strictcli/go/strictcli"
 	"golang.org/x/term"
 )
@@ -23,8 +25,11 @@ func registerScanCmd(app *strictcli.App) {
 				"maximum directory depth below the root; -1 = unlimited; the root is depth 0",
 				strictcli.Default(-1)),
 			strictcli.StringFlag("exclude",
-				"exact base name to skip, matching directories and files; repeatable",
+				"exact base name to skip, matching directories and files; repeatable; passing the flag replaces the built-in default list entirely",
 				strictcli.Repeatable(), strictcli.Unique(true), strictcli.Default(nil)),
+			strictcli.StringFlag("config",
+				"path to a TOML scan-config file (keys: exclude, method, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error",
+				strictcli.Default("")),
 			strictcli.StringFlag("ignored",
 				"gitignored-path handling: include (no matching at all), exclude (drop ignored paths), only (keep only ignored paths); when the target is not inside a git work tree, exclude and only behave as if no patterns exist",
 				strictcli.Choices("include", "exclude", "only"), strictcli.Default("exclude")),
@@ -118,6 +123,32 @@ func handleScan(kwargs map[string]interface{}) int {
 		return ExitUsage
 	}
 
+	// Scan config file: loaded and fully validated before any scanning
+	// starts (R41). File values overlay the flag defaults in kwargs; a key
+	// set both in the file and explicitly on the command line is a hard
+	// error, so no silent override can occur (R43, R44).
+	var configAbs string
+	if configPath := kwargs["config"].(string); configPath != "" {
+		cfg, err := scanconfig.Load(configPath)
+		if err != nil {
+			errorf(colorsFlag, "%s", err)
+			return ExitUsage
+		}
+		explicit := scanconfig.ExplicitKeys(os.Args)
+		for _, key := range scanconfig.AllowedKeys {
+			if cfg.Has(key) && explicit[key] {
+				errorf(colorsFlag, "key %q is set in the config file and --%s was passed on the command line; use one or the other",
+					key, strings.ReplaceAll(key, "_", "-"))
+				return ExitUsage
+			}
+		}
+		cfg.Overlay(kwargs)
+		if configAbs, err = filepath.Abs(configPath); err != nil {
+			errorf(colorsFlag, "resolving config path %q: %s", configPath, err)
+			return ExitUsage
+		}
+	}
+
 	// Validate --stats (empty = all).
 	validStats := make(map[string]bool, len(scan.StatNames))
 	for _, s := range scan.StatNames {
@@ -206,7 +237,7 @@ func handleScan(kwargs map[string]interface{}) int {
 		groups := make([]scan.Group, len(res.Groups))
 		copy(groups, res.Groups)
 		scan.SortGroups(groups, sortBy, sortDesc)
-		if err := jsonout.Write(os.Stdout, version, "", res, groups, selected, listNoExt); err != nil {
+		if err := jsonout.Write(os.Stdout, version, configAbs, res, groups, selected, listNoExt); err != nil {
 			errorf(colorsFlag, "writing JSON: %s", err)
 			return ExitGeneral
 		}
@@ -240,6 +271,7 @@ func handleScan(kwargs map[string]interface{}) int {
 		Stats:      statsOrdered,
 		Width:      width,
 		Theme:      config.LoadTheme(render.DetectThemeName()),
+		Config:     configAbs,
 	})
 	return ExitSuccess
 }
