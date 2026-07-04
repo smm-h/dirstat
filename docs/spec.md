@@ -44,7 +44,8 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   |---|---|---|---|
   | `--method` | choice: `ext`, `type`, `hybrid` | `hybrid` | Grouping method (§3) |
   | `--depth` | int | `-1` | Max directory depth below root; `-1` = unlimited; root is depth 0 |
-  | `--exclude` | string, repeatable, unique | none | Exact base-name matches to skip (dirs and files) |
+  | `--exclude` | string, repeatable, unique | curated list (R45) | Exact base-name matches to skip (dirs and files) |
+  | `--config` | string | `""` (none) | Path to a TOML scan-config file (§12); no default path, never auto-discovered |
   | `--ignored` | choice: `include`, `exclude`, `only` | `exclude` | Gitignored-path handling (§5) |
   | `--hidden` | choice: `include`, `exclude` | `include` | Dot-prefixed entries; the root dir itself is never treated as hidden |
   | `--stats` | string, repeatable, unique | all | Which stats to compute/show; valid: `count`, `total-size`, `min-size`, `max-size`, `avg-size`, `total-loc`, `min-loc`, `max-loc`, `avg-loc`; invalid value = hard error |
@@ -231,11 +232,56 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   output despite the parallel worker pool.
 - R40. `go vet ./...` clean, `gofmt` clean, `go test ./... -race` passes.
 
-## 11. Non-goals for v1
+## 11. Scan config file
+
+Added after 0.1.0. A TOML file supplying scan defaults, used only when explicitly
+requested — dirstat never reads config from XDG, HOME, cwd, or the scanned tree.
+
+- R41. `--config <path>`: when set, the file MUST exist and parse as TOML; a
+  missing, unreadable, or malformed file is a hard error (exit 2) reporting the
+  path and, for parse errors, line/column (go-toml-edit `ParseError`). Loaded and
+  fully validated before any scanning starts.
+- R42. Allowed keys (flag names with underscores), exactly the scan-semantic set:
+  `exclude` (string array), `method`, `depth` (integer), `ignored`, `hidden`,
+  `type`, `stats` (string array), `sort_by` (string array), `sort_order`. Values
+  are validated with the same rules as the corresponding flags (choices, valid
+  stat names, uniqueness). Any unknown key, rendering/output key (e.g. `colors`,
+  `style`, `output`, `top`), wrong type, or invalid value is a hard error (exit
+  2) naming the key and the allowed key set. `where` cannot be set from config.
+- R43. Conflict rule (no silent override): if a key is present in the config file
+  AND its flag was explicitly passed on the command line, that is a hard error
+  (exit 2) naming the key. Explicit passing is detected from raw `os.Args`
+  (matching `--flag value` and `--flag=value` forms for the R42 flag set).
+  CLI flags for keys the file does not set remain usable alongside `--config`.
+- R44. Effective settings: registered flag defaults, overlaid by config-file
+  values, overlaid by CLI values only for keys absent from the file (R43 makes
+  the file/CLI overlap impossible). Rendering flags are unaffected by config.
+- R45. Built-in default excludes: `--exclude` registers a curated default list:
+  `.git`, `node_modules`, `.venv`, `vendor`, `build`, `dist`, `target`,
+  `zig-out`, `zig-pkg`, `.next`, `.svelte-kit`, `__pycache__`, `.mypy_cache`,
+  `.ruff_cache`, `.pytest_cache`, `.hypothesis`, `.gradle`, `.idea`,
+  `.wrangler`, `.vscode`. The list is visible in `--help`. An explicit
+  `exclude = []` in the config file (or any CLI `--exclude`) replaces it
+  entirely; there is no additive merging anywhere.
+- R46. Visibility: when a config file is in effect, the table summary gains a
+  `Config: <path>` line (first summary line, absolute path), and the JSON output
+  gains an additive optional field `"config"` (absolute path) after `"method"`.
+  Absent entirely when `--config` is not used (additive schema evolution, R34).
+- R47. Tests: unit tests for the TOML loader/validator and the argv explicitness
+  scanner; integration tests covering happy path, missing file, malformed TOML,
+  unknown key, rendering key, wrong type, file/CLI conflict, `exclude = []`,
+  and a golden JSON fixture exercising the `config` field. The default-exclude
+  behavior change is covered by updated integration expectations (e.g. `.git`
+  no longer scanned by default; `--exclude ""` style overrides still honored).
+
+## 12. Non-goals for v1
 
 - No result caching (measure first; the subprocess elimination and parallel scan
   are expected to make it unnecessary).
 - No interactive/TUI mode.
 - No symlink following.
-- No runtime config files (XDG etc.) — embedded-only.
+- No auto-discovered config and no runtime classification/theme data: extension
+  lists, mimetype lists, and themes are embedded-only, and dirstat never picks up
+  config from XDG, HOME, cwd, or the scanned tree. (The explicit `--config` scan
+  file of §11 is the sole, opt-in file input.)
 - Never bump to 1.0.0 (stays 0.x until explicitly authorized).
