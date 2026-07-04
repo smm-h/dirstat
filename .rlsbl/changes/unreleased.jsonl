@@ -3,3 +3,4 @@
 {"commits":["3e44a23b904123c82337d10ff2bd116cd3dc00ff"],"user_facing":true,"description":"Machine-readable JSON output (`--output json`) with a stable, additive-only schema","type":"feature"}
 {"commits":["e162fd16bb22d9effc0e9c3ea702e02a1eb38d91"],"user_facing":false}
 {"commits":["59a0721887d952bb922f3e72df8e93cdaabe420d"],"user_facing":false}
+{"commits":["2314739f704f466890ea2ac0a5d5645a96232d56"],"user_facing":false}
