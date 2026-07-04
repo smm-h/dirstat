@@ -1,0 +1,234 @@
+{
+  "commands": {
+    "scan": {
+      "args": [
+        {
+          "default": ".",
+          "help": "directory to summarize (default: current directory)",
+          "name": "where",
+          "required": false
+        }
+      ],
+      "flags": [
+        {
+          "choices": [
+            "ext",
+            "type",
+            "hybrid"
+          ],
+          "default": "hybrid",
+          "help": "grouping method: ext (extension only, no sniffing), type (content-sniff every file), hybrid (sniff extensionless files only)",
+          "name": "method",
+          "type": "str"
+        },
+        {
+          "default": -1,
+          "help": "maximum directory depth below the root; -1 = unlimited; the root is depth 0",
+          "name": "depth",
+          "type": "int"
+        },
+        {
+          "help": "exact base name to skip, matching directories and files; repeatable",
+          "name": "exclude",
+          "repeatable": true,
+          "type": "str",
+          "unique": true
+        },
+        {
+          "choices": [
+            "include",
+            "exclude",
+            "only"
+          ],
+          "default": "exclude",
+          "help": "gitignored-path handling: include (no matching at all), exclude (drop ignored paths), only (keep only ignored paths); when the target is not inside a git work tree, exclude and only behave as if no patterns exist",
+          "name": "ignored",
+          "type": "str"
+        },
+        {
+          "choices": [
+            "include",
+            "exclude"
+          ],
+          "default": "include",
+          "help": "dot-prefixed entry handling: include or exclude; the root directory itself is never treated as hidden",
+          "name": "hidden",
+          "type": "str"
+        },
+        {
+          "help": "stat to compute and show (repeatable; default: all): count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc",
+          "name": "stats",
+          "repeatable": true,
+          "type": "str",
+          "unique": true
+        },
+        {
+          "choices": [
+            "text",
+            "binary",
+            "both"
+          ],
+          "default": "both",
+          "help": "filter groups by text/binary classification: text, binary, or both",
+          "name": "type",
+          "type": "str"
+        },
+        {
+          "default": [
+            "count"
+          ],
+          "help": "sort column, in precedence order when repeated: format, count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc",
+          "name": "sort-by",
+          "repeatable": true,
+          "type": "str",
+          "unique": true
+        },
+        {
+          "choices": [
+            "asc",
+            "desc"
+          ],
+          "default": "desc",
+          "help": "sort direction, applied to all sort columns",
+          "name": "sort-order",
+          "type": "str"
+        },
+        {
+          "default": -1,
+          "help": "keep only the first N groups after sorting (table output only); -1 or 0 = all",
+          "name": "top",
+          "type": "int"
+        },
+        {
+          "choices": [
+            "table",
+            "json"
+          ],
+          "default": "table",
+          "help": "output format: table (colored terminal tables) or json (stable machine-readable schema)",
+          "name": "output",
+          "type": "str"
+        },
+        {
+          "choices": [
+            "summary",
+            "table",
+            "both"
+          ],
+          "default": "both",
+          "help": "sections to render: summary, table, or both (table output only)",
+          "name": "show",
+          "type": "str"
+        },
+        {
+          "default": true,
+          "help": "render one merged table with text and binary rows distinguished by color, instead of separate text/binary tables",
+          "name": "combined",
+          "negatable": true,
+          "type": "bool"
+        },
+        {
+          "choices": [
+            "show",
+            "collapse"
+          ],
+          "default": "show",
+          "help": "show one-file formats as-is, or collapse them into a single (singletons) row (table output only)",
+          "name": "singletons",
+          "type": "str"
+        },
+        {
+          "default": false,
+          "help": "list the paths of extensionless files (a section in table output, a field in JSON output)",
+          "name": "list-no-ext",
+          "negatable": true,
+          "type": "bool"
+        },
+        {
+          "default": true,
+          "help": "show the text/binary color legend under the combined table (needs active colors)",
+          "name": "legend",
+          "negatable": true,
+          "type": "bool"
+        },
+        {
+          "default": true,
+          "help": "use ANSI colors; auto-disabled when stdout is not a TTY",
+          "name": "colors",
+          "negatable": true,
+          "type": "bool"
+        },
+        {
+          "default": true,
+          "help": "human-readable sizes and thousands separators (table output only)",
+          "name": "human",
+          "negatable": true,
+          "type": "bool"
+        },
+        {
+          "choices": [
+            "unicode",
+            "ascii"
+          ],
+          "default": "unicode",
+          "help": "table border character set: unicode or ascii",
+          "name": "style",
+          "type": "str"
+        }
+      ],
+      "help": "Summarize the files under a directory, grouped by format",
+      "name": "scan"
+    }
+  },
+  "defaults": {
+    "app": {
+      "commands": {},
+      "config": false,
+      "deprecated": {},
+      "env_prefix": null,
+      "global_flags": [],
+      "groups": {},
+      "tag_contracts": {}
+    },
+    "arg": {
+      "choices": null,
+      "default": null,
+      "required": true,
+      "type": "str",
+      "variadic": false
+    },
+    "command": {
+      "args": [],
+      "constraints": [],
+      "flags": [],
+      "hidden": false,
+      "interactive": false,
+      "passthrough": false,
+      "tags": []
+    },
+    "flag": {
+      "choices": null,
+      "default": null,
+      "env": null,
+      "env_separator": null,
+      "hidden": false,
+      "negatable": null,
+      "repeatable": false,
+      "short": null,
+      "unique": false
+    },
+    "group": {
+      "commands": {},
+      "deprecated": {},
+      "groups": {},
+      "hidden": false,
+      "tags": []
+    },
+    "schema_version": 1
+  },
+  "help": "Summarize files in a directory tree, grouped by format, with aggregate statistics",
+  "name": "dirstat",
+  "project_id": "github.com/smm-h/dirstat",
+  "schema_version": 1,
+  "version": "0.0.0-20260704170449-59a0721887d9"
+}
