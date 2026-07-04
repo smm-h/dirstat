@@ -1,0 +1,12 @@
+{
+  "targets": [
+    "go"
+  ],
+  "private": false,
+  "pipelines": {
+    "go": {
+      "type": "go",
+      "local": false
+    }
+  }
+}
