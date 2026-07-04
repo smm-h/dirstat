@@ -4,3 +4,4 @@
 {"commits":["fcafa0ea349dbc0f61524b6b555f0e9d436454b5"],"user_facing":true,"description":"**Curated default excludes.** `--exclude` now defaults to a built-in list (`.git`, `node_modules`, `.venv`, `vendor`, `build`, `dist`, `target`, `zig-out`, `zig-pkg`, `.next`, `.svelte-kit`, `__pycache__`, `.mypy_cache`, `.ruff_cache`, `.pytest_cache`, `.hypothesis`, `.gradle`, `.idea`, `.wrangler`, `.vscode`), so default scan results change: files under those directories are no longer counted. Restore the old scan-everything behavior with `exclude = []` in a `--config` file or any explicit `--exclude` (which replaces the list entirely, e.g. `--exclude \"\"`).","type":"breaking"}
 {"commits":["6d09472b3c832ec3fb7d0bc98e93b99aed9e00f2"],"user_facing":false}
 {"commits":["ac5c1e6e01a9e87c4c36f76247e371345eb26bbe"],"user_facing":false}
+{"commits":["bd11f347df4b8c068f49bde3789b672f1356f133"],"user_facing":false}
