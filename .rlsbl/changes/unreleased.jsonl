@@ -2,3 +2,4 @@
 {"commits":["d7cd927cdd31fd4af789b3f03c01ad4059721eb5"],"user_facing":true,"description":"Colored terminal tables with dark/light themes, unicode/ascii border styles, terminal-width adaptation, singleton collapsing, and a text/binary legend","type":"feature"}
 {"commits":["3e44a23b904123c82337d10ff2bd116cd3dc00ff"],"user_facing":true,"description":"Machine-readable JSON output (`--output json`) with a stable, additive-only schema","type":"feature"}
 {"commits":["e162fd16bb22d9effc0e9c3ea702e02a1eb38d91"],"user_facing":false}
+{"commits":["59a0721887d952bb922f3e72df8e93cdaabe420d"],"user_facing":false}
