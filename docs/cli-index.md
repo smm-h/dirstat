@@ -12,7 +12,7 @@ order: 91
 
 Summarize files in a directory tree, grouped by format, with aggregate statistics
 
-Version: 0.0.0-20260704173058-7e27efa68e0e+dirty
+Version: dev
 
 ## Commands
 
