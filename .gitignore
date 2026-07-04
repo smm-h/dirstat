@@ -1,0 +1,10 @@
+/dirstat
+.rlsbl/lock
+.rlsbl-monorepo/lock
+docs/_build/
+coverage/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
