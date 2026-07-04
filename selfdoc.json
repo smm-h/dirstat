@@ -1,0 +1,41 @@
+{
+  "version": "0.1.0",
+  "source": [
+    {
+      "path": ".",
+      "language": "go"
+    },
+    {
+      "path": "internal/classify",
+      "language": "go"
+    },
+    {
+      "path": "internal/config",
+      "language": "go"
+    },
+    {
+      "path": "internal/jsonout",
+      "language": "go"
+    },
+    {
+      "path": "internal/render",
+      "language": "go"
+    },
+    {
+      "path": "internal/scan",
+      "language": "go"
+    }
+  ],
+  "docs": "docs/",
+  "output": "docs/_build/",
+  "base_url": "https://github.com/smm-h/dirstat",
+  "root_files": [
+    "docs/_README.md",
+    "docs/_CLAUDE.md"
+  ],
+  "gen": {
+    "exclude": [
+      "*"
+    ]
+  }
+}
