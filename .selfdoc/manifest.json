@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "name": "dirstat",
+  "slug": "dirstat",
+  "version": "0.1.0",
+  "description": "",
+  "language": "go",
+  "base_url": "https://github.com/smm-h/dirstat",
+  "pages": [
+    {
+      "path": "cli-index.md",
+      "title": "dirstat CLI Reference",
+      "type": "doc"
+    },
+    {
+      "path": "cli-scan.md",
+      "title": "dirstat scan",
+      "type": "doc"
+    },
+    {
+      "path": "gen-index.md",
+      "title": "API Reference",
+      "type": "doc"
+    },
+    {
+      "path": "spec.md",
+      "title": "dirstat v1 specification",
+      "type": "doc"
+    }
+  ],
+  "posts": [],
+  "last_gen": "2026-07-04T17:07:13.252458+00:00"
+}
