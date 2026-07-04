@@ -1,0 +1,232 @@
+---
+title: dirstat v1 specification
+---
+# dirstat — v1 specification
+
+dirstat summarizes the files in a directory tree, grouped by format, with aggregate
+statistics (counts, sizes, lines of code) rendered as a colored terminal table or as
+JSON. It is a clean-slate Go redesign of an internal Python prototype, built for
+speed: no subprocesses, parallel scanning, single static binary.
+
+This document is the authoritative spec for the initial implementation. Every
+requirement is numbered (R1, R2, ...) so audits can address them individually.
+
+## 1. Project shape
+
+- R1. Go module `github.com/smm-h/dirstat`, Go directive `go 1.25.7`, flat
+  `package main` at the repo root (no `cmd/`), matching safegit/saferm layout.
+- R2. CLI built on `github.com/smm-h/strictcli/go/strictcli`, unpinned latest.
+  `.strictcli/schema.json` committed.
+- R3. rlsbl-managed: `.rlsbl/config.json` with `targets: ["go"]`, pipeline
+  `{"type": "go", "local": true, "install_paths": ["."]}`, `private: false`,
+  pre-release hooks running `go vet ./...`, `go build -o /dev/null .`, and
+  `go test ./... -race -count=1`. JSONL changelog in use from the first commit.
+- R4. selfdoc-managed root templates only: `selfdoc.json` with
+  `root_files: ["docs/_README.md", "docs/_CLAUDE.md"]`; no docs site, no deploy
+  config. Generated `README.md`/`CLAUDE.md` are committed and chmod 444.
+- R5. Version `0.1.0` in `VERSION`; binary version via `-X main.version` ldflags
+  with `debug.ReadBuildInfo()` fallback (safegit pattern). MIT LICENSE,
+  `Copyright (c) 2026 smm-h`.
+- R6. Dependencies: strictcli, `github.com/gabriel-vasile/mimetype` (content
+  sniffing), go-git's `plumbing/format/gitignore` package (ignore matching),
+  `golang.org/x/term` (terminal size). No CGO (`CGO_ENABLED=0` must work).
+
+## 2. CLI surface
+
+- R7. Single command: `dirstat scan [where]`. `where` is an optional positional
+  argument, default `"."`, the directory to summarize. A missing or non-directory
+  path is a hard error (exit code for usage/input error, message to stderr).
+- R8. Flags (strictcli conventions: enums via `Choices`, bools with explicit
+  `Default`, auto `--no-*` negation; short names only where listed):
+
+  | Flag | Type | Default | Semantics |
+  |---|---|---|---|
+  | `--method` | choice: `ext`, `type`, `hybrid` | `hybrid` | Grouping method (§3) |
+  | `--depth` | int | `-1` | Max directory depth below root; `-1` = unlimited; root is depth 0 |
+  | `--exclude` | string, repeatable, unique | none | Exact base-name matches to skip (dirs and files) |
+  | `--ignored` | choice: `include`, `exclude`, `only` | `exclude` | Gitignored-path handling (§5) |
+  | `--hidden` | choice: `include`, `exclude` | `include` | Dot-prefixed entries; the root dir itself is never treated as hidden |
+  | `--stats` | string, repeatable, unique | all | Which stats to compute/show; valid: `count`, `total-size`, `min-size`, `max-size`, `avg-size`, `total-loc`, `min-loc`, `max-loc`, `avg-loc`; invalid value = hard error |
+  | `--type` | choice: `text`, `binary`, `both` | `both` | Filter groups by text/binary classification |
+  | `--sort-by` | string, repeatable, unique | `count` | Sort columns, in precedence order; valid: `format` plus the nine stat names; invalid = hard error |
+  | `--sort-order` | choice: `asc`, `desc` | `desc` | Applied to all sort columns |
+  | `--top` | int | `-1` | Keep only the first N groups after sorting (table only); `-1` or `0` = all |
+  | `--output` | choice: `table`, `json` | `table` | Output format (§7, §8) |
+  | `--show` | choice: `summary`, `table`, `both` | `both` | Which sections to render (table output only) |
+  | `--combined` | bool | `true` | One merged table vs separate text/binary tables |
+  | `--singletons` | choice: `show`, `collapse` | `show` | Collapse one-file formats into a `(singletons)` row (table only, §7) |
+  | `--list-no-ext` | bool | `false` | List the paths of extensionless files after the summary |
+  | `--legend` | bool | `true` | Text/binary color legend under the combined table |
+  | `--colors` | bool | `true` | ANSI colors (auto-disabled when stdout is not a TTY) |
+  | `--human` | bool | `true` | Human-readable sizes and thousands separators (table only) |
+  | `--style` | choice: `unicode`, `ascii` | `unicode` | Table border character set |
+
+- R9. Flag semantics that the prototype got wrong and dirstat must define cleanly:
+  rendering-only flags (`--show`, `--combined`, `--singletons`, `--legend`,
+  `--colors`, `--human`, `--style`, `--top`) have no effect on JSON output.
+  `--sort-by`/`--sort-order` order groups in both outputs. `--stats` limits which
+  stats are computed and emitted in both outputs. `--list-no-ext` adds data to
+  both outputs (a section in table mode, a field in JSON mode).
+
+## 3. Grouping methods
+
+- R10. Extension normalization: last-dot suffix, lowercased, dot stripped
+  (`Path.suffix` semantics: `archive.tar.gz` → `gz`; dotfiles like `.bashrc` and
+  bare names like `Makefile` have no extension).
+- R11. `ext`: group name is the extension, or `(no extension)`; text/binary decided
+  by the extension list only; no content sniffing ever.
+- R12. `type`: every file is content-sniffed; group name is the detected MIME type
+  or `(unknown)` when detection fails; text/binary via the MIME rule (R15).
+- R13. `hybrid` (default): files with an extension behave as in `ext` (no sniffing);
+  extensionless files are sniffed and grouped by MIME type, falling back to
+  `(no extension)` when sniffing fails.
+
+## 4. Text/binary classification
+
+- R14. Extension-classified files are text iff the extension is in the embedded
+  text-extensions list.
+- R15. MIME-classified files are text iff the MIME type starts with `text/` or is in
+  the embedded text-mimetypes list. The result is a strict bool.
+- R16. Both lists are embedded via `go:embed`, seeded from the prototype's lists
+  (about 90 extensions incl. `svg`; about 45 mimetypes incl. `image/svg+xml`,
+  `application/json`, `application/x-empty`, `inode/x-empty`). No runtime config
+  files, no lookup in cwd/HOME/XDG. Changing the lists means a rebuild.
+
+## 5. Traversal
+
+- R17. Walk with `filepath.WalkDir`-level efficiency (DirEntry, no redundant stat).
+  Root is depth 0. Directories beyond `--depth`, matching `--exclude`, hidden
+  (when excluded), or gitignored (when excluded) are pruned: not counted, not
+  descended into.
+- R18. Gitignore handling is fully in-process using go-git's gitignore package:
+  patterns from every `.gitignore` in the tree, `.git/info/exclude`, and the
+  global `core.excludesFile`. Modes: `include` = no matching at all; `exclude` =
+  drop ignored paths; `only` = keep only ignored paths (`only` prunes ignored
+  dirs' contents from exclusion — files under an ignored dir count as ignored).
+  When the target is not inside a git work tree, `exclude` and `only` behave as
+  if no patterns exist; this must be documented in the flag help.
+- R19. Symlinks are never followed — neither file nor directory symlinks — but every
+  symlink encountered in any traversed directory is counted, so the symlink count
+  does not depend on traversal order (fixes a prototype bug where symlinks under
+  pruned dirs were missed; symlinks under pruned dirs are legitimately out of
+  scope, but all symlinks in traversed dirs must be counted even when they would
+  be filtered by name rules).
+- R20. Unreadable directories and files (permission errors, stat failures) are
+  skipped and counted in a summary stat `Unreadable (skipped)`. Never a warning
+  spew; never a crash.
+- R21. Per-file work (LOC counting, content sniffing) runs in a worker pool sized to
+  `runtime.GOMAXPROCS(0)`. Results must be deterministic regardless of
+  scheduling.
+
+## 6. Statistics
+
+- R22. Per group: `count`, `total-size`, `min-size`, `max-size`, `avg-size`, and for
+  text groups `total-loc`, `min-loc`, `max-loc`, `avg-loc`. Binary groups have no
+  LOC values (rendered `-`, JSON `null`). Averages are rounded to nearest
+  integer, not floored. Stats not requested via `--stats` are neither computed
+  nor shown (LOC is expensive; skipping it must actually skip the file reads).
+- R23. LOC = number of `\n` bytes, plus 1 if the file is non-empty and does not end
+  with `\n`. Counted with buffered `bytes.Count`-style reads (no line decoding,
+  no size cap). Read errors count the file as unreadable (R20), not LOC 0.
+- R24. Summary stats: `Directories`, `Files`, `Files without extension`,
+  `Max depth`, `Symlinks (skipped)`, `Executables`, `Unique formats`,
+  `Files sniffed`, `Unreadable (skipped)`. `Files without extension` counts only
+  files that passed all filters including `--type` (fixes prototype bug).
+  `Executables` = regular files with any execute permission bit. `Files sniffed`
+  = number of content-sniff operations performed.
+
+## 7. Table output
+
+- R25. Section order: summary (heading `Summary`, a rule line, `label: value`
+  lines), then table(s), then optional extensionless-file list, respecting
+  `--show`.
+- R26. Combined mode: one table `Files by Format` with text rows and binary rows
+  distinguished by color. Split mode (`--no-combined`): `Text Files by Format`
+  and `Binary Files by Format`; the binary table omits LOC columns. Row-building
+  logic must be shared, not duplicated per table (prototype wart).
+- R27. Columns in fixed order: `Format`, `Count`, `Total Size`, `Min Size`,
+  `Max Size`, `Avg Size`, `Total LOC`, `Min LOC`, `Max LOC`, `Avg LOC` — each
+  present only if its stat is selected. Sizes humanized in 1024-based units with
+  one decimal (except bare bytes) when `--human`; raw integers otherwise. Counts
+  get thousands separators when `--human`.
+- R28. Width adaptation: query terminal width (`x/term`; fallback 80 when not a
+  TTY). If the table overflows, shrink only the Format column down to a floor of
+  10, truncating cells with a `..` suffix.
+- R29. Border styles: `unicode` (light box-drawing, the prototype's look) and
+  `ascii` (`+ - |`). One shared renderer parameterized by charset.
+- R30. Colors: ANSI 256-color themes (dark and light) embedded as data; theme keys:
+  text/binary/header fg+bg, stat label, stat value, error, border. Dark unless
+  `COLORFGBG` clearly indicates a light background. Colors apply only when
+  `--colors` is true AND stdout is a TTY. `--no-colors` output must be
+  byte-identical to non-TTY output.
+- R31. Legend (`■ Text files ■ Binary files`) renders only when `--legend`,
+  `--combined`, `--type both`, and colors are active (it is meaningless
+  without color).
+- R32. `--singletons collapse`: groups with exactly one file are merged into a
+  single `(singletons)` pseudo-row (count = number of merged groups, sizes and
+  text-only LOC aggregated); the row participates in sorting by its aggregate
+  values and renders in a neutral (header) color. In split mode the collapse
+  happens within each table independently.
+- R33. Empty result → `No files found.` instead of an empty table.
+
+## 8. JSON output
+
+- R34. `--output json` writes a single JSON object to stdout, no ANSI codes ever,
+  raw integer values (no humanization). This is a consumer contract (external
+  tools will parse it): field names are stable, evolution is additive-only.
+- R35. Schema:
+
+  ```json
+  {
+    "dirstat_version": "0.1.0",
+    "root": "/abs/path",
+    "method": "hybrid",
+    "summary": {
+      "directories": 0, "files": 0, "files_without_extension": 0,
+      "max_depth": 0, "symlinks": 0, "executables": 0,
+      "unique_formats": 0, "files_sniffed": 0, "unreadable": 0
+    },
+    "groups": [
+      {
+        "format": "go", "text": true, "count": 0,
+        "total_size": 0, "min_size": 0, "max_size": 0, "avg_size": 0,
+        "total_loc": 0, "min_loc": 0, "max_loc": 0, "avg_loc": 0
+      }
+    ],
+    "no_extension_files": ["relative/path"]
+  }
+  ```
+
+  Groups are ordered per `--sort-by`/`--sort-order`. Stats absent from `--stats`
+  are omitted from group objects; LOC fields are `null` for binary groups.
+  `no_extension_files` (paths relative to root, sorted) present only with
+  `--list-no-ext`. `--top` and `--singletons` do not affect JSON (R9).
+
+## 9. Sorting
+
+- R36. Multi-key sort over `--sort-by` columns with a single `--sort-order`
+  direction. `format` compares case-insensitively. For LOC keys, binary groups
+  sort as 0. Ties broken by format name ascending so output is deterministic.
+
+## 10. Testing
+
+- R37. Unit tests colocated per package, table-driven. Integration tests in
+  `internal/test/` build the real binary once (TestMain pattern from saferm) and
+  run it against fixture trees created with `t.TempDir()` (including: nested
+  gitignore, hidden files, symlinks, permission-denied entries where the
+  platform allows, extensionless files, empty dirs).
+- R38. Golden-file tests for JSON output: fixture tree in, committed golden JSON
+  compared byte-for-byte (after normalizing the absolute root path and version).
+  Golden files live in `internal/test/testdata/`.
+- R39. Determinism test: two runs over the same fixture tree produce identical
+  output despite the parallel worker pool.
+- R40. `go vet ./...` clean, `gofmt` clean, `go test ./... -race` passes.
+
+## 11. Non-goals for v1
+
+- No result caching (measure first; the subprocess elimination and parallel scan
+  are expected to make it unnecessary).
+- No interactive/TUI mode.
+- No symlink following.
+- No runtime config files (XDG etc.) — embedded-only.
+- Never bump to 1.0.0 (stays 0.x until explicitly authorized).
