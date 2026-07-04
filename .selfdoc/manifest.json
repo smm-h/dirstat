@@ -3,7 +3,7 @@
   "name": "dirstat",
   "slug": "dirstat",
   "version": "0.1.0",
-  "description": "",
+  "description": "dirstat summarizes the files in a directory tree, grouped by format, with aggregate statistics (counts, sizes, lines of code) rendered as a colored terminal table or as JSON.",
   "language": "go",
   "base_url": "https://github.com/smm-h/dirstat",
   "pages": [
@@ -29,5 +29,5 @@
     }
   ],
   "posts": [],
-  "last_gen": "2026-07-04T17:34:40.274512+00:00"
+  "last_gen": "2026-07-04T18:47:17.453342+00:00"
 }

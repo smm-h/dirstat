@@ -2,27 +2,43 @@
 
 # dirstat
 
-Go CLI that summarizes the files in a directory tree, grouped by format, with counts, sizes, and LOC — as colored terminal tables or stable JSON.
+dirstat summarizes the files in a directory tree, grouped by format, with aggregate statistics (counts, sizes, lines of code) rendered as a colored terminal table or as JSON.
 
 The authoritative specification is `docs/spec.md` (numbered requirements R1–R40).
 
 ## Project structure
 
-```
-main.go          -- app setup, registers the scan command via strictcli
-scan.go          -- scan command registration, flag validation, orchestration
-exitcodes.go     -- exit codes: 0 success, 1 general, 2 usage
-version.go       -- version from ldflags or debug.ReadBuildInfo
+Root files:
 
-internal/
-  classify/      -- extension normalization, MIME sniffing, text/binary rules
-  config/        -- go:embed data: text extensions, text mimetypes, color themes
-  jsonout/       -- JSON output (stable consumer schema, ordered fields)
-  render/        -- terminal renderer: summary, tables, legend, palette, humanize
-  scan/          -- walker, gitignore matching, worker pool, aggregation, sorting
-  test/          -- integration tests (build binary once, run as subprocess)
-  testutil/      -- fixture tree helpers
-```
+- `main.go` — app setup, registers the scan command via strictcli
+- `scan.go` — scan command registration, flag validation, orchestration
+- `exitcodes.go` — exit codes: 0 success, 1 general, 2 usage
+- `version.go` — version from ldflags or debug.ReadBuildInfo
+
+Internal packages (each paragraph is the package's doc comment, extracted from source):
+
+Package classify determines a file's group name (format) and its
+text/binary classification, according to the selected grouping method.
+
+Package config provides the embedded text-classification lists and color
+themes. Everything is compiled into the binary via go:embed: there are no
+runtime config files and no lookup in cwd, HOME, or XDG directories.
+Changing the lists means a rebuild.
+
+Package jsonout emits the machine-readable JSON output. The schema is a
+consumer contract (R34): field names are stable, values are raw integers,
+no ANSI codes, and evolution is additive-only.
+
+Package render produces the colored terminal output: summary section,
+format tables, legend, and the extensionless-file list.
+
+Package scan walks a directory tree, classifies files via a worker pool,
+and aggregates per-format statistics.
+
+Package test contains integration tests that build the real dirstat
+binary once and run it as a subprocess against fixture trees.
+
+Package testutil provides shared helpers for building fixture trees.
 
 ## Build and test
 
