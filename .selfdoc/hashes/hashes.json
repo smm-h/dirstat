@@ -5,7 +5,8 @@
   },
   "cli-scan.md": {
     "content": "b00c988a0b8c631b4c718e8579cfa7d4b811ac22b911838c5e8e375fe4c0e21f",
-    "description": "bad3138987bd328591ac5f919211e2904e207b7b60bf2fdcedfe8b5083f213c0"
+    "description": "bad3138987bd328591ac5f919211e2904e207b7b60bf2fdcedfe8b5083f213c0",
+    "schema_hash": "30296e317d3cdff895ff0f0ba3ea176a0b5c4b5e9d53c7740b0e52e58e4d44b9"
   },
   "gen-index.md": {
     "content": "77b26abe69da3a05549e49ce64a424607918ca7cfb8913353870f1d7ae523870",
