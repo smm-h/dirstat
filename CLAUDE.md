@@ -4,7 +4,7 @@
 
 dirstat summarizes the files in a directory tree, grouped by format, with aggregate statistics (counts, sizes, lines of code) rendered as a colored terminal table or as JSON.
 
-The authoritative specification is `docs/spec.md` (numbered requirements R1–R40).
+The authoritative specification is `docs/spec.md` (numbered requirements R1–R47).
 
 ## Project structure
 
@@ -41,6 +41,6 @@ go test ./internal/test -run TestGolden -args -update   # regenerate golden JSON
 - **JSON schema is a consumer contract:** field names are stable, evolution is additive-only. Never remove or rename fields.
 - **Rendering-only flags never affect JSON** (`--show`, `--combined`, `--singletons`, `--legend`, `--colors`, `--human`, `--style`, `--top`).
 - **Determinism:** worker-pool results are stored by index; groups are sorted with a full tie-break. Two runs must produce identical output.
-- **Embedded-only configuration:** the text lists and themes are `go:embed` data under `internal/config/data/`; changing them means a rebuild. No runtime config files.
+- **Embedded classification data:** the text lists and themes are `go:embed` data under `internal/config/data/`; changing them means a rebuild. The only runtime file input is the explicit `--config` TOML scan-config (spec §11): never auto-discovered, scan-semantic keys only, file/CLI overlap is a hard error.
 - **`.strictcli/schema.json`** is committed; regenerate with `./dirstat --dump-schema` after changing the CLI surface.
 - **Releases:** rlsbl-managed (`.rlsbl/`), JSONL changelog required for every commit.
