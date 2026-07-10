@@ -3,6 +3,7 @@ package test
 import (
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -116,9 +117,21 @@ func TestConfigFileErrors(t *testing.T) {
 		}
 	}
 
+	// Truncated mid-array at EOF: the parse error must carry a real,
+	// non-zero line/column position (R41). go-toml-edit < 0.2.2 reported
+	// "line 0, column 0" for unexpected-EOF errors.
+	cfgPath := writeConfigFile(t, t.TempDir(), "exclude = [\"a\", \"b\"")
+	_, stderr, code := runDirstat(t, "scan", root, "--config", cfgPath)
+	if code != 2 {
+		t.Errorf("truncated at EOF: exit = %d, want 2 (stderr: %s)", code, stderr)
+	}
+	if !regexp.MustCompile(`line [1-9]`).MatchString(stderr) {
+		t.Errorf("truncated at EOF: stderr %q must report a non-zero line position", stderr)
+	}
+
 	// Missing file: hard error reporting the path (R41).
 	missing := filepath.Join(t.TempDir(), "nope.toml")
-	_, stderr, code := runDirstat(t, "scan", root, "--config", missing)
+	_, stderr, code = runDirstat(t, "scan", root, "--config", missing)
 	if code != 2 || !strings.Contains(stderr, missing) {
 		t.Errorf("missing file: exit %d, stderr %q", code, stderr)
 	}
