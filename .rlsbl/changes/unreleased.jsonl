@@ -1,0 +1,1 @@
+{"id":"18c0fe7445dede8afe914e44cb544464afe7f8eb0f0e4fc2","commits":["8be30d46d5f0ede0560b95d470b5ae6ea11f1d21"],"user_facing":true,"description":"Config files truncated mid-value (e.g. an unclosed array at end of file) now report an accurate line/column error position instead of `line 0, column 0`.","type":"fix"}
