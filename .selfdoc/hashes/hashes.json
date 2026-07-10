@@ -1,12 +1,13 @@
 {
   "_hash_version": 2,
   "cli-index.md": {
-    "content": "8b3f2c4a101bcdcea38dcb524090718de4c60e4d1cb4a58f39bc01f1ef31e41a",
+    "content": "c6e12a6788885beb61d4e93b40d2844327c5fc448d696b2fd92ed8c569fd31d4",
     "description": "4abeefd64f1507527847b2a0f0d3ec5090c60594d339d5db19c4d4a63e141785"
   },
   "cli-scan.md": {
     "content": "b00c988a0b8c631b4c718e8579cfa7d4b811ac22b911838c5e8e375fe4c0e21f",
-    "description": "bad3138987bd328591ac5f919211e2904e207b7b60bf2fdcedfe8b5083f213c0"
+    "description": "bad3138987bd328591ac5f919211e2904e207b7b60bf2fdcedfe8b5083f213c0",
+    "schema_hash": "30296e317d3cdff895ff0f0ba3ea176a0b5c4b5e9d53c7740b0e52e58e4d44b9"
   },
   "gen-index.md": {
     "content": "77b26abe69da3a05549e49ce64a424607918ca7cfb8913353870f1d7ae523870",
