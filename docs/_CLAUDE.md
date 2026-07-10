@@ -16,21 +16,9 @@ Root files:
 - `exitcodes.go` — exit codes: 0 success, 1 general, 2 usage
 - `version.go` — version from ldflags or debug.ReadBuildInfo
 
-Internal packages (each paragraph is the package's doc comment, extracted from source):
+Internal packages (one bullet per package, from the package doc comments in source):
 
-:-: prose-desc path="internal/classify"
-
-:-: prose-desc path="internal/config"
-
-:-: prose-desc path="internal/jsonout"
-
-:-: prose-desc path="internal/render"
-
-:-: prose-desc path="internal/scan"
-
-:-: prose-desc path="internal/test"
-
-:-: prose-desc path="internal/testutil"
+:-: list-modules path="internal"
 
 ## Build and test
 
