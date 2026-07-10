@@ -1,0 +1,5 @@
+{"id":"18c0fe7445dede8afe914e44cb544464afe7f8eb0f0e4fc2","commits":["8be30d46d5f0ede0560b95d470b5ae6ea11f1d21"],"user_facing":true,"description":"Config files truncated mid-value (e.g. an unclosed array at end of file) now report an accurate line/column error position instead of `line 0, column 0`.","type":"fix"}
+{"id":"18c0fe8e774796d7024f68ac6efe4359985b4744e4ddd0ae","commits":["211fadf9f231ae8c6e6c37097e70e5f6ad724310"],"user_facing":true,"description":"Passing `--config` before the command (`dirstat --config x scan`) now reports `--config is not available: this app does not use config files` instead of `unknown command '--config'`. The `scan --config` flag is unaffected.","type":"fix"}
+{"id":"18c0fe993441c7f031ac32f6957a45f3b33a78dd3704101a","commits":["73d9986190cd749355c875397ef29137ae8f6a31"],"user_facing":false}
+{"id":"18c0feaed4e838ce6bbe4fa5a3074355870694c38a97ea4c","commits":["1601194ccb76d9bf4d7893afa6ca8516ee4aba45"],"user_facing":false}
+{"id":"18c0feb3a0aa2bec32216f96afcc4470864f8db84b7738b4","commits":["6ec60438404ac02ae032fec411839aa851c8806b"],"user_facing":false}
