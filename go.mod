@@ -8,7 +8,7 @@ require (
 	github.com/go-git/go-git/v5 v5.19.1
 	github.com/mattn/go-runewidth v0.0.24
 	github.com/smm-h/go-toml-edit v0.2.2
-	github.com/smm-h/strictcli/go v0.19.0
+	github.com/smm-h/strictcli/go v0.20.0
 	golang.org/x/term v0.44.0
 )
 
