@@ -1,9 +1,17 @@
 # Version bump type: patch, minor, major, hotfix, or prerelease
-bump = ""
+bump = "patch"
 # Short description of this release (required)
-description = ""
+description = "Accurate error positions for config files truncated mid-value, via dependency updates."
 # Optional context explaining why these changes were made
-context = ""
+context = """
+go-toml-edit v0.2.2 fixed ParseError positions for unexpected-EOF errors
+(previously reported as line 0, column 0), so dirstat's --config error
+messages are now accurate for every malformed-file shape. strictcli was
+bumped to v0.20.0 per the always-latest policy for internal dependencies;
+dirstat's CLI surface is unchanged (schema byte-identical), only the error
+for a pre-command --config token changed wording (strictcli's new reserved
+flag handling).
+"""
 # Pre-release identifier: alpha, beta, rc, or stable
 # preid = ""
 # Set to true to generate a blog post for this release
