@@ -15,30 +15,16 @@ Root files:
 - `exitcodes.go` — exit codes: 0 success, 1 general, 2 usage
 - `version.go` — version from ldflags or debug.ReadBuildInfo
 
-Internal packages (each paragraph is the package's doc comment, extracted from source):
+Internal packages (one bullet per package, from the package doc comments in source):
 
-Package classify determines a file's group name (format) and its
-text/binary classification, according to the selected grouping method.
-
-Package config provides the embedded text-classification lists and color
-themes. Everything is compiled into the binary via go:embed: there are no
-runtime config files and no lookup in cwd, HOME, or XDG directories.
-Changing the lists means a rebuild.
-
-Package jsonout emits the machine-readable JSON output. The schema is a
-consumer contract (R34): field names are stable, values are raw integers,
-no ANSI codes, and evolution is additive-only.
-
-Package render produces the colored terminal output: summary section,
-format tables, legend, and the extensionless-file list.
-
-Package scan walks a directory tree, classifies files via a worker pool,
-and aggregates per-format statistics.
-
-Package test contains integration tests that build the real dirstat
-binary once and run it as a subprocess against fixture trees.
-
-Package testutil provides shared helpers for building fixture trees.
+- **internal/classify**: Package classify determines a file's group name (format) and its.
+- **internal/config**: Package config provides the embedded text-classification lists and color.
+- **internal/jsonout**: Package jsonout emits the machine-readable JSON output.
+- **internal/render**: Package render produces the colored terminal output: summary section,.
+- **internal/scan**: Package scan walks a directory tree, classifies files via a worker pool,.
+- **internal/scanconfig**: Package scanconfig loads and validates the optional TOML scan-config file.
+- **internal/test**: Package test contains integration tests that build the real dirstat.
+- **internal/testutil**: Package testutil provides shared helpers for building fixture trees.
 
 ## Build and test
 
