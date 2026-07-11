@@ -17,13 +17,13 @@ Root files:
 
 Internal packages (one bullet per package, from the package doc comments in source):
 
-- **internal/classify**: Package classify determines a file's group name (format) and its.
-- **internal/config**: Package config provides the embedded text-classification lists and color.
+- **internal/classify**: Package classify determines a file's group name (format) and its text/binary classification, according to the selected grouping method.
+- **internal/config**: Package config provides the embedded text-classification lists and color themes.
 - **internal/jsonout**: Package jsonout emits the machine-readable JSON output.
-- **internal/render**: Package render produces the colored terminal output: summary section,.
-- **internal/scan**: Package scan walks a directory tree, classifies files via a worker pool,.
-- **internal/scanconfig**: Package scanconfig loads and validates the optional TOML scan-config file.
-- **internal/test**: Package test contains integration tests that build the real dirstat.
+- **internal/render**: Package render produces the colored terminal output: summary section, format tables, legend, and the extensionless-file list.
+- **internal/scan**: Package scan walks a directory tree, classifies files via a worker pool, and aggregates per-format statistics.
+- **internal/scanconfig**: Package scanconfig loads and validates the optional TOML scan-config file selected with --config (spec §11, R41–R44).
+- **internal/test**: Package test contains integration tests that build the real dirstat binary once and run it as a subprocess against fixture trees.
 - **internal/testutil**: Package testutil provides shared helpers for building fixture trees.
 
 ## Build and test

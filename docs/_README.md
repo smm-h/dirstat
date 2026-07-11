@@ -54,7 +54,7 @@ Files by Format
 
 ## Commands
 
-:-: table-commands path="."
+:-: table-commands
 
 Every flag is documented in `dirstat scan --help` and in the generated [docs/cli-scan.md](docs/cli-scan.md).
 
