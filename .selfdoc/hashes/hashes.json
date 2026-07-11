@@ -1,17 +1,20 @@
 {
-  "_hash_version": 2,
+  "_hash_version": 3,
   "cli-index.md": {
     "content": "c6e12a6788885beb61d4e93b40d2844327c5fc448d696b2fd92ed8c569fd31d4",
-    "description": "4abeefd64f1507527847b2a0f0d3ec5090c60594d339d5db19c4d4a63e141785"
+    "description": "4abeefd64f1507527847b2a0f0d3ec5090c60594d339d5db19c4d4a63e141785",
+    "seed_hash": "4abeefd64f1507527847b2a0f0d3ec5090c60594d339d5db19c4d4a63e141785"
   },
   "cli-scan.md": {
     "content": "b00c988a0b8c631b4c718e8579cfa7d4b811ac22b911838c5e8e375fe4c0e21f",
     "description": "bad3138987bd328591ac5f919211e2904e207b7b60bf2fdcedfe8b5083f213c0",
-    "schema_hash": "30296e317d3cdff895ff0f0ba3ea176a0b5c4b5e9d53c7740b0e52e58e4d44b9"
+    "schema_hash": "30296e317d3cdff895ff0f0ba3ea176a0b5c4b5e9d53c7740b0e52e58e4d44b9",
+    "seed_hash": "bad3138987bd328591ac5f919211e2904e207b7b60bf2fdcedfe8b5083f213c0"
   },
   "gen-index.md": {
     "content": "77b26abe69da3a05549e49ce64a424607918ca7cfb8913353870f1d7ae523870",
-    "description": "bb3cd9d34f014c0674a9285c25ee14b5b4abc5cf941f0d83594c301405e8f3b6"
+    "description": "69b33c4c200853afacbde3b4578f326f00d27767a14f974e03e2ee916f28855f",
+    "seed_hash": "69b33c4c200853afacbde3b4578f326f00d27767a14f974e03e2ee916f28855f"
   },
   "spec.md": {
     "content": "71de54d360789f4cc38632b296a4859f62caccfea6c412bf41a3082a69886457",
