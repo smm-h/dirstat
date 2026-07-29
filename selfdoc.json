@@ -37,10 +37,5 @@
   "directives": {
     "table-default-excludes": "docs/_directives/default_excludes.py",
     "table-text-extensions": "docs/_directives/text_extensions.py"
-  },
-  "gen": {
-    "exclude": [
-      "*"
-    ]
   }
 }
