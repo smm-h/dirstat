@@ -10,13 +10,7 @@ The embedded data lives under `internal/config/data/` and is loaded by the `inte
 
 ## Text vs. binary classification
 
-Every file dirstat encounters is classified as either **text** or **binary**. This classification determines:
-
-- Whether lines of code (LOC) are counted for the file (binary files have no LOC stats)
-- How the file's row is colored in table output (text and binary rows use different theme colors)
-- Whether the file appears in `--type text` or `--type binary` filtered output
-
-The classification is strict: every file is one or the other, never "unknown." The mechanism depends on the grouping method:
+Every file dirstat encounters is classified as either **text** or **binary**. This classification determines whether lines of code (LOC) are counted for the file (binary files have no LOC stats), how the file's row is colored in table output (text and binary rows use different theme colors), and whether the file appears in `--type text` or `--type binary` filtered output. The classification is strict: every file is one or the other, never "unknown." The mechanism depends on the grouping method:
 
 | Method | Files with extension | Files without extension |
 | --- | --- | --- |
@@ -26,19 +20,13 @@ The classification is strict: every file is one or the other, never "unknown." T
 
 ## Text extension list
 
-**File:** `internal/config/data/text_extensions.txt` (embedded via `go:embed`)
-
-Files with a recognized extension are classified as text if their normalized extension (last-dot suffix, lowercased, dot stripped) appears in this list. Files whose extension is not in the list are classified as binary. This lookup is used by the `ext` and `hybrid` grouping methods.
-
-The list contains approximately 190 extensions covering programming languages, shell scripts, web technologies, data formats, documentation markup, and build system files.
+The text extension list is embedded from `internal/config/data/text_extensions.txt` via `go:embed` and contains approximately 190 extensions covering programming languages, shell scripts, web technologies, data formats, documentation markup, and build system files. Files with a recognized extension are classified as text if their normalized extension (last-dot suffix, lowercased, dot stripped) appears in this list. Files whose extension is not in the list are classified as binary. This lookup is used by the `ext` and `hybrid` grouping methods.
 
 :-: table-text-extensions
 
 ## Text MIME type list
 
-**File:** `internal/config/data/text_mimetypes.txt` (embedded via `go:embed`)
-
-When content sniffing is performed (always in `type` mode; for extensionless files in `hybrid` mode), dirstat uses the `github.com/gabriel-vasile/mimetype` library to detect the file's MIME type. The file is classified as text if:
+The text MIME type list is embedded from `internal/config/data/text_mimetypes.txt` via `go:embed` and enumerates non-`text/` MIME types that should be treated as text for classification purposes. When content sniffing is performed (always in `type` mode; for extensionless files in `hybrid` mode), dirstat uses the `github.com/gabriel-vasile/mimetype` library to detect the file's MIME type. The file is classified as text if:
 
 1. The detected MIME type starts with `text/` (e.g., `text/plain`, `text/html`), **or**
 2. The detected MIME type is in the text MIME type list
@@ -104,11 +92,11 @@ When `--exclude` is not explicitly passed (and no config file sets `exclude`), d
 
 ## Overriding exclusions
 
-The default exclude list is replaced entirely when you provide your own. There is no additive merging -- any explicit exclusion list completely supersedes the built-in defaults.
+The default exclude list is replaced entirely when you provide your own exclusion list, whether via the `--exclude` command-line flag or the `exclude` key in a TOML config file. There is no additive merging -- any explicit exclusion list completely supersedes all built-in defaults, so you must re-specify any default entries you still want excluded.
 
 ### Via the `--exclude` flag
 
-Pass `--exclude` one or more times to set the exclusion list:
+Pass `--exclude` one or more times on the command line to set the exclusion list for a single invocation. Each `--exclude` value is an exact base-name match against directories and files encountered during traversal. When any `--exclude` flag is present, the entire built-in default list is replaced by the values you specify, so only those names are skipped.
 
 ```
 dirstat scan --exclude node_modules --exclude .git
@@ -120,7 +108,7 @@ To scan with no exclusions at all, the config file approach is required (see bel
 
 ### Via a config file
 
-Set the `exclude` key in a TOML config file passed with `--config`:
+Set the `exclude` key in a TOML config file passed with `--config` to control exclusions persistently across invocations. The config file uses a string array where each element is an exact base-name to skip during traversal. Setting `exclude` to an empty array scans everything with no exclusions at all.
 
 ```toml
 # scan.toml
