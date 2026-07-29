@@ -30,7 +30,10 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   `Copyright (c) 2026 smm-h`.
 - R6. Dependencies: strictcli, `github.com/gabriel-vasile/mimetype` (content
   sniffing), go-git's `plumbing/format/gitignore` package (ignore matching),
-  `golang.org/x/term` (terminal size). No CGO (`CGO_ENABLED=0` must work).
+  `golang.org/x/term` (terminal size), `github.com/mattn/go-runewidth`
+  (display-cell width for table column measurement, R28).
+  `github.com/smm-h/go-toml-edit` was added with §11 (scan config).
+  No CGO (`CGO_ENABLED=0` must work).
 
 ## 2. CLI surface
 
@@ -234,8 +237,11 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
 
 ## 11. Scan config file
 
-Added after 0.1.0. A TOML file supplying scan defaults, used only when explicitly
-requested — dirstat never reads config from XDG, HOME, cwd, or the scanned tree.
+Added after 0.1.0. A TOML file supplying scan defaults, loaded and fully
+validated before scanning begins. The file is used only when explicitly requested
+via `--config <path>` — dirstat never auto-discovers config from XDG, HOME, the
+current directory, or the scanned tree. Only scan-semantic keys are allowed;
+rendering and output options are rejected with a hard error naming the key.
 
 - R41. `--config <path>`: when set, the file MUST exist and parse as TOML; a
   missing, unreadable, or malformed file is a hard error (exit 2) reporting the
