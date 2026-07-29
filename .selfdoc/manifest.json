@@ -18,8 +18,63 @@
       "type": "doc"
     },
     {
+      "path": "dirstat.md",
+      "title": "dirstat",
+      "type": "doc"
+    },
+    {
+      "path": "embedded-data.md",
+      "title": "Embedded Data",
+      "type": "doc"
+    },
+    {
       "path": "gen-index.md",
       "title": "API Reference",
+      "type": "doc"
+    },
+    {
+      "path": "index.md",
+      "title": "Documentation",
+      "type": "doc"
+    },
+    {
+      "path": "internal-classify.md",
+      "title": "internal/classify",
+      "type": "doc"
+    },
+    {
+      "path": "internal-config.md",
+      "title": "internal/config",
+      "type": "doc"
+    },
+    {
+      "path": "internal-jsonout.md",
+      "title": "internal/jsonout",
+      "type": "doc"
+    },
+    {
+      "path": "internal-render.md",
+      "title": "internal/render",
+      "type": "doc"
+    },
+    {
+      "path": "internal-scan.md",
+      "title": "internal/scan",
+      "type": "doc"
+    },
+    {
+      "path": "internal-scanconfig.md",
+      "title": "internal/scanconfig",
+      "type": "doc"
+    },
+    {
+      "path": "internal-test.md",
+      "title": "internal/test",
+      "type": "doc"
+    },
+    {
+      "path": "internal-testutil.md",
+      "title": "internal/testutil",
       "type": "doc"
     },
     {
@@ -29,5 +84,5 @@
     }
   ],
   "posts": [],
-  "last_gen": "2026-07-11T14:29:29.819921+00:00"
+  "last_gen": "2026-07-29T17:14:38.076542+00:00"
 }
