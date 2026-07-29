@@ -1,3 +1,5 @@
+// Package main is the dirstat CLI entry point. It registers the scan command
+// via strictcli and dispatches to the scan handler.
 package main
 
 import (
