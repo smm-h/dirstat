@@ -2,6 +2,7 @@ package test
 
 import (
 	"flag"
+	"github.com/smm-h/stricttest/go/hygiene"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -77,10 +78,12 @@ func compareGolden(t *testing.T, goldenName, got string) {
 }
 
 func TestGoldenJSONFull(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	checkGolden(t, "full.json", "--output", "json", "--list-no-ext")
 }
 
 func TestGoldenJSONConfig(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	// Exercises the additive "config" JSON field (R46). The config file
 	// lives inside the fixture root so its path normalizes to ROOT/... and
 	// its own toml group is a deterministic part of the golden output.
@@ -98,6 +101,7 @@ func TestGoldenJSONConfig(t *testing.T) {
 }
 
 func TestGoldenJSONSubset(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	checkGolden(t, "subset.json",
 		"--output", "json",
 		"--stats", "count", "--stats", "total-size", "--stats", "total-loc",

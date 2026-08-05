@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"github.com/smm-h/stricttest/go/hygiene"
 	"strings"
 	"testing"
 
@@ -11,6 +12,7 @@ import (
 // TestDeterminism verifies that repeated runs over the same tree produce
 // byte-identical output despite the parallel worker pool (R39).
 func TestDeterminism(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	tree := make(map[string]string)
 	for i := range 120 {

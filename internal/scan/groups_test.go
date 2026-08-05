@@ -1,6 +1,7 @@
 package scan
 
 import (
+	"github.com/smm-h/stricttest/go/hygiene"
 	"reflect"
 	"testing"
 )
@@ -30,6 +31,7 @@ func formats(groups []Group) []string {
 }
 
 func TestSortGroups(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	base := []Group{
 		mkGroup("go", true, 5, 500, 100),
 		mkGroup("png", false, 5, 900, 0),
@@ -60,6 +62,7 @@ func TestSortGroups(t *testing.T) {
 }
 
 func TestCollapseSingletons(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	groups := []Group{
 		mkGroup("go", true, 3, 300, 90),
 		mkGroup("md", true, 1, 10, 4),
@@ -100,6 +103,7 @@ func TestCollapseSingletons(t *testing.T) {
 }
 
 func TestCollapseSingletonsNoSingles(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	groups := []Group{mkGroup("go", true, 3, 300, 90)}
 	out := CollapseSingletons(groups)
 	if !reflect.DeepEqual(out, groups) {
@@ -108,6 +112,7 @@ func TestCollapseSingletonsNoSingles(t *testing.T) {
 }
 
 func TestCollapseSingletonsAllBinary(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	groups := []Group{
 		mkGroup("png", false, 1, 100, 0),
 		mkGroup("jpg", false, 1, 200, 0),
@@ -122,6 +127,7 @@ func TestCollapseSingletonsAllBinary(t *testing.T) {
 }
 
 func TestRoundDiv(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	tests := []struct {
 		total, count, want int64
 	}{

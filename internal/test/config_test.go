@@ -1,6 +1,7 @@
 package test
 
 import (
+	"github.com/smm-h/stricttest/go/hygiene"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -21,6 +22,7 @@ func writeConfigFile(t *testing.T, dir, content string) string {
 }
 
 func TestConfigHappyPath(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		"a.go":        "package a\n",
@@ -50,6 +52,7 @@ func TestConfigHappyPath(t *testing.T) {
 }
 
 func TestConfigAbsentFromJSONWithoutFlag(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{"a.go": "package a\n"})
 	parsed := scanJSON(t, "scan", root, "--output", "json")
@@ -59,6 +62,7 @@ func TestConfigAbsentFromJSONWithoutFlag(t *testing.T) {
 }
 
 func TestConfigSummaryLine(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{"a.go": "package a\n"})
 	cfgPath := writeConfigFile(t, t.TempDir(), "method = \"ext\"\n")
@@ -83,6 +87,7 @@ func TestConfigSummaryLine(t *testing.T) {
 }
 
 func TestConfigFileErrors(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{"a.go": "package a\n"})
 
@@ -138,6 +143,7 @@ func TestConfigFileErrors(t *testing.T) {
 }
 
 func TestConfigCLIConflict(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{"a.go": "package a\n"})
 
@@ -173,6 +179,7 @@ func TestConfigCLIConflict(t *testing.T) {
 }
 
 func TestConfigEmptyExcludeScansEverything(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		".git/config":       "[core]\n",

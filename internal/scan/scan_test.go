@@ -1,6 +1,7 @@
 package scan
 
 import (
+	"github.com/smm-h/stricttest/go/hygiene"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -48,6 +49,7 @@ func groupByName(t *testing.T, res *Result, name string) Group {
 }
 
 func TestScanBasicStats(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	write(t, root, "a.go", "package a\n\nfunc A() {}\n") // 3 LOC
 	write(t, root, "sub/b.go", "package b")              // 1 LOC (no trailing newline)
@@ -98,6 +100,7 @@ func TestScanBasicStats(t *testing.T) {
 }
 
 func TestScanDepthLimit(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	write(t, root, "top.txt", "x\n")
 	write(t, root, "d1/mid.txt", "x\n")
@@ -129,6 +132,7 @@ func TestScanDepthLimit(t *testing.T) {
 }
 
 func TestScanExcludeAndHidden(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	write(t, root, "keep.txt", "x\n")
 	write(t, root, "skipme/a.txt", "x\n")
@@ -152,6 +156,7 @@ func TestScanExcludeAndHidden(t *testing.T) {
 }
 
 func TestScanSymlinksCountedNotFollowed(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	write(t, root, "real.txt", "x\n")
 	write(t, root, "target/inner.txt", "x\n")
@@ -181,6 +186,7 @@ func TestScanSymlinksCountedNotFollowed(t *testing.T) {
 }
 
 func TestScanGitignore(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	t.Setenv("HOME", t.TempDir()) // isolate from the user's global core.excludesFile
 	root := t.TempDir()
 	if err := os.MkdirAll(filepath.Join(root, ".git"), 0o755); err != nil {
@@ -231,6 +237,7 @@ func TestScanGitignore(t *testing.T) {
 }
 
 func TestScanNoWorktreeBehavesAsNoPatterns(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	t.Setenv("HOME", t.TempDir()) // isolate from the user's global core.excludesFile
 	root := t.TempDir()
 	write(t, root, ".gitignore", "*.log\n")
@@ -249,6 +256,7 @@ func TestScanNoWorktreeBehavesAsNoPatterns(t *testing.T) {
 }
 
 func TestScanTypeFilterAndNoExt(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	write(t, root, "a.txt", "hello\n")
 	write(t, root, "blob.bin", "\x00")
@@ -285,6 +293,7 @@ func TestScanTypeFilterAndNoExt(t *testing.T) {
 }
 
 func TestScanNoExtFilesSorted(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	// DFS order would yield b/c before b-y; the list must be sorted.
 	write(t, root, "b/c", "x\n")
@@ -304,6 +313,7 @@ func TestScanNoExtFilesSorted(t *testing.T) {
 }
 
 func TestScanRootUnreadable(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	missing := filepath.Join(root, "nope")
 	if _, err := Scan(defaultOpts(missing)); err == nil {
@@ -312,6 +322,7 @@ func TestScanRootUnreadable(t *testing.T) {
 }
 
 func TestCountLOC(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	dir := t.TempDir()
 	tests := []struct {
 		name    string
@@ -343,6 +354,7 @@ func TestCountLOC(t *testing.T) {
 }
 
 func TestScanDeterministicAcrossWorkerCounts(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	for i := range 20 {
 		write(t, root, filepath.Join("d", string(rune('a'+i))+".go"), strings.Repeat("line\n", i+1))

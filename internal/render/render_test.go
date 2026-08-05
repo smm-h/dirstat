@@ -1,6 +1,7 @@
 package render
 
 import (
+	"github.com/smm-h/stricttest/go/hygiene"
 	"strings"
 	"testing"
 	"unicode/utf8"
@@ -50,6 +51,7 @@ func renderToString(res *scan.Result, opts Options) string {
 }
 
 func TestRenderSections(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	out := renderToString(testResult(), testOpts())
 	for _, want := range []string{
 		"Summary", "Directories: 2", "Files: 3", "Unreadable (skipped): 0",
@@ -73,6 +75,7 @@ func TestRenderSections(t *testing.T) {
 }
 
 func TestRenderSummaryConfigLine(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	// With a config file in effect: "Config: <path>" is the first summary
 	// line (R46).
 	opts := testOpts()
@@ -95,6 +98,7 @@ func TestRenderSummaryConfigLine(t *testing.T) {
 }
 
 func TestRenderShowFilter(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	opts := testOpts()
 	opts.Show = "summary"
 	out := renderToString(testResult(), opts)
@@ -110,6 +114,7 @@ func TestRenderShowFilter(t *testing.T) {
 }
 
 func TestRenderSplitMode(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	opts := testOpts()
 	opts.Combined = false
 	out := renderToString(testResult(), opts)
@@ -124,6 +129,7 @@ func TestRenderSplitMode(t *testing.T) {
 }
 
 func TestRenderAsciiStyle(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	opts := testOpts()
 	opts.Style = "ascii"
 	out := renderToString(testResult(), opts)
@@ -136,6 +142,7 @@ func TestRenderAsciiStyle(t *testing.T) {
 }
 
 func TestRenderEmptyResult(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	res := &scan.Result{Root: "/tmp/x", Method: "ext"}
 	out := renderToString(res, testOpts())
 	if !strings.Contains(out, "No files found.") {
@@ -147,6 +154,7 @@ func TestRenderEmptyResult(t *testing.T) {
 }
 
 func TestRenderColors(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	opts := testOpts()
 	opts.Colors = true
 	out := renderToString(testResult(), opts)
@@ -166,6 +174,7 @@ func TestRenderColors(t *testing.T) {
 }
 
 func TestRenderLegendConditions(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	base := testOpts()
 	base.Colors = true
 
@@ -189,6 +198,7 @@ func TestRenderLegendConditions(t *testing.T) {
 }
 
 func TestRenderWidthShrinkAndTruncate(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	res := testResult()
 	res.Groups[0].Format = "a-very-long-format-name-that-overflows-the-table"
 	opts := testOpts()
@@ -248,6 +258,7 @@ func assertAligned(t *testing.T, out string) {
 }
 
 func TestRenderMultibyteAlignment(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	// Cyrillic: 2 bytes per rune, 1 display cell per rune. CJK: 3 bytes per
 	// rune, 2 display cells per rune. Byte-based widths misalign both (R28).
 	res := testResult()
@@ -259,6 +270,7 @@ func TestRenderMultibyteAlignment(t *testing.T) {
 }
 
 func TestRenderMultibyteTruncation(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	// A wide CJK format name forces Format-column truncation. The truncated
 	// cell plus ".." must fit the column, output must stay valid UTF-8 (no
 	// rune split mid-sequence), and the table must stay aligned (R28).
@@ -279,6 +291,7 @@ func TestRenderMultibyteTruncation(t *testing.T) {
 }
 
 func TestRenderTopAndCollapse(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	res := testResult()
 	res.Groups = append(res.Groups, scan.Group{Format: "md", Text: true, Count: 1,
 		TotalSize: 10, MinSize: 10, MaxSize: 10, AvgSize: 10, HasLOC: true,
@@ -303,6 +316,7 @@ func TestRenderTopAndCollapse(t *testing.T) {
 }
 
 func TestRenderNoExtList(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	res := testResult()
 	res.NoExtFiles = []string{"Makefile", "sub/LICENSE"}
 	opts := testOpts()
@@ -323,6 +337,7 @@ func TestRenderNoExtList(t *testing.T) {
 }
 
 func TestFormatError(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	theme := config.LoadTheme("dark") // dark theme error color: 203
 
 	// Colored (stderr TTY + --colors): the error: prefix carries the theme's
@@ -347,6 +362,7 @@ func TestFormatError(t *testing.T) {
 }
 
 func TestDetectThemeName(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	tests := []struct {
 		env  string
 		want string

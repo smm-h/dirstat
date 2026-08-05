@@ -1,6 +1,7 @@
 package test
 
 import (
+	"github.com/smm-h/stricttest/go/hygiene"
 	"strings"
 	"testing"
 
@@ -11,6 +12,7 @@ import (
 // (R45): common VCS, dependency, build, cache, and IDE directories are
 // skipped with no flags at all.
 func TestDefaultExcludes(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		".git/config":       "[core]\n",
@@ -52,6 +54,7 @@ func TestDefaultExcludes(t *testing.T) {
 // TestDefaultExcludesVisibleInHelp verifies the curated list appears in
 // --help (R45).
 func TestDefaultExcludesVisibleInHelp(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	stdout, stderr, _ := runDirstat(t, "scan", "--help")
 	out := stdout + stderr
 	for _, name := range []string{".git", "node_modules", "zig-out", ".vscode"} {

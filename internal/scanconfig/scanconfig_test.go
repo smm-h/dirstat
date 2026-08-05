@@ -1,6 +1,7 @@
 package scanconfig
 
 import (
+	"github.com/smm-h/stricttest/go/hygiene"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -30,6 +31,7 @@ func loadErr(t *testing.T, content string) string {
 }
 
 func TestLoadHappyAllKeys(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	path := writeConfig(t, `
 exclude = [".git", "node_modules"]
 method = "ext"
@@ -68,6 +70,7 @@ sort_order = "asc"
 }
 
 func TestLoadOverlayOnlySetKeys(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	path := writeConfig(t, `method = "ext"`)
 	cfg, err := Load(path)
 	if err != nil {
@@ -90,6 +93,7 @@ func TestLoadOverlayOnlySetKeys(t *testing.T) {
 }
 
 func TestLoadEmptyExclude(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	path := writeConfig(t, `exclude = []`)
 	cfg, err := Load(path)
 	if err != nil {
@@ -107,6 +111,7 @@ func TestLoadEmptyExclude(t *testing.T) {
 }
 
 func TestLoadMissingFile(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	path := filepath.Join(t.TempDir(), "nope.toml")
 	_, err := Load(path)
 	if err == nil {
@@ -118,6 +123,7 @@ func TestLoadMissingFile(t *testing.T) {
 }
 
 func TestLoadMalformedTOML(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	msg := loadErr(t, "exclude = [\nmethod =")
 	if !strings.Contains(msg, "line") || !strings.Contains(msg, "column") {
 		t.Errorf("parse error %q missing line/column position", msg)
@@ -128,6 +134,7 @@ func TestLoadMalformedTOML(t *testing.T) {
 }
 
 func TestLoadUnknownKey(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	msg := loadErr(t, `bogus = 1`)
 	if !strings.Contains(msg, `"bogus"`) {
 		t.Errorf("error %q does not name the unknown key", msg)
@@ -140,6 +147,7 @@ func TestLoadUnknownKey(t *testing.T) {
 }
 
 func TestLoadRenderingKeys(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	// Rendering/output keys get a distinct message: they exist as flags but
 	// are deliberately not allowed in a scan config file (R42).
 	for key, val := range map[string]string{
@@ -163,6 +171,7 @@ func TestLoadRenderingKeys(t *testing.T) {
 }
 
 func TestLoadWhereKey(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	msg := loadErr(t, `where = "/some/dir"`)
 	if !strings.Contains(msg, `"where"`) {
 		t.Errorf("error %q does not name the where key", msg)
@@ -173,6 +182,7 @@ func TestLoadWhereKey(t *testing.T) {
 }
 
 func TestLoadWrongType(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	tests := []struct {
 		content string
 		key     string
@@ -196,6 +206,7 @@ func TestLoadWrongType(t *testing.T) {
 }
 
 func TestLoadInvalidChoice(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	tests := []struct {
 		content string
 		key     string
@@ -216,6 +227,7 @@ func TestLoadInvalidChoice(t *testing.T) {
 }
 
 func TestLoadInvalidStatAndSortNames(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	msg := loadErr(t, `stats = ["count", "bogus"]`)
 	if !strings.Contains(msg, `"bogus"`) || !strings.Contains(msg, `"stats"`) {
 		t.Errorf("error %q should name the invalid stat and the key", msg)
@@ -236,6 +248,7 @@ func TestLoadInvalidStatAndSortNames(t *testing.T) {
 }
 
 func TestLoadDuplicateValues(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	for _, content := range []string{
 		`exclude = [".git", ".git"]`,
 		`stats = ["count", "count"]`,
@@ -249,6 +262,7 @@ func TestLoadDuplicateValues(t *testing.T) {
 }
 
 func TestExplicitKeys(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	tests := []struct {
 		name string
 		argv []string

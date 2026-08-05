@@ -1,8 +1,13 @@
 package config
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/smm-h/stricttest/go/hygiene"
+)
 
 func TestTextExtensions(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	exts := TextExtensions()
 	if len(exts) < 90 {
 		t.Fatalf("expected at least 90 text extensions, got %d", len(exts))
@@ -20,6 +25,7 @@ func TestTextExtensions(t *testing.T) {
 }
 
 func TestTextMimetypes(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	mimes := TextMimetypes()
 	if len(mimes) < 40 {
 		t.Fatalf("expected at least 40 text mimetypes, got %d", len(mimes))
@@ -35,6 +41,7 @@ func TestTextMimetypes(t *testing.T) {
 }
 
 func TestLoadTheme(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	tests := []struct {
 		name   string
 		textFG string
@@ -54,6 +61,7 @@ func TestLoadTheme(t *testing.T) {
 }
 
 func TestLoadThemeUnknownPanics(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	defer func() {
 		if recover() == nil {
 			t.Fatal("expected panic for unknown theme name")

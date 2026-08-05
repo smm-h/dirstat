@@ -3,6 +3,7 @@ package test
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/smm-h/stricttest/go/hygiene"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -119,6 +120,7 @@ func groupFormats(t *testing.T, parsed map[string]interface{}) []string {
 }
 
 func TestScanBasicTree(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		"main.go":        "package main\n",
@@ -145,6 +147,7 @@ func TestScanBasicTree(t *testing.T) {
 }
 
 func TestNestedGitignore(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		".git/":           "",
@@ -182,6 +185,7 @@ func TestNestedGitignore(t *testing.T) {
 }
 
 func TestGitInfoExclude(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		".git/info/exclude": "*.tmp\n",
@@ -195,6 +199,7 @@ func TestGitInfoExclude(t *testing.T) {
 }
 
 func TestHiddenFiles(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		"visible.txt":       "x\n",
@@ -215,6 +220,7 @@ func TestHiddenFiles(t *testing.T) {
 }
 
 func TestSymlinks(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		"real.txt":      "content\n",
@@ -242,6 +248,7 @@ func TestSymlinks(t *testing.T) {
 }
 
 func TestExtensionlessFiles(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		"Makefile":    "all:\n\techo hi\n",
@@ -283,6 +290,7 @@ func TestExtensionlessFiles(t *testing.T) {
 }
 
 func TestEmptyDirsAndEmptyResult(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		"a/":   "",
@@ -310,6 +318,7 @@ func TestEmptyDirsAndEmptyResult(t *testing.T) {
 }
 
 func TestPermissionDenied(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	if runtime.GOOS == "windows" {
 		t.Skip("permission bits are not enforced the same way on windows")
 	}
@@ -343,6 +352,7 @@ func TestPermissionDenied(t *testing.T) {
 }
 
 func TestDepthAndExclude(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		"a.txt":             "x\n",
@@ -360,6 +370,7 @@ func TestDepthAndExclude(t *testing.T) {
 }
 
 func TestTypeFilterAndSort(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		"a.go":  "package a\n",
@@ -381,6 +392,7 @@ func TestTypeFilterAndSort(t *testing.T) {
 }
 
 func TestTopAndSingletonsAreTableOnly(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		"a.go": "package a\n", "b.go": "package b\n",
@@ -409,6 +421,7 @@ func TestTopAndSingletonsAreTableOnly(t *testing.T) {
 }
 
 func TestSplitModeAndStyles(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		"a.go":  "package a\n",
@@ -432,6 +445,7 @@ func TestSplitModeAndStyles(t *testing.T) {
 }
 
 func TestStatsSelectionSkipsLOC(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	if runtime.GOOS == "windows" || os.Getuid() == 0 {
 		t.Skip("needs enforced permission bits")
 	}
@@ -459,6 +473,7 @@ func TestStatsSelectionSkipsLOC(t *testing.T) {
 }
 
 func TestSortByLOCForcesComputation(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{
 		"small.go": "package a\n",
@@ -479,6 +494,7 @@ func TestSortByLOCForcesComputation(t *testing.T) {
 }
 
 func TestErrorPaths(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	tests := []struct {
 		name     string
 		args     []string
@@ -510,6 +526,7 @@ func TestErrorPaths(t *testing.T) {
 }
 
 func TestTopValidation(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{"a.go": "package a\n"})
 
@@ -535,6 +552,7 @@ func TestTopValidation(t *testing.T) {
 }
 
 func TestExecutablesCounted(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	if runtime.GOOS == "windows" {
 		t.Skip("execute bits are not meaningful on windows")
 	}

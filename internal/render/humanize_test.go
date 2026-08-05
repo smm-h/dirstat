@@ -1,8 +1,13 @@
 package render
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/smm-h/stricttest/go/hygiene"
+)
 
 func TestFormatSize(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	tests := []struct {
 		n     int64
 		human bool
@@ -26,6 +31,7 @@ func TestFormatSize(t *testing.T) {
 }
 
 func TestFormatCount(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	tests := []struct {
 		n     int64
 		human bool

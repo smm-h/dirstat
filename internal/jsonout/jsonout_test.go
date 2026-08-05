@@ -2,6 +2,7 @@ package jsonout
 
 import (
 	"encoding/json"
+	"github.com/smm-h/stricttest/go/hygiene"
 	"strings"
 	"testing"
 
@@ -43,6 +44,7 @@ func writeToString(t *testing.T, res *scan.Result, sel Selection, listNoExt bool
 }
 
 func TestWriteConfigField(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	// With a config path: additive "config" field directly after "method" (R46).
 	var sb strings.Builder
 	if err := Write(&sb, "1.2.3", "/etc/dirstat.toml", testResult(), nil, fullSelection(), false); err != nil {
@@ -71,6 +73,7 @@ func TestWriteConfigField(t *testing.T) {
 }
 
 func TestWriteFullSchema(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	res := testResult()
 	out := writeToString(t, res, fullSelection(), true)
 
@@ -122,6 +125,7 @@ func TestWriteFullSchema(t *testing.T) {
 }
 
 func TestWriteFieldOrder(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	out := writeToString(t, testResult(), fullSelection(), false)
 	wantOrder := []string{
 		`"dirstat_version"`, `"root"`, `"method"`, `"summary"`,
@@ -145,6 +149,7 @@ func TestWriteFieldOrder(t *testing.T) {
 }
 
 func TestWriteStatsSelection(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	sel := Selection{"count": true, "total-size": true}
 	out := writeToString(t, testResult(), sel, false)
 	for _, absent := range []string{`"min_size"`, `"avg_size"`, `"total_loc"`, `"avg_loc"`} {
@@ -160,6 +165,7 @@ func TestWriteStatsSelection(t *testing.T) {
 }
 
 func TestWriteNoExtOmittedAndEmpty(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	res := testResult()
 	out := writeToString(t, res, fullSelection(), false)
 	if strings.Contains(out, "no_extension_files") {
@@ -174,6 +180,7 @@ func TestWriteNoExtOmittedAndEmpty(t *testing.T) {
 }
 
 func TestWriteEmptyGroups(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	res := &scan.Result{Root: "/x", Method: "ext"}
 	out := writeToString(t, res, fullSelection(), false)
 	if !strings.Contains(out, `"groups": []`) {

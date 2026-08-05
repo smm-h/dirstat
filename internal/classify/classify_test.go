@@ -1,12 +1,14 @@
 package classify
 
 import (
+	"github.com/smm-h/stricttest/go/hygiene"
 	"os"
 	"path/filepath"
 	"testing"
 )
 
 func TestNormalizeExt(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	tests := []struct {
 		name string
 		want string
@@ -37,6 +39,7 @@ func testClassifier(method string) *Classifier {
 }
 
 func TestMimeIsText(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	c := testClassifier(MethodType)
 	tests := []struct {
 		mime string
@@ -66,6 +69,7 @@ func writeFile(t *testing.T, dir, name string, content []byte) string {
 }
 
 func TestFileByMethod(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	dir := t.TempDir()
 	goFile := writeFile(t, dir, "main.go", []byte("package main\n"))
 	binFile := writeFile(t, dir, "blob.bin", []byte{0, 1, 2, 3})
@@ -109,6 +113,7 @@ func TestFileByMethod(t *testing.T) {
 }
 
 func TestFileSniffErrorIsReported(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	dir := t.TempDir()
 	missing := filepath.Join(dir, "gone")
 	c := testClassifier(MethodType)
@@ -122,6 +127,7 @@ func TestFileSniffErrorIsReported(t *testing.T) {
 }
 
 func TestEmptyFileIsText(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	// Empty files sniff as text/plain, so they classify as text in
 	// type/hybrid modes (the prototype relied on x-empty mimetypes).
 	dir := t.TempDir()
