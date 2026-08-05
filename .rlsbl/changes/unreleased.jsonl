@@ -1,1 +1,2 @@
 {"format_version":1,"id":"18c645cce8b1eeb3d5eb958512014267ac829a2ef7ad675d","commits":["6c4796ad327ac452781307ba61748818da1b2c71"],"user_facing":false}
+{"format_version":1,"id":"18c8de850865ebff0efcd8599e3c4a17977bc95175980e64","commits":["7d4afb151fd34d37752c6d848c6e73ddbee858fd"],"user_facing":true,"description":"**Effect classification.** Every command now declares its strictcli effect (`dirstat scan` is `read_only`), and the framework-provided `--dry-run`, `--quiet` and `--verbose` flags are available on every invocation.","type":"feature"}
