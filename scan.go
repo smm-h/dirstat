@@ -28,6 +28,10 @@ var defaultExcludes = []interface{}{
 
 func registerScanCmd(app *strictcli.App) {
 	app.Command("scan", "Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.", handleScan,
+		// read_only: scan walks the tree, reads file contents to classify and
+		// count them, and writes only to stdout/stderr. It creates, modifies
+		// and deletes nothing.
+		strictcli.WithEffect(strictcli.EffectReadOnly),
 		strictcli.WithFlags(
 			strictcli.StringFlag("method",
 				"grouping method: ext (extension only, no sniffing), type (content-sniff every file), hybrid (sniff extensionless files only)",
@@ -115,23 +119,23 @@ func stringList(kwargs map[string]interface{}, key string) []string {
 	return out
 }
 
-func handleScan(kwargs map[string]interface{}) int {
+func handleScan(ctx *strictcli.Context, kwargs map[string]interface{}) strictcli.Outcome {
 	colorsFlag := kwargs["colors"].(bool)
 
 	where := kwargs["where"].(string)
 	root, err := filepath.Abs(where)
 	if err != nil {
 		errorf(colorsFlag, "resolving path %q: %s", where, err)
-		return ExitUsage
+		return strictcli.Exit(ExitUsage)
 	}
 	info, err := os.Stat(root)
 	if err != nil {
 		errorf(colorsFlag, "directory does not exist: %s", root)
-		return ExitUsage
+		return strictcli.Exit(ExitUsage)
 	}
 	if !info.IsDir() {
 		errorf(colorsFlag, "path is not a directory: %s", root)
-		return ExitUsage
+		return strictcli.Exit(ExitUsage)
 	}
 
 	// Scan config file: loaded and fully validated before any scanning
@@ -143,20 +147,20 @@ func handleScan(kwargs map[string]interface{}) int {
 		cfg, err := scanconfig.Load(configPath)
 		if err != nil {
 			errorf(colorsFlag, "%s", err)
-			return ExitUsage
+			return strictcli.Exit(ExitUsage)
 		}
 		explicit := scanconfig.ExplicitKeys(os.Args)
 		for _, key := range scanconfig.AllowedKeys {
 			if cfg.Has(key) && explicit[key] {
 				errorf(colorsFlag, "key %q is set in the config file and --%s was passed on the command line; use one or the other",
 					key, strings.ReplaceAll(key, "_", "-"))
-				return ExitUsage
+				return strictcli.Exit(ExitUsage)
 			}
 		}
 		cfg.Overlay(kwargs)
 		if configAbs, err = filepath.Abs(configPath); err != nil {
 			errorf(colorsFlag, "resolving config path %q: %s", configPath, err)
-			return ExitUsage
+			return strictcli.Exit(ExitUsage)
 		}
 	}
 
@@ -175,7 +179,7 @@ func handleScan(kwargs map[string]interface{}) int {
 		for _, s := range statsRaw {
 			if !validStats[s] {
 				errorf(colorsFlag, "invalid stat %q; valid: %v", s, scan.StatNames)
-				return ExitUsage
+				return strictcli.Exit(ExitUsage)
 			}
 			selected[s] = true
 		}
@@ -196,7 +200,7 @@ func handleScan(kwargs map[string]interface{}) int {
 	for _, s := range sortBy {
 		if s != "format" && !validStats[s] {
 			errorf(colorsFlag, "invalid sort column %q; valid: format, %v", s, scan.StatNames)
-			return ExitUsage
+			return strictcli.Exit(ExitUsage)
 		}
 	}
 	sortDesc := kwargs["sort_order"].(string) == "desc"
@@ -206,7 +210,7 @@ func handleScan(kwargs map[string]interface{}) int {
 	top := kwargs["top"].(int)
 	if top < -1 {
 		errorf(colorsFlag, "invalid --top %d; must be -1 (all), 0 (all), or a positive count", top)
-		return ExitUsage
+		return strictcli.Exit(ExitUsage)
 	}
 
 	// LOC is expensive: read files only when a LOC stat is shown or sorted
@@ -241,7 +245,7 @@ func handleScan(kwargs map[string]interface{}) int {
 	})
 	if err != nil {
 		errorf(colorsFlag, "%s", err)
-		return ExitGeneral
+		return strictcli.Exit(ExitGeneral)
 	}
 
 	if kwargs["output"].(string) == "json" {
@@ -250,9 +254,9 @@ func handleScan(kwargs map[string]interface{}) int {
 		scan.SortGroups(groups, sortBy, sortDesc)
 		if err := jsonout.Write(os.Stdout, version, configAbs, res, groups, selected, listNoExt); err != nil {
 			errorf(colorsFlag, "writing JSON: %s", err)
-			return ExitGeneral
+			return strictcli.Exit(ExitGeneral)
 		}
-		return ExitSuccess
+		return strictcli.Exit(ExitSuccess)
 	}
 
 	// Colors apply only when requested AND stdout is a TTY; without active
@@ -284,5 +288,5 @@ func handleScan(kwargs map[string]interface{}) int {
 		Theme:      config.LoadTheme(render.DetectThemeName()),
 		Config:     configAbs,
 	})
-	return ExitSuccess
+	return strictcli.Exit(ExitSuccess)
 }

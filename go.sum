@@ -34,8 +34,10 @@ github.com/rogpeppe/go-internal v1.14.1 h1:UQB4HGPB6osV0SQTLymcB4TgvyWu6ZyliaW0t
 github.com/rogpeppe/go-internal v1.14.1/go.mod h1:MaRKkUm5W0goXpeCfT7UZI6fk/L7L7so1lCWt35ZSgc=
 github.com/smm-h/go-toml-edit v0.2.2 h1:z+eR3WuVbZhJiJ1TprX4HwB+UI8/VT7wr5bItwGIwWo=
 github.com/smm-h/go-toml-edit v0.2.2/go.mod h1:ateUuu33c4CaaB3XUQgsyuPEsIkAWRV8nahfZqpNhm4=
-github.com/smm-h/strictcli/go v0.20.0 h1:9eVBG0L+fE6QiwaeHOt66pU1lp52DpKgpDE9NqHk6Do=
-github.com/smm-h/strictcli/go v0.20.0/go.mod h1:CFDJB7rDMon5TFSn5JqCy7I2PYv43j/KQDs1OlE2Ezg=
+github.com/smm-h/strictcli/go v0.29.0 h1:n0+NckMikyL/b3omhv2pSVKQOeGrMI505JkDLblcbVc=
+github.com/smm-h/strictcli/go v0.29.0/go.mod h1:CFDJB7rDMon5TFSn5JqCy7I2PYv43j/KQDs1OlE2Ezg=
+github.com/smm-h/stricttest/go v0.1.1 h1:z3N7RPoeLjrWTrcudxNJh2W5PVYZPJ/WsqX8ssXTkNE=
+github.com/smm-h/stricttest/go v0.1.1/go.mod h1:/rFaWmnLgp6wY9Ne+/kZIMUdOOGTPjjTHDgJjxyaYTs=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
 github.com/toml-lang/toml-test/v2 v2.2.0 h1:q3ELZu7oPnpl9TClC6OOcAccXwj+jwAyFP8WvzBdK1M=
