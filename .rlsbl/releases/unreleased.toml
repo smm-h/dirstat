@@ -2,11 +2,32 @@
 format_version = 1
 # Version bump type: patch, minor, major, infra, or prerelease
 #   prerelease: advance an existing pre-release (0.6.0-beta.0 -> -beta.1)
-bump = ""
+bump = "minor"
 # Short description of this release (required)
-description = ""
+description = "Text/binary classification is correct again: unknown extensions are content-sniffed, empty files count as text, MIME format names stay readable, plus 17 new text extensions and a documentation site"
 # Optional context explaining why these changes were made
-context = ""
+context = """
+Scans of mixed trees were silently wrong. Hybrid mode treated any extension
+missing from the built-in text list as a binary verdict, so GDScript, Godot
+scenes and resources, go.mod/go.sum and text lockfiles reported no lines of
+code at all and were tabulated as binary; a zero-byte file was counted as
+binary for the same structural reason. Both defects are fixed at the
+classifier: a map miss now falls through to a content sniff (the extension
+still names the group, the content decides the class), and a zero-byte file
+is text under every method. The extension list also gained 17 entries so the
+common cases never pay for a sniff -- `lock` is deliberately left out,
+because it is TOML text for some tools and binary for others and must be
+judged per file.
+
+The third fix is presentational but cost the same trust: two distinct
+`application/*` groups both rendered as `applicat..` in a squeezed Format
+column, so the top of a large scan was unreadable without `--output json`.
+MIME names now truncate from the left, keeping the subtype.
+
+This release also carries the previously unreleased documentation work: the
+Embedded Data page, generated tables of text extensions and default excludes,
+a schema-driven CLI reference, and a complete API reference.
+"""
 # Pre-release channel: alpha, beta, rc, or stable (ordered;
 # demotion is an error). With patch/minor/major it ENTERS the
 # channel (0.5.2 + minor + alpha -> 0.6.0-alpha.0); with
