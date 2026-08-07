@@ -13,8 +13,19 @@ order: 91
 
 Summarize files in a directory tree, grouped by format, with aggregate statistics
 
-Version: 0.2.1
+Version: :-: var key="project.version"
 
 ## Commands
 
 - [scan](cli-scan.html) -- Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.
+
+## Framework flags
+
+These flags are owned by the strictcli framework, not by the app. No command may declare a flag with one of these names, and each is recognized anywhere on the command line.
+
+| Flag | Effect |
+| --- | --- |
+| `--dry-run` | Preview mode: no mutation runs. The framework prints a log of every effect the command would have performed. |
+| `--approve-consequential` | Skips the confirmation prompt a consequential command shows before it runs. |
+| `--quiet` | Hides informational output. Warnings, errors, structured data and the dry-run log are never suppressed. |
+| `--verbose` | Shows debug output. `--quiet` wins when both are passed. |

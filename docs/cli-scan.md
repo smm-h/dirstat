@@ -12,19 +12,21 @@ nav_order: 1
 
 Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.
 
+**Effect:** read_only
+
 ## Flags
 
 | Name | Short | Type | Default | Env | Description |
 | --- | --- | --- | --- | --- | --- |
-| `--method` |  | str | hybrid |  | grouping method: ext (extension only, no sniffing), type (content-sniff every file), hybrid (sniff extensionless files only) |
+| `--method` |  | str | hybrid |  | grouping method: ext (extension only, no sniffing), type (content-sniff every file), hybrid (trust known text extensions, content-sniff everything else) |
 | `--depth` |  | int | -1 |  | maximum directory depth below the root; -1 = unlimited; the root is depth 0 |
-| `--exclude` |  | str | ['.git', 'node_modules', '.venv', 'vendor', 'build', 'dist', 'target', 'zig-out', 'zig-pkg', '.next', '.svelte-kit', '__pycache__', '.mypy_cache', '.ruff_cache', '.pytest_cache', '.hypothesis', '.gradle', '.idea', '.wrangler', '.vscode'] |  | exact base name to skip, matching directories and files; repeatable; passing the flag replaces the built-in default list entirely |
+| `--exclude` |  | str | `[".git", "node_modules", ".venv", "vendor", "build", "dist", "target", "zig-out", "zig-pkg", ".next", ".svelte-kit", "__pycache__", ".mypy_cache", ".ruff_cache", ".pytest_cache", ".hypothesis", ".gradle", ".idea", ".wrangler", ".vscode"]` |  | exact base name to skip, matching directories and files; repeatable; passing the flag replaces the built-in default list entirely |
 | `--config` |  | str |  |  | path to a TOML scan-config file (keys: exclude, method, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error |
 | `--ignored` |  | str | exclude |  | gitignored-path handling: include (no matching at all), exclude (drop ignored paths), only (keep only ignored paths); when the target is not inside a git work tree, exclude and only behave as if no patterns exist |
 | `--hidden` |  | str | include |  | dot-prefixed entry handling: include or exclude; the root directory itself is never treated as hidden |
 | `--stats` |  | str |  |  | stat to compute and show (repeatable; default: all): count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc |
 | `--type` |  | str | both |  | filter groups by text/binary classification: text, binary, or both |
-| `--sort-by` |  | str | ['count'] |  | sort column, in precedence order when repeated: format, count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc |
+| `--sort-by` |  | str | `["count"]` |  | sort column, in precedence order when repeated: format, count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc |
 | `--sort-order` |  | str | desc |  | sort direction: asc or desc, applied uniformly to every --sort-by column |
 | `--top` |  | int | -1 |  | keep only the first N groups after sorting (table output only); -1 or 0 = all |
 | `--output` |  | str | table |  | output format: table (colored terminal tables) or json (stable machine-readable schema) |
