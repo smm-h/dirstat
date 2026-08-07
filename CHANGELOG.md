@@ -2,6 +2,48 @@
 
 # Changelog
 
+## 0.3.0
+
+Text/binary classification is correct again: unknown extensions are content-sniffed, empty files count as text, MIME format names stay readable, plus 17 new text extensions and a documentation site
+
+<details>
+<summary>Context</summary>
+
+Scans of mixed trees were silently wrong. Hybrid mode treated any extension
+missing from the built-in text list as a binary verdict, so GDScript, Godot
+scenes and resources, go.mod/go.sum and text lockfiles reported no lines of
+code at all and were tabulated as binary; a zero-byte file was counted as
+binary for the same structural reason. Both defects are fixed at the
+classifier: a map miss now falls through to a content sniff (the extension
+still names the group, the content decides the class), and a zero-byte file
+is text under every method. The extension list also gained 17 entries so the
+common cases never pay for a sniff -- `lock` is deliberately left out,
+because it is TOML text for some tools and binary for others and must be
+judged per file.
+
+The third fix is presentational but cost the same trust: two distinct
+`application/*` groups both rendered as `applicat..` in a squeezed Format
+column, so the top of a large scan was unreadable without `--output json`.
+MIME names now truncate from the left, keeping the subtype.
+
+This release also carries the previously unreleased documentation work: the
+Embedded Data page, generated tables of text extensions and default excludes,
+a schema-driven CLI reference, and a complete API reference.
+
+</details>
+
+### Features
+
+- **Effect classification.** Every command now declares its strictcli effect (`dirstat scan` is `read_only`), and the framework-provided `--dry-run`, `--quiet` and `--verbose` flags are available on every invocation.
+- **17 new text extensions.** Godot's text formats (`gd`, `gdshader`, `tscn`, `tres`, `godot`, `uid`), Go's `mod`/`sum`, the shader languages (`glsl`, `hlsl`, `wgsl`, `frag`, `vert`) and `astro`/`svx`/`prisma`/`odin` are recognized as text without a content sniff.
+- **Documentation site.** A new Embedded Data page explains text/binary classification and lists every built-in text extension and default exclude as generated tables, the CLI reference is built straight from the command schema, and the specification's scan-config section is spelled out in full.
+
+### Fixes
+
+- **Correct text/binary classification.** A file whose extension is missing from the built-in text list is now content-sniffed instead of being assumed binary, and a zero-byte file counts as text. Formats like GDScript, Godot scenes, `go.mod`/`go.sum` and text lockfiles stop reporting zero lines of code and no longer land in the Binary Files table.
+- **Readable MIME format names in tables.** When the Format column is squeezed, MIME-type group names keep their subtype (`..n/x-sharedlib`) instead of collapsing to an indistinguishable `applicat..`, so two different `application/*` groups can be told apart without switching to `--output json`.
+- **API reference.** The generated API Reference index is no longer empty and every package now carries a doc comment, so each internal package has a real reference page.
+
 ## 0.2.1
 
 Accurate error positions for config files truncated mid-value, via dependency updates.
