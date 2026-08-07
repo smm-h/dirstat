@@ -22,7 +22,9 @@ A zero-byte file is text under every method: an empty file has no bytes that cou
 
 ## Text extension list
 
-The text extension list is embedded from `internal/config/data/text_extensions.txt` via `go:embed` and contains approximately 210 extensions covering programming languages, shell scripts, web technologies, data formats, documentation markup, and build system files. Files with a recognized extension are classified as text if their normalized extension (last-dot suffix, lowercased, dot stripped) appears in this list. A miss is not a verdict: in `ext` mode the file is binary, but in `hybrid` mode the file is content-sniffed and the MIME rule decides, so text formats missing from the list still count their lines of code. Deliberately ambiguous extensions -- `.lock`, for instance, which is TOML text for uv and Poetry but binary for other tools -- are left out of the list precisely so that every such file is judged by its own content.
+The text extension list is embedded from `internal/config/data/text_extensions.txt` via `go:embed` and contains approximately 210 extensions covering programming languages, shell scripts, web technologies, data formats, documentation markup, build systems, game engines, and shaders. A file is text if its normalized extension (last-dot suffix, lowercased, dot stripped) appears in the list.
+
+A miss is not a verdict. In `ext` mode the file is binary, but in `hybrid` mode the file is content-sniffed and the MIME rule decides, so text formats outside the list still count their lines of code. Deliberately ambiguous extensions are left out on purpose: `.lock` is TOML text for uv and Poetry but binary for other tools, so every `.lock` file is judged by its own content.
 
 :-: table-text-extensions
 
