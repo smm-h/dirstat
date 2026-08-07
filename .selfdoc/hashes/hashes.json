@@ -1,14 +1,14 @@
 {
   "_hash_version": 3,
   "cli-index.md": {
-    "content": "c6e12a6788885beb61d4e93b40d2844327c5fc448d696b2fd92ed8c569fd31d4",
+    "content": "19ff547513d3706fca7518406234f78edfe1fe63f10fea59eae89f660d5694d5",
     "description": "4abeefd64f1507527847b2a0f0d3ec5090c60594d339d5db19c4d4a63e141785",
     "seed_hash": "4abeefd64f1507527847b2a0f0d3ec5090c60594d339d5db19c4d4a63e141785"
   },
   "cli-scan.md": {
-    "content": "b00c988a0b8c631b4c718e8579cfa7d4b811ac22b911838c5e8e375fe4c0e21f",
+    "content": "f2dcb3bd06e27d4b5f54fa31c5fd97a142fd5a9849061c410c23fc82a9de8335",
     "description": "bad3138987bd328591ac5f919211e2904e207b7b60bf2fdcedfe8b5083f213c0",
-    "schema_hash": "30296e317d3cdff895ff0f0ba3ea176a0b5c4b5e9d53c7740b0e52e58e4d44b9",
+    "schema_hash": "88bf18394dfd85e6714950843fd5056fb2db99b4afa1122a3500b9d3bf57f545",
     "seed_hash": "bad3138987bd328591ac5f919211e2904e207b7b60bf2fdcedfe8b5083f213c0"
   },
   "dirstat.md": {
