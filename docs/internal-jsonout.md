@@ -1,6 +1,6 @@
 ---
 title: internal/jsonout
-description: "The machine-readable JSON writer: a stable, additive-only document carrying the scan summary, the per-format groups, and the optional extensionless file list."
+description: "The machine-readable JSON writer: a stable, additive-only document with the scan summary, the per-format groups, and the extensionless file list."
 generated: true
 nav_group: "API Reference"
 nav_order: 4

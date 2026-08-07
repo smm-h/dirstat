@@ -1,6 +1,6 @@
 ---
 title: internal/scan
-description: "The directory walker and its worker pool: traversal filters, per-file classification and LOC counting, and deterministic aggregation into per-format groups."
+description: "The directory walker and its worker pool: traversal filters, per-file classification and LOC counting, and deterministic per-format aggregation."
 generated: true
 nav_group: "API Reference"
 nav_order: 6

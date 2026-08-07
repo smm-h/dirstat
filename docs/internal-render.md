@@ -1,6 +1,6 @@
 ---
 title: internal/render
-description: "Colored terminal output: the summary block, combined and split format tables, terminal-width adaptation and cell truncation, the legend, and error formatting."
+description: "Colored terminal output: the summary block, combined and split format tables, width adaptation and cell truncation, the legend, and error formatting."
 generated: true
 nav_group: "API Reference"
 nav_order: 5
