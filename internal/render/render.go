@@ -232,6 +232,33 @@ func pad(s string, width int) string {
 	return s + strings.Repeat(" ", gap)
 }
 
+// truncateCell shortens a cell to fit width display cells, rune-safely and
+// with a ".." marker (R28). MIME-type group names (anything containing a
+// "/") are truncated from the left, because their distinguishing part is the
+// subtype: cutting the tail renders every `application/*` group as the same
+// unreadable `applicat..`. Every other name keeps its prefix.
+func truncateCell(s string, width int) string {
+	if runewidth.StringWidth(s) <= width {
+		return s
+	}
+	const marker = ".."
+	if !strings.Contains(s, "/") || width <= len(marker) {
+		return runewidth.Truncate(s, width, marker)
+	}
+	keep := width - len(marker)
+	runes := []rune(s)
+	i, w := len(runes), 0
+	for i > 0 {
+		rw := runewidth.RuneWidth(runes[i-1])
+		if w+rw > keep {
+			break
+		}
+		w += rw
+		i--
+	}
+	return marker + string(runes[i:])
+}
+
 func renderTable(w io.Writer, groups []scan.Group, includeLOC bool, opts Options, p palette, b borderSet) {
 	headers := headersFor(opts.Stats, includeLOC)
 	rows := make([][]string, len(groups))
@@ -293,11 +320,7 @@ func renderTable(w io.Writer, groups []scan.Group, includeLOC bool, opts Options
 		sb.Reset()
 		sb.WriteString(p.border + b.v + p.reset)
 		for i, cell := range row {
-			if runewidth.StringWidth(cell) > widths[i] {
-				// Rune-safe truncation: the truncated cell plus ".." fits
-				// the column's display width (R28).
-				cell = runewidth.Truncate(cell, widths[i], "..")
-			}
+			cell = truncateCell(cell, widths[i])
 			sb.WriteString(fmt.Sprintf(" %s%s%s%s %s%s%s",
 				fg, bg, pad(cell, widths[i]), p.reset, p.border, b.v, p.reset))
 		}

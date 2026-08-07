@@ -225,6 +225,35 @@ func TestRenderWidthShrinkAndTruncate(t *testing.T) {
 	}
 }
 
+func TestRenderMimeTruncationKeepsSuffix(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
+	// Two distinct application/* groups must stay distinguishable when the
+	// Format column is squeezed: MIME names share a long, uninformative
+	// prefix, so they truncate from the left, keeping the subtype (R28).
+	res := testResult()
+	res.Groups[0].Format = "application/x-sharedlib"
+	res.Groups[1].Format = "application/vnd.sqlite3"
+	opts := testOpts()
+	opts.Show = "table"
+	opts.Width = 60
+	opts.Stats = []string{"count", "total-size", "min-size", "max-size"}
+	out := renderToString(res, opts)
+
+	if !strings.Contains(out, "..") {
+		t.Fatalf("expected a truncated format cell:\n%s", out)
+	}
+	if strings.Contains(out, "applicat..") {
+		t.Errorf("MIME format truncated to its uninformative prefix:\n%s", out)
+	}
+	if !strings.Contains(out, "..x-sharedlib") {
+		t.Errorf("expected the x-sharedlib subtype to survive truncation:\n%s", out)
+	}
+	if !strings.Contains(out, "..vnd.sqlite3") {
+		t.Errorf("expected the vnd.sqlite3 subtype to survive truncation:\n%s", out)
+	}
+	assertAligned(t, out)
+}
+
 // tableLines returns every border/row line of the rendered table (lines
 // starting with a box-drawing or ASCII border character).
 func tableLines(t *testing.T, out string) []string {

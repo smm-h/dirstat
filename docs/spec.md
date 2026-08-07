@@ -167,9 +167,13 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   get thousands separators when `--human`.
 - R28. Width adaptation: query terminal width (`x/term`; fallback 80 when not a
   TTY). If the table overflows, shrink only the Format column down to a floor of
-  10, truncating cells with a `..` suffix. Column widths are measured in
+  10, truncating cells with a `..` marker. Column widths are measured in
   terminal display cells (runewidth), not bytes, and truncation never splits a
-  UTF-8 rune. Whenever colors are inactive (non-TTY or `--no-colors`), width is
+  UTF-8 rune. MIME-type group names (any name containing a `/`) truncate from
+  the *left*, keeping the subtype and prefixing `..`: their prefix is shared
+  and uninformative, so tail truncation would render every `application/*`
+  group as the same indistinguishable `applicat..`. All other names keep their
+  prefix and take the marker as a suffix. Whenever colors are inactive (non-TTY or `--no-colors`), width is
   pinned to 80 so that `--no-colors` output is byte-identical to non-TTY output
   (R30).
 - R29. Border styles: `unicode` (light box-drawing, the prototype's look) and
