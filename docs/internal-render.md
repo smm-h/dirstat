@@ -1,8 +1,7 @@
 ---
 title: internal/render
-description: "Package render produces the colored terminal output: summary section, format tables, legend, and the extensionless-file list."
+description: "Colored terminal output: the summary block, combined and split format tables, terminal-width adaptation and cell truncation, the legend, and error formatting."
 generated: true
-seeded: true
 nav_group: "API Reference"
 nav_order: 5
 ---

@@ -1,8 +1,7 @@
 ---
 title: internal/classify
-description: "Package classify determines a file's group name (format) and its text/binary classification, according to the selected grouping method."
+description: "Group naming and text/binary classification: extension normalization, the ext, type and hybrid methods, sniffing on a map miss, and the empty-file rule."
 generated: true
-seeded: true
 nav_group: "API Reference"
 nav_order: 2
 ---

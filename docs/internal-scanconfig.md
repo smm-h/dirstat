@@ -1,8 +1,7 @@
 ---
 title: internal/scanconfig
-description: "Package scanconfig loads and validates the optional TOML scan-config file selected with --config (spec §11, R41–R44)."
+description: "Loading and validating the optional --config TOML file: the allowed scan-semantic keys, the overlay onto command-line flags, and hard errors on overlap."
 generated: true
-seeded: true
 nav_group: "API Reference"
 nav_order: 7
 ---

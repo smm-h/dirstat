@@ -1,8 +1,7 @@
 ---
 title: dirstat
-description: "Package main is the dirstat CLI entry point."
+description: "The dirstat command-line entry point: strictcli application setup, scan command registration, process exit codes, and the build-stamped version string."
 generated: true
-seeded: true
 nav_group: "API Reference"
 nav_order: 1
 ---

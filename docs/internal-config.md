@@ -1,8 +1,7 @@
 ---
 title: internal/config
-description: "Package config provides the embedded text-classification lists and color themes."
+description: "The go:embed classification data: the text extension and text MIME type lists, the dark and light terminal color themes, and the loaders that parse them."
 generated: true
-seeded: true
 nav_group: "API Reference"
 nav_order: 3
 ---

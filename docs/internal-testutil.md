@@ -1,8 +1,7 @@
 ---
 title: internal/testutil
-description: "Package testutil provides shared helpers for building fixture trees."
+description: "Shared fixture helpers for the test suite: building directory trees from path-to-content maps and applying permission modes with restoring cleanup hooks."
 generated: true
-seeded: true
 nav_group: "API Reference"
 nav_order: 9
 ---

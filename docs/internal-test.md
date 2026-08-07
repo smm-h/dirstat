@@ -1,8 +1,7 @@
 ---
 title: internal/test
-description: "Package test contains integration tests that build the real dirstat binary once and run it as a subprocess against fixture trees."
+description: "Integration tests that build the real dirstat binary once and run it as a subprocess against fixture trees, including the committed golden JSON documents."
 generated: true
-seeded: true
 nav_group: "API Reference"
 nav_order: 8
 ---

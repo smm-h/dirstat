@@ -1,8 +1,7 @@
 ---
 title: internal/scan
-description: "Package scan walks a directory tree, classifies files via a worker pool, and aggregates per-format statistics."
+description: "The directory walker and its worker pool: traversal filters, per-file classification and LOC counting, and deterministic aggregation into per-format groups."
 generated: true
-seeded: true
 nav_group: "API Reference"
 nav_order: 6
 ---

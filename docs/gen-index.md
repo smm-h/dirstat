@@ -1,8 +1,7 @@
 ---
 title: API Reference
-description: "API reference index covering 9 modules"
+description: "Index of the generated API reference: one page per Go package, listing every exported symbol of dirstat with its signature and its source doc comment."
 generated: true
-seeded: true
 nav_group: "API Reference"
 nav_order: 0
 order: 90
