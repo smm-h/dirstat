@@ -59,6 +59,17 @@ func TestMimeIsText(t *testing.T) {
 	}
 }
 
+// fileSize returns the on-disk size of path, which the classifier needs to
+// apply the empty-file rule.
+func fileSize(t *testing.T, path string) int64 {
+	t.Helper()
+	fi, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return fi.Size()
+}
+
 func writeFile(t *testing.T, dir, name string, content []byte) string {
 	t.Helper()
 	p := filepath.Join(dir, name)
@@ -101,7 +112,7 @@ func TestFileByMethod(t *testing.T) {
 	}
 	for _, tc := range tests {
 		c := testClassifier(tc.method)
-		cls, err := c.File(tc.path, filepath.Base(tc.path))
+		cls, err := c.File(tc.path, filepath.Base(tc.path), fileSize(t, tc.path))
 		if err != nil {
 			t.Errorf("%s %s: unexpected error: %v", tc.method, tc.path, err)
 			continue
@@ -140,7 +151,7 @@ func TestHybridSniffsOnExtensionMapMiss(t *testing.T) {
 	}
 	for _, tc := range tests {
 		c := testClassifier(tc.method)
-		cls, err := c.File(tc.path, filepath.Base(tc.path))
+		cls, err := c.File(tc.path, filepath.Base(tc.path), fileSize(t, tc.path))
 		if err != nil {
 			t.Errorf("%s %s: unexpected error: %v", tc.method, tc.path, err)
 			continue
@@ -157,7 +168,7 @@ func TestFileSniffErrorIsReported(t *testing.T) {
 	dir := t.TempDir()
 	missing := filepath.Join(dir, "gone")
 	c := testClassifier(MethodType)
-	cls, err := c.File(missing, "gone")
+	cls, err := c.File(missing, "gone", 1)
 	if err == nil {
 		t.Fatal("expected error sniffing missing file")
 	}
@@ -168,16 +179,34 @@ func TestFileSniffErrorIsReported(t *testing.T) {
 
 func TestEmptyFileIsText(t *testing.T) {
 	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
-	// Empty files sniff as text/plain, so they classify as text in
-	// type/hybrid modes (the prototype relied on x-empty mimetypes).
+	// A zero-byte file has no bytes that could make it binary, so it is text
+	// under every method (R14). Where the extension decides, the size
+	// short-circuits the verdict and no content is read at all; where the
+	// method groups by MIME type the sniff still runs to name the group, but
+	// its verdict cannot make an empty file binary.
 	dir := t.TempDir()
-	empty := writeFile(t, dir, "empty", nil)
-	c := testClassifier(MethodHybrid)
-	cls, err := c.File(empty, "empty")
-	if err != nil {
-		t.Fatal(err)
+	tests := []struct {
+		method    string
+		name      string
+		wantGroup string
+		wantSniff bool
+	}{
+		{MethodHybrid, "empty", "text/plain", true},
+		{MethodHybrid, "empty.png", "png", false},
+		{MethodHybrid, "empty.go", "go", false},
+		{MethodExt, "empty.png", "png", false},
+		{MethodType, "empty.png", "text/plain", true},
 	}
-	if !cls.Text {
-		t.Errorf("empty extensionless file should classify as text, got %+v", cls)
+	for _, tc := range tests {
+		empty := writeFile(t, dir, tc.name, nil)
+		c := testClassifier(tc.method)
+		cls, err := c.File(empty, tc.name, 0)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !cls.Text || cls.Sniffed != tc.wantSniff || cls.Group != tc.wantGroup {
+			t.Errorf("%s %s: got %+v, want group=%q text=true sniffed=%v",
+				tc.method, tc.name, cls, tc.wantGroup, tc.wantSniff)
+		}
 	}
 }

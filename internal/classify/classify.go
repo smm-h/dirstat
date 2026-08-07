@@ -84,12 +84,20 @@ func sniff(absPath string) (string, error) {
 	return strings.ToLower(strings.TrimSpace(s)), nil
 }
 
-// File classifies the file at absPath whose base name is name. A non-nil
-// error means the file could not be read during sniffing; the caller must
-// treat it as unreadable. Class.Sniffed is valid even when err is non-nil.
-func (c *Classifier) File(absPath, name string) (Class, error) {
+// File classifies the file at absPath whose base name is name and whose size
+// in bytes is size. A non-nil error means the file could not be read during
+// sniffing; the caller must treat it as unreadable. Class.Sniffed is valid
+// even when err is non-nil.
+func (c *Classifier) File(absPath, name string, size int64) (Class, error) {
 	ext := NormalizeExt(name)
 	cls := Class{NoExt: ext == ""}
+
+	// A zero-byte file has no bytes that could make it binary, so it is text
+	// under every method (R14). Where the extension decides the verdict this
+	// short-circuits the lookup and skips the content read entirely; where
+	// the method groups by MIME type the sniff still runs to name the group,
+	// but its verdict cannot override emptiness.
+	empty := size == 0
 
 	byExt := func() {
 		if ext == "" {
@@ -97,7 +105,7 @@ func (c *Classifier) File(absPath, name string) (Class, error) {
 		} else {
 			cls.Group = ext
 		}
-		cls.Text = c.ExtIsText(ext)
+		cls.Text = empty || c.ExtIsText(ext)
 	}
 
 	switch c.method {
@@ -111,10 +119,10 @@ func (c *Classifier) File(absPath, name string) (Class, error) {
 		}
 		if mime == "" {
 			cls.Group = GroupUnknown
-			cls.Text = false
+			cls.Text = empty
 		} else {
 			cls.Group = mime
-			cls.Text = c.MimeIsText(mime)
+			cls.Text = empty || c.MimeIsText(mime)
 		}
 	default: // hybrid
 		if ext != "" {
@@ -140,10 +148,10 @@ func (c *Classifier) File(absPath, name string) (Class, error) {
 		}
 		if mime == "" {
 			cls.Group = GroupNoExtension
-			cls.Text = false
+			cls.Text = empty
 		} else {
 			cls.Group = mime
-			cls.Text = c.MimeIsText(mime)
+			cls.Text = empty || c.MimeIsText(mime)
 		}
 	}
 	return cls, nil

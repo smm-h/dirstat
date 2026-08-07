@@ -247,6 +247,61 @@ func TestSymlinks(t *testing.T) {
 	}
 }
 
+// findGroup returns the group object with the given format name.
+func findGroup(t *testing.T, parsed map[string]interface{}, format string) map[string]interface{} {
+	t.Helper()
+	raw, ok := parsed["groups"].([]interface{})
+	if !ok {
+		t.Fatalf("no groups in %v", parsed)
+	}
+	for _, g := range raw {
+		m := g.(map[string]interface{})
+		if m["format"].(string) == format {
+			return m
+		}
+	}
+	t.Fatalf("no group %q in %v", format, groupFormats(t, parsed))
+	return nil
+}
+
+func TestUnmappedTextAndEmptyFilesCountAsText(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
+	// End-to-end pin for the two classification rules, against the real
+	// embedded extension list: a text file whose extension is deliberately
+	// absent from that list (`lock` — TOML text here, binary elsewhere) is
+	// sniffed and counts its lines (R13), a Godot script counts its lines,
+	// and a zero-byte file is text with zero lines (R14). Binary content
+	// with an unknown extension stays binary.
+	root := t.TempDir()
+	testutil.WriteTree(t, root, map[string]string{
+		"uv.lock":     "version = 1\nrequires-python = \">=3.11\"\n",
+		"player.gd":   "extends Node\n\nfunc _ready():\n\tprint(\"hi\")\n",
+		"empty.png":   "",
+		"asset.weird": "\x00\x01\x02\xff\xfe\x00",
+	})
+	parsed := scanJSON(t, "scan", root, "--output", "json")
+
+	for _, tc := range []struct {
+		format  string
+		wantLOC float64
+	}{
+		{"lock", 2},
+		{"gd", 4},
+		{"png", 0},
+	} {
+		g := findGroup(t, parsed, tc.format)
+		if g["text"] != true {
+			t.Errorf("group %q: text = %v, want true", tc.format, g["text"])
+		}
+		if got := g["total_loc"]; got != tc.wantLOC {
+			t.Errorf("group %q: total_loc = %v, want %v", tc.format, got, tc.wantLOC)
+		}
+	}
+	if g := findGroup(t, parsed, "weird"); g["text"] != false {
+		t.Errorf("binary content with an unknown extension classified as text: %v", g)
+	}
+}
+
 func TestExtensionlessFiles(t *testing.T) {
 	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()

@@ -93,7 +93,12 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
 ## 4. Text/binary classification
 
 - R14. Extension-classified files are text iff the extension is in the embedded
-  text-extensions list.
+  text-extensions list. A zero-byte file is text under every method, whatever
+  its extension: an empty file has no bytes that could make it binary, and it
+  contributes 0 LOC. Where the extension decides the verdict, the size
+  short-circuits it and no content is read; where the method groups by MIME
+  type (R12, and R13's extensionless path) the sniff still runs to name the
+  group but cannot override emptiness.
 - R15. MIME-classified files are text iff the MIME type starts with `text/` or is in
   the embedded text-mimetypes list. The result is a strict bool.
 - R16. Both lists are embedded via `go:embed`, seeded verbatim from the prototype's

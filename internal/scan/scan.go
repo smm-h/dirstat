@@ -175,7 +175,7 @@ func classifyFiles(opts *Options, files []fileEntry) []fileResult {
 
 func processFile(opts *Options, cls *classify.Classifier, fe fileEntry, buf []byte) fileResult {
 	abs := absJoin(opts.Root, fe.rel)
-	c, err := cls.File(abs, fe.name)
+	c, err := cls.File(abs, fe.name, fe.size)
 	r := fileResult{group: c.Group, text: c.Text, noExt: c.NoExt, sniffed: c.Sniffed}
 	if err != nil {
 		r.unreadable = true
