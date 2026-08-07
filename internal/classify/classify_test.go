@@ -92,9 +92,10 @@ func TestFileByMethod(t *testing.T) {
 		{MethodType, goFile, "text/plain", true, false, true},
 		{MethodType, binNoExt, "application/octet-stream", false, true, true},
 		{MethodType, script, "text/x-shellscript", true, true, true},
-		// hybrid: extension wins, extensionless sniffed
+		// hybrid: a text-extension hit wins outright; a map miss (bin) is
+		// sniffed, keeping the extension as the group name (R13)
 		{MethodHybrid, goFile, "go", true, false, false},
-		{MethodHybrid, binFile, "bin", false, false, false},
+		{MethodHybrid, binFile, "bin", false, false, true},
 		{MethodHybrid, script, "text/x-shellscript", true, true, true},
 		{MethodHybrid, binNoExt, "application/octet-stream", false, true, true},
 	}
@@ -108,6 +109,45 @@ func TestFileByMethod(t *testing.T) {
 		if cls.Group != tc.wantGroup || cls.Text != tc.wantText || cls.NoExt != tc.wantNoExt || cls.Sniffed != tc.wantSniff {
 			t.Errorf("%s %s: got %+v, want group=%q text=%v noext=%v sniffed=%v",
 				tc.method, filepath.Base(tc.path), cls, tc.wantGroup, tc.wantText, tc.wantNoExt, tc.wantSniff)
+		}
+	}
+}
+
+func TestHybridSniffsOnExtensionMapMiss(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
+	// An extension that is absent from the text-extensions list must not be
+	// assumed binary: hybrid sniffs the content and lets the MIME rule
+	// decide, while the group name stays the extension (R13).
+	dir := t.TempDir()
+	gd := writeFile(t, dir, "player.gd", []byte("extends Node\n\nfunc _ready():\n\tprint(\"hi\")\n"))
+	lock := writeFile(t, dir, "uv.lock", []byte("version = 1\nrequires-python = \">=3.11\"\n"))
+	blob := writeFile(t, dir, "asset.weird", []byte{0x00, 0x01, 0x02, 0xff, 0xfe, 0x00})
+
+	tests := []struct {
+		method    string
+		path      string
+		wantGroup string
+		wantText  bool
+		wantSniff bool
+	}{
+		// hybrid: map miss falls through to a content sniff
+		{MethodHybrid, gd, "gd", true, true},
+		{MethodHybrid, lock, "lock", true, true},
+		{MethodHybrid, blob, "weird", false, true},
+		// ext: never sniffs, so a map miss stays binary
+		{MethodExt, gd, "gd", false, false},
+		{MethodExt, lock, "lock", false, false},
+	}
+	for _, tc := range tests {
+		c := testClassifier(tc.method)
+		cls, err := c.File(tc.path, filepath.Base(tc.path))
+		if err != nil {
+			t.Errorf("%s %s: unexpected error: %v", tc.method, tc.path, err)
+			continue
+		}
+		if cls.Group != tc.wantGroup || cls.Text != tc.wantText || cls.Sniffed != tc.wantSniff {
+			t.Errorf("%s %s: got %+v, want group=%q text=%v sniffed=%v",
+				tc.method, filepath.Base(tc.path), cls, tc.wantGroup, tc.wantText, tc.wantSniff)
 		}
 	}
 }

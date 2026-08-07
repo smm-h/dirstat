@@ -260,8 +260,10 @@ func TestExtensionlessFiles(t *testing.T) {
 	if got := summaryField(t, parsed, "files_without_extension"); got != 2 {
 		t.Errorf("files_without_extension = %d, want 2", got)
 	}
-	if got := summaryField(t, parsed, "files_sniffed"); got != 2 {
-		t.Errorf("files_sniffed = %d, want 2 in hybrid mode", got)
+	// Two extensionless files plus data.bin, whose extension misses the
+	// text-extensions list and is therefore sniffed too (R13).
+	if got := summaryField(t, parsed, "files_sniffed"); got != 3 {
+		t.Errorf("files_sniffed = %d, want 3 in hybrid mode", got)
 	}
 	noExt := parsed["no_extension_files"].([]interface{})
 	if len(noExt) != 2 || noExt[0] != "Makefile" || noExt[1] != "sub/LICENSE" {

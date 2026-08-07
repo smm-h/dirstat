@@ -18,7 +18,7 @@
             "hybrid"
           ],
           "default": "hybrid",
-          "help": "grouping method: ext (extension only, no sniffing), type (content-sniff every file), hybrid (sniff extensionless files only)",
+          "help": "grouping method: ext (extension only, no sniffing), type (content-sniff every file), hybrid (trust known text extensions, content-sniff everything else)",
           "name": "method",
           "type": "str"
         },

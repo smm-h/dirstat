@@ -34,7 +34,7 @@ func registerScanCmd(app *strictcli.App) {
 		strictcli.WithEffect(strictcli.EffectReadOnly),
 		strictcli.WithFlags(
 			strictcli.StringFlag("method",
-				"grouping method: ext (extension only, no sniffing), type (content-sniff every file), hybrid (sniff extensionless files only)",
+				"grouping method: ext (extension only, no sniffing), type (content-sniff every file), hybrid (trust known text extensions, content-sniff everything else)",
 				strictcli.Choices("ext", "type", "hybrid"), strictcli.Default("hybrid")),
 			strictcli.IntFlag("depth",
 				"maximum directory depth below the root; -1 = unlimited; the root is depth 0",

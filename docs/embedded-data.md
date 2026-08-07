@@ -16,11 +16,13 @@ Every file dirstat encounters is classified as either **text** or **binary**. Th
 | --- | --- | --- |
 | `ext` | Extension list lookup | Always binary |
 | `type` | Content sniffing | Content sniffing |
-| `hybrid` (default) | Extension list lookup | Content sniffing |
+| `hybrid` (default) | Extension list lookup, falling back to content sniffing when the extension is not in the list | Content sniffing |
+
+A zero-byte file is text under every method: an empty file has no bytes that could make it binary, and it contributes 0 lines of code.
 
 ## Text extension list
 
-The text extension list is embedded from `internal/config/data/text_extensions.txt` via `go:embed` and contains approximately 190 extensions covering programming languages, shell scripts, web technologies, data formats, documentation markup, and build system files. Files with a recognized extension are classified as text if their normalized extension (last-dot suffix, lowercased, dot stripped) appears in this list. Files whose extension is not in the list are classified as binary. This lookup is used by the `ext` and `hybrid` grouping methods.
+The text extension list is embedded from `internal/config/data/text_extensions.txt` via `go:embed` and contains approximately 210 extensions covering programming languages, shell scripts, web technologies, data formats, documentation markup, and build system files. Files with a recognized extension are classified as text if their normalized extension (last-dot suffix, lowercased, dot stripped) appears in this list. A miss is not a verdict: in `ext` mode the file is binary, but in `hybrid` mode the file is content-sniffed and the MIME rule decides, so text formats missing from the list still count their lines of code. Deliberately ambiguous extensions -- `.lock`, for instance, which is TOML text for uv and Poetry but binary for other tools -- are left out of the list precisely so that every such file is judged by its own content.
 
 :-: table-text-extensions
 

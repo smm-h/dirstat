@@ -282,8 +282,10 @@ func TestScanTypeFilterAndNoExt(t *testing.T) {
 	if !reflect.DeepEqual(res.NoExtFiles, []string{"textnoext"}) {
 		t.Errorf("NoExtFiles = %v, want [textnoext]", res.NoExtFiles)
 	}
-	if res.Summary.FilesSniffed != 2 {
-		t.Errorf("FilesSniffed = %d, want 2", res.Summary.FilesSniffed)
+	// Both extensionless files, plus blob.bin whose extension misses the
+	// text-extensions list and is therefore sniffed too (R13).
+	if res.Summary.FilesSniffed != 3 {
+		t.Errorf("FilesSniffed = %d, want 3", res.Summary.FilesSniffed)
 	}
 	for _, g := range res.Groups {
 		if !g.Text {

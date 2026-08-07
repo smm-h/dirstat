@@ -82,9 +82,13 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   by the extension list only; no content sniffing ever.
 - R12. `type`: every file is content-sniffed; group name is the detected MIME type
   or `(unknown)` when detection fails; text/binary via the MIME rule (R15).
-- R13. `hybrid` (default): files with an extension behave as in `ext` (no sniffing);
-  extensionless files are sniffed and grouped by MIME type, falling back to
-  `(no extension)` when sniffing fails.
+- R13. `hybrid` (default): a file whose extension is in the text-extensions list is
+  text without sniffing (the map is trusted on a hit). A file whose extension
+  misses the list is content-sniffed: the group name stays the extension, and
+  the MIME rule (R15) alone decides text/binary — a missing map entry never
+  means binary. Extensionless files are sniffed and grouped by MIME type,
+  falling back to `(no extension)` when sniffing yields nothing. A sniff that
+  cannot read the file makes the file unreadable (R20).
 
 ## 4. Text/binary classification
 

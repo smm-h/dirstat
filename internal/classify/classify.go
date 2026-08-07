@@ -119,6 +119,18 @@ func (c *Classifier) File(absPath, name string) (Class, error) {
 	default: // hybrid
 		if ext != "" {
 			byExt()
+			if cls.Text {
+				break // extension-map hit: trust the map, never sniff
+			}
+			// Extension-map miss: the extension proves nothing, so the
+			// content decides text/binary. The group name stays the
+			// extension; only the classification comes from the sniff (R13).
+			cls.Sniffed = true
+			mime, err := sniff(absPath)
+			if err != nil {
+				return cls, err
+			}
+			cls.Text = mime != "" && c.MimeIsText(mime)
 			break
 		}
 		cls.Sniffed = true
