@@ -101,8 +101,11 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   group but cannot override emptiness.
 - R15. MIME-classified files are text iff the MIME type starts with `text/` or is in
   the embedded text-mimetypes list. The result is a strict bool.
-- R16. Both lists are embedded via `go:embed`, seeded verbatim from the prototype's
-  lists (about 195 extensions incl. `svg`; about 45 mimetypes incl. `image/svg+xml`,
+- R16. Both lists are embedded via `go:embed`, seeded from the prototype's
+  lists and extended since (about 210 extensions incl. `svg`, Godot's text
+  formats, `mod`/`sum` and the shader languages, but deliberately not `lock`,
+  which is text for some tools and binary for others and must therefore be
+  sniffed per file; about 45 mimetypes incl. `image/svg+xml`,
   `application/json`, `application/x-empty`, `inode/x-empty`). No runtime config
   files, no lookup in cwd/HOME/XDG. Changing the lists means a rebuild.
 

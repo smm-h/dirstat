@@ -22,6 +22,24 @@ func TestTextExtensions(t *testing.T) {
 			t.Errorf("did not expect %q in text extensions list", tc)
 		}
 	}
+	// Formats reported missing from the list: Godot's text formats, Go's
+	// module files, and a batch of web/shader/schema languages.
+	for _, tc := range []string{
+		"gd", "tscn", "tres", "gdshader", "godot", "uid",
+		"mod", "sum",
+		"svx", "astro", "prisma", "odin",
+		"wgsl", "glsl", "hlsl", "frag", "vert",
+	} {
+		if _, ok := exts[tc]; !ok {
+			t.Errorf("expected extension %q in text extensions list", tc)
+		}
+	}
+	// `lock` is deliberately absent: uv and Poetry lockfiles are TOML text
+	// while other tools write binary .lock files, so hybrid mode must sniff
+	// each one instead of trusting a static entry (R13).
+	if _, ok := exts["lock"]; ok {
+		t.Error("lock must stay out of the text extensions list so it is sniffed per file")
+	}
 }
 
 func TestTextMimetypes(t *testing.T) {

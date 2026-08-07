@@ -10,7 +10,7 @@ lua tcl
 r R rmd
 m mm swift
 asm s S
-d nim zig v
+d nim zig v odin
 elm hs lhs ml mli ocaml
 erl hrl ex exs
 lisp cl lsp scm ss rkt
@@ -25,6 +25,11 @@ bat cmd
 sh bash zsh fish ksh csh tcsh
 vim vimrc
 el elisp
+
+# Game engines and shaders
+gd gdshader
+tscn tres godot uid
+glsl hlsl wgsl frag vert
 
 # Web
 html htm xhtml shtml
@@ -54,9 +59,11 @@ sql
 graphql gql
 proto
 avsc
+prisma
 
 # Build/Project files
 mk makefile cmake
+mod sum
 gradle
 sbt
 cabal
@@ -89,5 +96,5 @@ nix
 dhall
 jsonnet
 hcl tf tfvars
-vue svelte
+vue svelte astro svx
 

@@ -55,6 +55,7 @@ _EXT_INFO = {
     "nim": ("Nim", "Programming"),
     "zig": ("Zig", "Programming"),
     "v": ("V", "Programming"),
+    "odin": ("Odin", "Programming"),
     "elm": ("Elm", "Programming"),
     "hs": ("Haskell", "Programming"),
     "lhs": ("Literate Haskell", "Programming"),
@@ -87,6 +88,18 @@ _EXT_INFO = {
     "cpy": ("COBOL copybook", "Programming"),
     "pro": ("Prolog", "Programming"),
     "P": ("Prolog", "Programming"),
+    # Game engines and shaders
+    "gd": ("GDScript", "Game/Shader"),
+    "gdshader": ("Godot shader", "Game/Shader"),
+    "tscn": ("Godot scene", "Game/Shader"),
+    "tres": ("Godot resource", "Game/Shader"),
+    "godot": ("Godot project", "Game/Shader"),
+    "uid": ("Godot resource UID", "Game/Shader"),
+    "glsl": ("GLSL shader", "Game/Shader"),
+    "hlsl": ("HLSL shader", "Game/Shader"),
+    "wgsl": ("WGSL shader", "Game/Shader"),
+    "frag": ("Fragment shader", "Game/Shader"),
+    "vert": ("Vertex shader", "Game/Shader"),
     # Shell/scripting
     "awk": ("AWK", "Shell"),
     "sed": ("sed", "Shell"),
@@ -119,6 +132,8 @@ _EXT_INFO = {
     "svg": ("SVG", "Web"),
     "vue": ("Vue", "Web"),
     "svelte": ("Svelte", "Web"),
+    "astro": ("Astro", "Web"),
+    "svx": ("Svelte Markdown", "Web"),
     # Data/Config
     "xml": ("XML", "Data/Config"),
     "xsl": ("XSLT", "Data/Config"),
@@ -145,6 +160,7 @@ _EXT_INFO = {
     "gql": ("GraphQL", "Data/Config"),
     "proto": ("Protocol Buffers", "Data/Config"),
     "avsc": ("Avro schema", "Data/Config"),
+    "prisma": ("Prisma schema", "Data/Config"),
     "plist": ("Property list", "Data/Config"),
     "hcl": ("HCL", "Data/Config"),
     "tf": ("Terraform", "Data/Config"),
@@ -176,6 +192,8 @@ _EXT_INFO = {
     "mk": ("Makefile", "Build"),
     "makefile": ("Makefile", "Build"),
     "cmake": ("CMake", "Build"),
+    "mod": ("Go module file", "Build"),
+    "sum": ("Go checksum file", "Build"),
     "gradle": ("Gradle", "Build"),
     "sbt": ("SBT", "Build"),
     "cabal": ("Cabal", "Build"),
@@ -212,7 +230,7 @@ _EXT_INFO = {
 }
 
 # Category display order.
-_CATEGORY_ORDER = ["Programming", "Web", "Data/Config", "Docs", "Shell", "Build"]
+_CATEGORY_ORDER = ["Programming", "Game/Shader", "Web", "Data/Config", "Docs", "Shell", "Build"]
 
 
 def resolve(attrs, config, body):
