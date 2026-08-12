@@ -2,7 +2,7 @@
   "schema_version": 1,
   "name": "dirstat",
   "slug": "dirstat",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "dirstat summarizes the files in a directory tree, grouped by format, with aggregate statistics (counts, sizes, lines of code) rendered as a colored terminal table or as JSON.",
   "language": "go",
   "base_url": "https://github.com/smm-h/dirstat",
@@ -10,79 +10,609 @@
     {
       "path": "cli-index.md",
       "title": "dirstat CLI Reference",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "dirstat CLI Reference",
+          "anchor": "dirstat-cli-reference"
+        },
+        {
+          "level": 2,
+          "text": "Commands",
+          "anchor": "commands"
+        },
+        {
+          "level": 2,
+          "text": "Framework flags",
+          "anchor": "framework-flags"
+        }
+      ]
     },
     {
       "path": "cli-scan.md",
       "title": "dirstat scan",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "dirstat scan",
+          "anchor": "dirstat-scan"
+        },
+        {
+          "level": 2,
+          "text": "Flags",
+          "anchor": "flags"
+        },
+        {
+          "level": 2,
+          "text": "Arguments",
+          "anchor": "arguments"
+        }
+      ]
     },
     {
       "path": "dirstat.md",
       "title": "dirstat",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "dirstat",
+          "anchor": "dirstat"
+        },
+        {
+          "level": 2,
+          "text": ".",
+          "anchor": ""
+        },
+        {
+          "level": 3,
+          "text": "ExitSuccess",
+          "anchor": "exitsuccess"
+        },
+        {
+          "level": 3,
+          "text": "ExitGeneral",
+          "anchor": "exitgeneral"
+        },
+        {
+          "level": 3,
+          "text": "ExitUsage",
+          "anchor": "exitusage"
+        }
+      ]
     },
     {
       "path": "embedded-data.md",
       "title": "Embedded Data",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "Embedded Data",
+          "anchor": "embedded-data"
+        },
+        {
+          "level": 2,
+          "text": "Text vs. binary classification",
+          "anchor": "text-vs-binary-classification"
+        },
+        {
+          "level": 2,
+          "text": "Text extension list",
+          "anchor": "text-extension-list"
+        },
+        {
+          "level": 2,
+          "text": "Text MIME type list",
+          "anchor": "text-mime-type-list"
+        },
+        {
+          "level": 2,
+          "text": "Default excludes",
+          "anchor": "default-excludes"
+        },
+        {
+          "level": 2,
+          "text": "Overriding exclusions",
+          "anchor": "overriding-exclusions"
+        },
+        {
+          "level": 3,
+          "text": "Via the `--exclude` flag",
+          "anchor": "via-the-exclude-flag"
+        },
+        {
+          "level": 3,
+          "text": "Via a config file",
+          "anchor": "via-a-config-file"
+        }
+      ]
     },
     {
       "path": "gen-index.md",
       "title": "API Reference",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "API Reference",
+          "anchor": "api-reference"
+        }
+      ]
     },
     {
       "path": "index.md",
       "title": "Documentation",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "Documentation",
+          "anchor": "documentation"
+        }
+      ]
     },
     {
       "path": "internal-classify.md",
       "title": "internal/classify",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "internal/classify",
+          "anchor": "internalclassify"
+        },
+        {
+          "level": 2,
+          "text": "internal/classify",
+          "anchor": "internalclassify"
+        },
+        {
+          "level": 3,
+          "text": "MethodExt",
+          "anchor": "methodext"
+        },
+        {
+          "level": 3,
+          "text": "MethodType",
+          "anchor": "methodtype"
+        },
+        {
+          "level": 3,
+          "text": "MethodHybrid",
+          "anchor": "methodhybrid"
+        },
+        {
+          "level": 3,
+          "text": "GroupNoExtension",
+          "anchor": "groupnoextension"
+        },
+        {
+          "level": 3,
+          "text": "GroupUnknown",
+          "anchor": "groupunknown"
+        },
+        {
+          "level": 3,
+          "text": "Class",
+          "anchor": "class"
+        },
+        {
+          "level": 3,
+          "text": "Classifier",
+          "anchor": "classifier"
+        },
+        {
+          "level": 3,
+          "text": "New",
+          "anchor": "new"
+        },
+        {
+          "level": 3,
+          "text": "NormalizeExt",
+          "anchor": "normalizeext"
+        },
+        {
+          "level": 3,
+          "text": "Classifier.ExtIsText",
+          "anchor": "classifierextistext"
+        },
+        {
+          "level": 3,
+          "text": "Classifier.MimeIsText",
+          "anchor": "classifiermimeistext"
+        },
+        {
+          "level": 3,
+          "text": "Classifier.File",
+          "anchor": "classifierfile"
+        }
+      ]
     },
     {
       "path": "internal-config.md",
       "title": "internal/config",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "internal/config",
+          "anchor": "internalconfig"
+        },
+        {
+          "level": 2,
+          "text": "internal/config",
+          "anchor": "internalconfig"
+        },
+        {
+          "level": 3,
+          "text": "Theme",
+          "anchor": "theme"
+        },
+        {
+          "level": 3,
+          "text": "TextExtensions",
+          "anchor": "textextensions"
+        },
+        {
+          "level": 3,
+          "text": "TextMimetypes",
+          "anchor": "textmimetypes"
+        },
+        {
+          "level": 3,
+          "text": "LoadTheme",
+          "anchor": "loadtheme"
+        }
+      ]
     },
     {
       "path": "internal-jsonout.md",
       "title": "internal/jsonout",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "internal/jsonout",
+          "anchor": "internaljsonout"
+        },
+        {
+          "level": 2,
+          "text": "internal/jsonout",
+          "anchor": "internaljsonout"
+        },
+        {
+          "level": 3,
+          "text": "Selection",
+          "anchor": "selection"
+        },
+        {
+          "level": 3,
+          "text": "Write",
+          "anchor": "write"
+        },
+        {
+          "level": 3,
+          "text": "groupJSON.MarshalJSON",
+          "anchor": "groupjsonmarshaljson"
+        }
+      ]
     },
     {
       "path": "internal-render.md",
       "title": "internal/render",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "internal/render",
+          "anchor": "internalrender"
+        },
+        {
+          "level": 2,
+          "text": "internal/render",
+          "anchor": "internalrender"
+        },
+        {
+          "level": 3,
+          "text": "Options",
+          "anchor": "options"
+        },
+        {
+          "level": 3,
+          "text": "FormatError",
+          "anchor": "formaterror"
+        },
+        {
+          "level": 3,
+          "text": "DetectThemeName",
+          "anchor": "detectthemename"
+        },
+        {
+          "level": 3,
+          "text": "Render",
+          "anchor": "render"
+        }
+      ]
     },
     {
       "path": "internal-scan.md",
       "title": "internal/scan",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "internal/scan",
+          "anchor": "internalscan"
+        },
+        {
+          "level": 2,
+          "text": "internal/scan",
+          "anchor": "internalscan"
+        },
+        {
+          "level": 3,
+          "text": "SingletonsGroup",
+          "anchor": "singletonsgroup"
+        },
+        {
+          "level": 3,
+          "text": "IgnoredInclude",
+          "anchor": "ignoredinclude"
+        },
+        {
+          "level": 3,
+          "text": "IgnoredExclude",
+          "anchor": "ignoredexclude"
+        },
+        {
+          "level": 3,
+          "text": "IgnoredOnly",
+          "anchor": "ignoredonly"
+        },
+        {
+          "level": 3,
+          "text": "HiddenInclude",
+          "anchor": "hiddeninclude"
+        },
+        {
+          "level": 3,
+          "text": "HiddenExclude",
+          "anchor": "hiddenexclude"
+        },
+        {
+          "level": 3,
+          "text": "TypeText",
+          "anchor": "typetext"
+        },
+        {
+          "level": 3,
+          "text": "TypeBinary",
+          "anchor": "typebinary"
+        },
+        {
+          "level": 3,
+          "text": "TypeBoth",
+          "anchor": "typeboth"
+        },
+        {
+          "level": 3,
+          "text": "StatNames",
+          "anchor": "statnames"
+        },
+        {
+          "level": 3,
+          "text": "Options",
+          "anchor": "options"
+        },
+        {
+          "level": 3,
+          "text": "Summary",
+          "anchor": "summary"
+        },
+        {
+          "level": 3,
+          "text": "Group",
+          "anchor": "group"
+        },
+        {
+          "level": 3,
+          "text": "Result",
+          "anchor": "result"
+        },
+        {
+          "level": 3,
+          "text": "IsLOCStat",
+          "anchor": "islocstat"
+        },
+        {
+          "level": 3,
+          "text": "SortGroups",
+          "anchor": "sortgroups"
+        },
+        {
+          "level": 3,
+          "text": "CollapseSingletons",
+          "anchor": "collapsesingletons"
+        },
+        {
+          "level": 3,
+          "text": "Scan",
+          "anchor": "scan"
+        },
+        {
+          "level": 3,
+          "text": "ignoreMatcher.Match",
+          "anchor": "ignorematchermatch"
+        }
+      ]
     },
     {
       "path": "internal-scanconfig.md",
       "title": "internal/scanconfig",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "internal/scanconfig",
+          "anchor": "internalscanconfig"
+        },
+        {
+          "level": 2,
+          "text": "internal/scanconfig",
+          "anchor": "internalscanconfig"
+        },
+        {
+          "level": 3,
+          "text": "AllowedKeys",
+          "anchor": "allowedkeys"
+        },
+        {
+          "level": 3,
+          "text": "Config",
+          "anchor": "config"
+        },
+        {
+          "level": 3,
+          "text": "Load",
+          "anchor": "load"
+        },
+        {
+          "level": 3,
+          "text": "ExplicitKeys",
+          "anchor": "explicitkeys"
+        },
+        {
+          "level": 3,
+          "text": "Config.Has",
+          "anchor": "confighas"
+        },
+        {
+          "level": 3,
+          "text": "Config.Overlay",
+          "anchor": "configoverlay"
+        }
+      ]
     },
     {
       "path": "internal-test.md",
       "title": "internal/test",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "internal/test",
+          "anchor": "internaltest"
+        },
+        {
+          "level": 2,
+          "text": "internal/test",
+          "anchor": "internaltest"
+        }
+      ]
     },
     {
       "path": "internal-testutil.md",
       "title": "internal/testutil",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "internal/testutil",
+          "anchor": "internaltestutil"
+        },
+        {
+          "level": 2,
+          "text": "internal/testutil",
+          "anchor": "internaltestutil"
+        },
+        {
+          "level": 3,
+          "text": "WriteTree",
+          "anchor": "writetree"
+        },
+        {
+          "level": 3,
+          "text": "Chmod",
+          "anchor": "chmod"
+        }
+      ]
     },
     {
       "path": "spec.md",
       "title": "dirstat v1 specification",
-      "type": "doc"
+      "type": "doc",
+      "headings": [
+        {
+          "level": 1,
+          "text": "dirstat \u2014 v1 specification",
+          "anchor": "dirstat-v1-specification"
+        },
+        {
+          "level": 2,
+          "text": "1. Project shape",
+          "anchor": "1-project-shape"
+        },
+        {
+          "level": 2,
+          "text": "2. CLI surface",
+          "anchor": "2-cli-surface"
+        },
+        {
+          "level": 2,
+          "text": "3. Grouping methods",
+          "anchor": "3-grouping-methods"
+        },
+        {
+          "level": 2,
+          "text": "4. Text/binary classification",
+          "anchor": "4-textbinary-classification"
+        },
+        {
+          "level": 2,
+          "text": "5. Traversal",
+          "anchor": "5-traversal"
+        },
+        {
+          "level": 2,
+          "text": "6. Statistics",
+          "anchor": "6-statistics"
+        },
+        {
+          "level": 2,
+          "text": "7. Table output",
+          "anchor": "7-table-output"
+        },
+        {
+          "level": 2,
+          "text": "8. JSON output",
+          "anchor": "8-json-output"
+        },
+        {
+          "level": 2,
+          "text": "9. Sorting",
+          "anchor": "9-sorting"
+        },
+        {
+          "level": 2,
+          "text": "10. Testing",
+          "anchor": "10-testing"
+        },
+        {
+          "level": 2,
+          "text": "11. Scan config file",
+          "anchor": "11-scan-config-file"
+        },
+        {
+          "level": 2,
+          "text": "12. Non-goals for v1",
+          "anchor": "12-non-goals-for-v1"
+        }
+      ]
     }
   ],
   "posts": [],
-  "last_gen": "2026-07-29T17:14:38.076542+00:00"
+  "last_gen": "2026-08-12T03:44:03.451050+00:00"
 }

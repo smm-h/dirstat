@@ -10,12 +10,12 @@ order: 90
 
 # API Reference
 
-- [dirstat](dirstat.html)
-- [internal/classify](internal-classify.html)
-- [internal/config](internal-config.html)
-- [internal/jsonout](internal-jsonout.html)
-- [internal/render](internal-render.html)
-- [internal/scan](internal-scan.html)
-- [internal/scanconfig](internal-scanconfig.html)
-- [internal/test](internal-test.html)
-- [internal/testutil](internal-testutil.html)
+- [dirstat](../dirstat/)
+- [internal/classify](../internal-classify/)
+- [internal/config](../internal-config/)
+- [internal/jsonout](../internal-jsonout/)
+- [internal/render](../internal-render/)
+- [internal/scan](../internal-scan/)
+- [internal/scanconfig](../internal-scanconfig/)
+- [internal/test](../internal-test/)
+- [internal/testutil](../internal-testutil/)

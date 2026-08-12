@@ -17,7 +17,7 @@ Version: :-: var key="project.version"
 
 ## Commands
 
-- [scan](cli-scan.html) -- Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.
+- [scan](../cli-scan/) -- Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.
 
 ## Framework flags
 
