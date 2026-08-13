@@ -130,16 +130,6 @@
         },
         {
           "choices": [
-            "table",
-            "json"
-          ],
-          "default": "table",
-          "help": "output format: table (colored terminal tables) or json (stable machine-readable schema)",
-          "name": "output",
-          "type": "str"
-        },
-        {
-          "choices": [
             "summary",
             "table",
             "both"
@@ -206,7 +196,140 @@
         }
       ],
       "help": "Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.",
-      "name": "scan"
+      "name": "scan",
+      "payload_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "config": {
+            "type": "string"
+          },
+          "groups": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "avg_loc": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "avg_size": {
+                  "type": "integer"
+                },
+                "count": {
+                  "type": "integer"
+                },
+                "format": {
+                  "type": "string"
+                },
+                "max_loc": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "max_size": {
+                  "type": "integer"
+                },
+                "min_loc": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "min_size": {
+                  "type": "integer"
+                },
+                "text": {
+                  "type": "boolean"
+                },
+                "total_loc": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "total_size": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "format",
+                "text"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "method": {
+            "enum": [
+              "ext",
+              "type",
+              "hybrid"
+            ]
+          },
+          "no_extension_files": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "root": {
+            "type": "string"
+          },
+          "summary": {
+            "additionalProperties": false,
+            "properties": {
+              "directories": {
+                "type": "integer"
+              },
+              "executables": {
+                "type": "integer"
+              },
+              "files": {
+                "type": "integer"
+              },
+              "files_sniffed": {
+                "type": "integer"
+              },
+              "files_without_extension": {
+                "type": "integer"
+              },
+              "max_depth": {
+                "type": "integer"
+              },
+              "symlinks": {
+                "type": "integer"
+              },
+              "unique_formats": {
+                "type": "integer"
+              },
+              "unreadable": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "directories",
+              "files",
+              "files_without_extension",
+              "max_depth",
+              "symlinks",
+              "executables",
+              "unique_formats",
+              "files_sniffed",
+              "unreadable"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "root",
+          "method",
+          "summary",
+          "groups"
+        ],
+        "type": "object"
+      }
     }
   },
   "defaults": {
@@ -259,5 +382,5 @@
   "name": "dirstat",
   "project_id": "github.com/smm-h/dirstat",
   "schema_version": 1,
-  "version": "0.3.0"
+  "version": "dev"
 }

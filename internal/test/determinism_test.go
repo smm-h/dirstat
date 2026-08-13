@@ -24,7 +24,7 @@ func TestDeterminism(t *testing.T) {
 
 	for _, args := range [][]string{
 		{"scan", root},
-		{"scan", root, "--output", "json", "--list-no-ext"},
+		{"scan", root, "--json", "--list-no-ext"},
 		{"scan", root, "--no-combined", "--singletons", "collapse", "--sort-by", "total-loc"},
 	} {
 		first, stderr, code := runDirstat(t, args...)

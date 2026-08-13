@@ -66,9 +66,6 @@ func registerScanCmd(app *strictcli.App) {
 			strictcli.IntFlag("top",
 				"keep only the first N groups after sorting (table output only); -1 or 0 = all",
 				strictcli.Default(-1)),
-			strictcli.StringFlag("output",
-				"output format: table (colored terminal tables) or json (stable machine-readable schema)",
-				strictcli.Choices("table", "json"), strictcli.Default("table")),
 			strictcli.StringFlag("show",
 				"sections to render: summary, table, or both (table output only)",
 				strictcli.Choices("summary", "table", "both"), strictcli.Default("both")),
@@ -98,6 +95,11 @@ func registerScanCmd(app *strictcli.App) {
 			strictcli.NewArg("where", "directory to summarize (default: current directory)",
 				strictcli.ArgRequired(false), strictcli.ArgDefault(".")),
 		),
+		// Machine output is the framework's --json, and the scan document is
+		// this command's payload. dirstat declares no output-format flag of
+		// its own: the enum's other value was the human table, which is what
+		// the command does when it is not asked for a document.
+		strictcli.PayloadSchema(jsonout.Schema),
 	)
 }
 
@@ -248,14 +250,15 @@ func handleScan(ctx *strictcli.Context, kwargs map[string]interface{}) strictcli
 		return strictcli.Exit(ExitGeneral)
 	}
 
-	if kwargs["output"].(string) == "json" {
-		groups := make([]scan.Group, len(res.Groups))
-		copy(groups, res.Groups)
-		scan.SortGroups(groups, sortBy, sortDesc)
-		if err := jsonout.Write(os.Stdout, version, configAbs, res, groups, selected, listNoExt); err != nil {
-			errorf(colorsFlag, "writing JSON: %s", err)
-			return strictcli.Exit(ExitGeneral)
-		}
+	// The payload is supplied in both modes (strictcli §19.4): the framework
+	// decides what to do with it, so nothing here branches on --json to build
+	// it. The rendering below is the human mode's, and it is the one thing
+	// machine mode must not do -- stdout carries the envelope alone (§19.1).
+	sortedGroups := make([]scan.Group, len(res.Groups))
+	copy(sortedGroups, res.Groups)
+	scan.SortGroups(sortedGroups, sortBy, sortDesc)
+	ctx.Payload(jsonout.Build(configAbs, res, sortedGroups, selected, listNoExt))
+	if ctx.JSON() {
 		return strictcli.Exit(ExitSuccess)
 	}
 

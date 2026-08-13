@@ -34,7 +34,7 @@ func TestConfigHappyPath(t *testing.T) {
 
 	// File sets exclude+method; CLI sets --depth for a key the file does not
 	// set: both take effect together (R43, R44).
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--config", cfgPath, "--depth", "1")
+	parsed := scanJSON(t, "scan", root, "--json", "--config", cfgPath, "--depth", "1")
 	if got := parsed["method"]; got != "ext" {
 		t.Errorf("method = %v, want ext (from config file)", got)
 	}
@@ -55,7 +55,7 @@ func TestConfigAbsentFromJSONWithoutFlag(t *testing.T) {
 	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	root := t.TempDir()
 	testutil.WriteTree(t, root, map[string]string{"a.go": "package a\n"})
-	parsed := scanJSON(t, "scan", root, "--output", "json")
+	parsed := scanJSON(t, "scan", root, "--json")
 	if _, present := parsed["config"]; present {
 		t.Errorf("config field must be absent without --config: %v", parsed)
 	}
@@ -189,7 +189,7 @@ func TestConfigEmptyExcludeScansEverything(t *testing.T) {
 	// exclude = [] replaces the built-in default list entirely: .git and
 	// node_modules become visible again (R45).
 	cfgPath := writeConfigFile(t, t.TempDir(), "exclude = []\n")
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--config", cfgPath, "--ignored", "include")
+	parsed := scanJSON(t, "scan", root, "--json", "--config", cfgPath, "--ignored", "include")
 	if got := summaryField(t, parsed, "files"); got != 3 {
 		t.Errorf("files = %d, want 3 (exclude = [] must scan everything)", got)
 	}

@@ -26,7 +26,7 @@ func TestDefaultExcludes(t *testing.T) {
 
 	// No flags: every curated name is pruned. --ignored include keeps
 	// gitignore handling out of the picture.
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--ignored", "include")
+	parsed := scanJSON(t, "scan", root, "--json", "--ignored", "include")
 	if got := summaryField(t, parsed, "files"); got != 2 { // a.go, src/b.go
 		t.Errorf("files = %d, want 2 (curated defaults must prune .git, node_modules, ...)", got)
 	}
@@ -36,7 +36,7 @@ func TestDefaultExcludes(t *testing.T) {
 
 	// Any explicit --exclude replaces the built-in list entirely: no
 	// additive merging (R45).
-	parsed = scanJSON(t, "scan", root, "--output", "json", "--ignored", "include",
+	parsed = scanJSON(t, "scan", root, "--json", "--ignored", "include",
 		"--exclude", "__pycache__")
 	if got := summaryField(t, parsed, "files"); got != 6 {
 		t.Errorf("files = %d, want 6 (--exclude must replace the defaults, not merge)", got)
@@ -44,7 +44,7 @@ func TestDefaultExcludes(t *testing.T) {
 
 	// --exclude "" style overrides are honored too: the list becomes [""]
 	// which matches nothing (R47).
-	parsed = scanJSON(t, "scan", root, "--output", "json", "--ignored", "include",
+	parsed = scanJSON(t, "scan", root, "--json", "--ignored", "include",
 		"--exclude", "")
 	if got := summaryField(t, parsed, "files"); got != 7 {
 		t.Errorf(`files = %d, want 7 (--exclude "" must scan everything)`, got)

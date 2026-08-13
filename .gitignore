@@ -19,3 +19,5 @@ target/
 .credentials.json
 .*-cache.json
 *.local-only
+go.work
+go.work.sum

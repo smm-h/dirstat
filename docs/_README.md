@@ -19,10 +19,10 @@ Summarize the current directory:
 dirstat scan
 ```
 
-Summarize a project, JSON output for tooling:
+Summarize a project, machine output for tooling:
 
 ```
-dirstat scan ~/src/myproject --output json
+dirstat scan ~/src/myproject --json
 ```
 
 ## Example
@@ -84,36 +84,46 @@ stats = ["count", "total-size"]
 
 By default `--exclude` uses a curated built-in list (`.git`, `node_modules`, `.venv`, `vendor`, `build`, `dist`, `target`, and other common cache/IDE directories — see `dirstat scan --help`). Any explicit `--exclude` or a config-file `exclude` key replaces the list entirely; `exclude = []` scans everything.
 
-## JSON output
+## Machine output
 
-`--output json` writes a single JSON object to stdout: no ANSI codes, raw integer values. The schema is a consumer contract — field names are stable and evolution is additive-only.
+`--json` is strictcli's machine mode: stdout carries exactly one document, the framework's envelope, and the scan document is its `payload` member. No ANSI codes, raw integer values, and no table. The payload's shape is a consumer contract — field names are stable, evolution is additive-only, and the command declares the shape as a JSON Schema the framework validates before writing it.
 
 ```json
 {
-  "dirstat_version": "0.1.0",
-  "root": "/abs/path",
-  "method": "hybrid",
-  "summary": {
-    "directories": 3, "files": 6, "files_without_extension": 1,
-    "max_depth": 2, "symlinks": 0, "executables": 0,
-    "unique_formats": 5, "files_sniffed": 1, "unreadable": 0
+  "interface_version": 1,
+  "app": "dirstat",
+  "app_version": "0.1.0",
+  "command": "scan",
+  "exit_code": 0,
+  "payload": {
+    "root": "/abs/path",
+    "method": "hybrid",
+    "summary": {
+      "directories": 3, "files": 6, "files_without_extension": 1,
+      "max_depth": 2, "symlinks": 0, "executables": 0,
+      "unique_formats": 5, "files_sniffed": 1, "unreadable": 0
+    },
+    "groups": [
+      {
+        "format": "go", "text": true, "count": 2,
+        "total_size": 39, "min_size": 10, "max_size": 29, "avg_size": 20,
+        "total_loc": 4, "min_loc": 1, "max_loc": 3, "avg_loc": 2
+      }
+    ],
+    "no_extension_files": ["Makefile"]
   },
-  "groups": [
-    {
-      "format": "go", "text": true, "count": 2,
-      "total_size": 39, "min_size": 10, "max_size": 29, "avg_size": 20,
-      "total_loc": 4, "min_loc": 1, "max_loc": 3, "avg_loc": 2
-    }
-  ],
-  "no_extension_files": ["Makefile"]
+  "dry_run": false,
+  "preview": [],
+  "preview_error": null,
+  "diagnostics": []
 }
 ```
 
-LOC fields are `null` for binary groups. Stats absent from `--stats` are omitted. `no_extension_files` is present only with `--list-no-ext`.
+LOC fields are `null` for binary groups. Stats absent from `--stats` are omitted. `no_extension_files` is present only with `--list-no-ext`. The binary's version is the envelope's `app_version` and is not repeated inside the payload.
 
 ## Behavior notes
 
-- Rendering-only flags (`--show`, `--combined`, `--singletons`, `--legend`, `--colors`, `--human`, `--style`, `--top`) have no effect on JSON output.
+- Rendering-only flags (`--show`, `--combined`, `--singletons`, `--legend`, `--colors`, `--human`, `--style`, `--top`) have no effect on the machine payload.
 - Without active colors (piped output or `--no-colors`), the table width is pinned to 80 columns so the output is byte-identical to non-TTY output.
 - Symlinks are never followed, but every symlink encountered in a traversed directory is counted.
 - Unreadable directories and files are skipped and counted under `Unreadable (skipped)` — never a warning spew, never a crash.

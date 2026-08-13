@@ -1,6 +1,7 @@
 package test
 
 import (
+	"encoding/json"
 	"flag"
 	"github.com/smm-h/stricttest/go/hygiene"
 	"os"
@@ -12,8 +13,6 @@ import (
 )
 
 var update = flag.Bool("update", false, "rewrite golden files from current output")
-
-var versionRe = regexp.MustCompile(`"dirstat_version": "[^"]*"`)
 
 // goldenTree builds the fixed fixture tree used by the golden tests. It
 // deliberately avoids symlinks and permission tricks so the JSON is
@@ -32,14 +31,28 @@ func goldenTree(t *testing.T) string {
 	return root
 }
 
-// normalize replaces the run-specific absolute root and binary version with
-// stable placeholders.
-func normalize(out, root string) string {
-	out = versionRe.ReplaceAllString(out, `"dirstat_version": "VERSION"`)
+// normalize turns a machine-mode run's stdout into the stable text the golden
+// files hold: the envelope, re-indented (the framework writes it on one line),
+// with the run-specific binary version and absolute root replaced by
+// placeholders. Re-encoding sorts the keys, which is deliberate -- the
+// envelope's field order is cosmetic, so a golden file should not assert it.
+func normalize(t *testing.T, out, root string) string {
+	t.Helper()
+	var env map[string]interface{}
+	if err := json.Unmarshal([]byte(out), &env); err != nil {
+		t.Fatalf("stdout is not a single JSON document: %v\n%s", err, out)
+	}
+	if _, ok := env["app_version"]; ok {
+		env["app_version"] = "VERSION"
+	}
+	pretty, err := json.MarshalIndent(env, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
 	// The root only appears in the "root" field; paths in the document are
 	// relative.
 	rootJSON, _ := filepath.Abs(root)
-	return regexp.MustCompile(regexp.QuoteMeta(rootJSON)).ReplaceAllString(out, "ROOT")
+	return regexp.MustCompile(regexp.QuoteMeta(rootJSON)).ReplaceAllString(string(pretty)+"\n", "ROOT")
 }
 
 func checkGolden(t *testing.T, goldenName string, args ...string) {
@@ -49,7 +62,7 @@ func checkGolden(t *testing.T, goldenName string, args ...string) {
 	if code != 0 {
 		t.Fatalf("dirstat exited %d: %s", code, stderr)
 	}
-	compareGolden(t, goldenName, normalize(stdout, root))
+	compareGolden(t, goldenName, normalize(t, stdout, root))
 }
 
 // compareGolden compares normalized output against a committed golden file,
@@ -79,7 +92,7 @@ func compareGolden(t *testing.T, goldenName, got string) {
 
 func TestGoldenJSONFull(t *testing.T) {
 	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
-	checkGolden(t, "full.json", "--output", "json", "--list-no-ext")
+	checkGolden(t, "full.json", "--json", "--list-no-ext")
 }
 
 func TestGoldenJSONConfig(t *testing.T) {
@@ -93,17 +106,17 @@ func TestGoldenJSONConfig(t *testing.T) {
 	if err := os.WriteFile(cfgPath, []byte(content), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	stdout, stderr, code := runDirstat(t, "scan", root, "--config", cfgPath, "--output", "json")
+	stdout, stderr, code := runDirstat(t, "scan", root, "--config", cfgPath, "--json")
 	if code != 0 {
 		t.Fatalf("dirstat exited %d: %s", code, stderr)
 	}
-	compareGolden(t, "config.json", normalize(stdout, root))
+	compareGolden(t, "config.json", normalize(t, stdout, root))
 }
 
 func TestGoldenJSONSubset(t *testing.T) {
 	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	checkGolden(t, "subset.json",
-		"--output", "json",
+		"--json",
 		"--stats", "count", "--stats", "total-size", "--stats", "total-loc",
 		"--type", "text",
 		"--sort-by", "format", "--sort-order", "asc",

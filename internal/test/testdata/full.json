@@ -1,86 +1,96 @@
 {
-  "dirstat_version": "VERSION",
-  "root": "ROOT",
-  "method": "hybrid",
-  "summary": {
-    "directories": 3,
-    "files": 6,
-    "files_without_extension": 1,
-    "max_depth": 2,
-    "symlinks": 0,
-    "executables": 0,
-    "unique_formats": 5,
-    "files_sniffed": 2,
-    "unreadable": 0
-  },
-  "groups": [
-    {
-      "format": "go",
-      "text": true,
-      "count": 2,
-      "total_size": 39,
-      "min_size": 10,
-      "max_size": 29,
-      "avg_size": 20,
-      "total_loc": 4,
-      "min_loc": 1,
-      "max_loc": 3,
-      "avg_loc": 2
-    },
-    {
-      "format": "bin",
-      "text": false,
-      "count": 1,
-      "total_size": 5,
-      "min_size": 5,
-      "max_size": 5,
-      "avg_size": 5,
-      "total_loc": null,
-      "min_loc": null,
-      "max_loc": null,
-      "avg_loc": null
-    },
-    {
-      "format": "md",
-      "text": true,
-      "count": 1,
-      "total_size": 20,
-      "min_size": 20,
-      "max_size": 20,
-      "avg_size": 20,
-      "total_loc": 3,
-      "min_loc": 3,
-      "max_loc": 3,
-      "avg_loc": 3
-    },
-    {
-      "format": "text/plain",
-      "text": true,
-      "count": 1,
-      "total_size": 14,
-      "min_size": 14,
-      "max_size": 14,
-      "avg_size": 14,
-      "total_loc": 2,
-      "min_loc": 2,
-      "max_loc": 2,
-      "avg_loc": 2
-    },
-    {
-      "format": "txt",
-      "text": true,
-      "count": 1,
-      "total_size": 8,
-      "min_size": 8,
-      "max_size": 8,
-      "avg_size": 8,
-      "total_loc": 2,
-      "min_loc": 2,
-      "max_loc": 2,
-      "avg_loc": 2
+  "app": "dirstat",
+  "app_version": "VERSION",
+  "command": "scan",
+  "diagnostics": [],
+  "dry_run": false,
+  "exit_code": 0,
+  "interface_version": 1,
+  "payload": {
+    "groups": [
+      {
+        "avg_loc": 2,
+        "avg_size": 20,
+        "count": 2,
+        "format": "go",
+        "max_loc": 3,
+        "max_size": 29,
+        "min_loc": 1,
+        "min_size": 10,
+        "text": true,
+        "total_loc": 4,
+        "total_size": 39
+      },
+      {
+        "avg_loc": null,
+        "avg_size": 5,
+        "count": 1,
+        "format": "bin",
+        "max_loc": null,
+        "max_size": 5,
+        "min_loc": null,
+        "min_size": 5,
+        "text": false,
+        "total_loc": null,
+        "total_size": 5
+      },
+      {
+        "avg_loc": 3,
+        "avg_size": 20,
+        "count": 1,
+        "format": "md",
+        "max_loc": 3,
+        "max_size": 20,
+        "min_loc": 3,
+        "min_size": 20,
+        "text": true,
+        "total_loc": 3,
+        "total_size": 20
+      },
+      {
+        "avg_loc": 2,
+        "avg_size": 14,
+        "count": 1,
+        "format": "text/plain",
+        "max_loc": 2,
+        "max_size": 14,
+        "min_loc": 2,
+        "min_size": 14,
+        "text": true,
+        "total_loc": 2,
+        "total_size": 14
+      },
+      {
+        "avg_loc": 2,
+        "avg_size": 8,
+        "count": 1,
+        "format": "txt",
+        "max_loc": 2,
+        "max_size": 8,
+        "min_loc": 2,
+        "min_size": 8,
+        "text": true,
+        "total_loc": 2,
+        "total_size": 8
+      }
+    ],
+    "method": "hybrid",
+    "no_extension_files": [
+      "Makefile"
+    ],
+    "root": "ROOT",
+    "summary": {
+      "directories": 3,
+      "executables": 0,
+      "files": 6,
+      "files_sniffed": 2,
+      "files_without_extension": 1,
+      "max_depth": 2,
+      "symlinks": 0,
+      "unique_formats": 5,
+      "unreadable": 0
     }
-  ],
-  "no_extension_files": [
-    "Makefile"
-  ]
+  },
+  "preview": [],
+  "preview_error": null
 }

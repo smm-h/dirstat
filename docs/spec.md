@@ -1,6 +1,6 @@
 ---
 title: dirstat v1 specification
-description: Authoritative v1 specification for dirstat, with numbered requirements covering CLI, traversal, statistics, rendering, and JSON output.
+description: Authoritative v1 specification for dirstat, with numbered requirements covering CLI, traversal, statistics, rendering, and machine output.
 ---
 # dirstat — v1 specification
 
@@ -56,7 +56,6 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   | `--sort-by` | string, repeatable, unique | `count` | Sort columns, in precedence order; valid: `format` plus the nine stat names; invalid = hard error |
   | `--sort-order` | choice: `asc`, `desc` | `desc` | Applied to all sort columns |
   | `--top` | int | `-1` | Keep only the first N groups after sorting (table only); `-1` or `0` = all; values below `-1` are a usage error; in split mode applies per table |
-  | `--output` | choice: `table`, `json` | `table` | Output format (§7, §8) |
   | `--show` | choice: `summary`, `table`, `both` | `both` | Which sections to render (table output only) |
   | `--combined` | bool | `true` | One merged table vs separate text/binary tables |
   | `--singletons` | choice: `show`, `collapse` | `show` | Collapse one-file formats into a `(singletons)` row (table only, §7) |
@@ -68,10 +67,10 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
 
 - R9. Flag semantics that the prototype got wrong and dirstat must define cleanly:
   rendering-only flags (`--show`, `--combined`, `--singletons`, `--legend`,
-  `--colors`, `--human`, `--style`, `--top`) have no effect on JSON output.
-  `--sort-by`/`--sort-order` order groups in both outputs. `--stats` limits which
-  stats are computed and emitted in both outputs. `--list-no-ext` adds data to
-  both outputs (a section in table mode, a field in JSON mode).
+  `--colors`, `--human`, `--style`, `--top`) have no effect on the machine
+  payload. `--sort-by`/`--sort-order` order groups in both outputs. `--stats`
+  limits which stats are computed and emitted in both outputs. `--list-no-ext`
+  adds data to both outputs (a section in table mode, a field in the payload).
 
 ## 3. Grouping methods
 
@@ -187,7 +186,7 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   `--colors` is true AND stdout is a TTY. `--no-colors` output must be
   byte-identical to non-TTY output. The theme's `error` color is applied to the
   `error:` prefix of stderr error messages when stderr is a TTY and `--colors`
-  is true (stderr coloring is independent of `--output` mode).
+  is true (stderr coloring is independent of machine mode).
 - R31. Legend (`■ Text files ■ Binary files`) renders only when `--legend`,
   `--combined`, `--type both`, and colors are active (it is meaningless
   without color).
@@ -198,16 +197,20 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   happens within each table independently.
 - R33. Empty result → `No files found.` instead of an empty table.
 
-## 8. JSON output
+## 8. Machine output
 
-- R34. `--output json` writes a single JSON object to stdout, no ANSI codes ever,
-  raw integer values (no humanization). This is a consumer contract (external
-  tools will parse it): field names are stable, evolution is additive-only.
-- R35. Schema:
+- R34. Machine output is strictcli's `--json` mode, and dirstat declares no
+  output-format flag of its own. Under `--json`, stdout carries exactly one
+  document -- the framework's envelope -- and no table; the scan document is the
+  envelope's `payload` member. No ANSI codes ever, raw integer values (no
+  humanization). The payload is a consumer contract (external tools will parse
+  it): field names are stable, evolution is additive-only.
+- R35. Payload shape, declared to the framework as a JSON Schema on the scan
+  command and validated at emission, so a deviating document fails the run
+  instead of reaching a consumer:
 
   ```json
   {
-    "dirstat_version": "0.1.0",
     "root": "/abs/path",
     "method": "hybrid",
     "summary": {
@@ -226,10 +229,12 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   }
   ```
 
-  Groups are ordered per `--sort-by`/`--sort-order`. Stats absent from `--stats`
-  are omitted from group objects; LOC fields are `null` for binary groups.
-  `no_extension_files` (paths relative to root, sorted) present only with
-  `--list-no-ext`. `--top` and `--singletons` do not affect JSON (R9).
+  The binary's version is the envelope's `app_version` and is not restated in
+  the payload. Groups are ordered per `--sort-by`/`--sort-order`. Stats absent
+  from `--stats` are omitted from group objects; LOC fields are `null` for
+  binary groups. `no_extension_files` (paths relative to root, sorted) present
+  only with `--list-no-ext`. `--top` and `--singletons` do not affect the
+  payload (R9).
 
 ## 9. Sorting
 
@@ -244,8 +249,9 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   run it against fixture trees created with `t.TempDir()` (including: nested
   gitignore, hidden files, symlinks, permission-denied entries where the
   platform allows, extensionless files, empty dirs).
-- R38. Golden-file tests for JSON output: fixture tree in, committed golden JSON
-  compared byte-for-byte (after normalizing the absolute root path and version).
+- R38. Golden-file tests for machine output: fixture tree in, committed golden
+  envelope compared byte-for-byte (after normalizing the absolute root path and
+  the app version, and re-indenting the one-line document).
   Golden files live in `internal/test/testdata/`.
 - R39. Determinism test: two runs over the same fixture tree produce identical
   output despite the parallel worker pool.
@@ -286,8 +292,9 @@ rendering and output options are rejected with a hard error naming the key.
   `exclude = []` in the config file (or any CLI `--exclude`) replaces it
   entirely; there is no additive merging anywhere.
 - R46. Visibility: when a config file is in effect, the table summary gains a
-  `Config: <path>` line (first summary line, absolute path), and the JSON output
-  gains an additive optional field `"config"` (absolute path) after `"method"`.
+  `Config: <path>` line (first summary line, absolute path), and the machine
+  payload gains an additive optional field `"config"` (absolute path) after
+  `"method"`.
   Absent entirely when `--config` is not used (additive schema evolution, R34).
 - R47. Tests: unit tests for the TOML loader/validator and the argv explicitness
   scanner; integration tests covering happy path, missing file, malformed TOML,

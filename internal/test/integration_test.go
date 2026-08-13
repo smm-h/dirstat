@@ -79,18 +79,23 @@ func runDirstat(t *testing.T, args ...string) (stdout, stderr string, exitCode i
 	return stdout, stderr, exitCode
 }
 
-// scanJSON runs dirstat with --output json and parses the result.
+// scanJSON runs dirstat in machine mode and returns the scan document, which
+// is the envelope's payload member. Callers pass --json among their args.
 func scanJSON(t *testing.T, args ...string) map[string]interface{} {
 	t.Helper()
 	stdout, stderr, code := runDirstat(t, args...)
 	if code != 0 {
 		t.Fatalf("dirstat exited %d: %s", code, stderr)
 	}
-	var parsed map[string]interface{}
-	if err := json.Unmarshal([]byte(stdout), &parsed); err != nil {
+	var env map[string]interface{}
+	if err := json.Unmarshal([]byte(stdout), &env); err != nil {
 		t.Fatalf("invalid JSON: %v\n%s", err, stdout)
 	}
-	return parsed
+	payload, ok := env["payload"].(map[string]interface{})
+	if !ok {
+		t.Fatalf("envelope carries no payload object: %s", stdout)
+	}
+	return payload
 }
 
 func summaryField(t *testing.T, parsed map[string]interface{}, key string) int {
@@ -130,7 +135,7 @@ func TestScanBasicTree(t *testing.T) {
 		"emptydir/":      "",
 	})
 
-	parsed := scanJSON(t, "scan", root, "--output", "json")
+	parsed := scanJSON(t, "scan", root, "--json")
 	if got := summaryField(t, parsed, "directories"); got != 4 {
 		t.Errorf("directories = %d, want 4", got)
 	}
@@ -166,19 +171,19 @@ func TestNestedGitignore(t *testing.T) {
 	// list matching nothing (R45).
 
 	// exclude: drop ignored paths, including via nested .gitignore.
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--exclude", "", "--ignored", "exclude", "--hidden", "exclude")
+	parsed := scanJSON(t, "scan", root, "--json", "--exclude", "", "--ignored", "exclude", "--hidden", "exclude")
 	if got := summaryField(t, parsed, "files"); got != 2 { // keep.go, sub/open.txt
 		t.Errorf("exclude: files = %d, want 2", got)
 	}
 
 	// only: keep only ignored paths; files under ignored dirs count as ignored.
-	parsed = scanJSON(t, "scan", root, "--output", "json", "--exclude", "", "--ignored", "only", "--hidden", "exclude")
+	parsed = scanJSON(t, "scan", root, "--json", "--exclude", "", "--ignored", "only", "--hidden", "exclude")
 	if got := summaryField(t, parsed, "files"); got != 4 { // trace.log, build/out.bin, build/deep/a.md, sub/secret.txt
 		t.Errorf("only: files = %d, want 4", got)
 	}
 
 	// include: no matching at all (also picks up .git and .gitignore contents).
-	parsed = scanJSON(t, "scan", root, "--output", "json", "--exclude", "", "--ignored", "include", "--hidden", "exclude")
+	parsed = scanJSON(t, "scan", root, "--json", "--exclude", "", "--ignored", "include", "--hidden", "exclude")
 	if got := summaryField(t, parsed, "files"); got != 6 {
 		t.Errorf("include: files = %d, want 6", got)
 	}
@@ -192,7 +197,7 @@ func TestGitInfoExclude(t *testing.T) {
 		"a.txt":             "x\n",
 		"b.tmp":             "x\n",
 	})
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--ignored", "exclude", "--hidden", "exclude")
+	parsed := scanJSON(t, "scan", root, "--json", "--ignored", "exclude", "--hidden", "exclude")
 	if got := summaryField(t, parsed, "files"); got != 1 {
 		t.Errorf("files = %d, want 1 (b.tmp excluded via .git/info/exclude)", got)
 	}
@@ -206,11 +211,11 @@ func TestHiddenFiles(t *testing.T) {
 		".hidden.txt":       "x\n",
 		".hiddendir/in.txt": "x\n",
 	})
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--hidden", "include")
+	parsed := scanJSON(t, "scan", root, "--json", "--hidden", "include")
 	if got := summaryField(t, parsed, "files"); got != 3 {
 		t.Errorf("hidden include: files = %d, want 3", got)
 	}
-	parsed = scanJSON(t, "scan", root, "--output", "json", "--hidden", "exclude")
+	parsed = scanJSON(t, "scan", root, "--json", "--hidden", "exclude")
 	if got := summaryField(t, parsed, "files"); got != 1 {
 		t.Errorf("hidden exclude: files = %d, want 1", got)
 	}
@@ -237,7 +242,7 @@ func TestSymlinks(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--hidden", "exclude")
+	parsed := scanJSON(t, "scan", root, "--json", "--hidden", "exclude")
 	if got := summaryField(t, parsed, "symlinks"); got != 3 {
 		t.Errorf("symlinks = %d, want 3", got)
 	}
@@ -279,7 +284,7 @@ func TestUnmappedTextAndEmptyFilesCountAsText(t *testing.T) {
 		"empty.png":   "",
 		"asset.weird": "\x00\x01\x02\xff\xfe\x00",
 	})
-	parsed := scanJSON(t, "scan", root, "--output", "json")
+	parsed := scanJSON(t, "scan", root, "--json")
 
 	for _, tc := range []struct {
 		format  string
@@ -311,7 +316,7 @@ func TestExtensionlessFiles(t *testing.T) {
 		"data.bin":    "\x00\x01\x02",
 		"normal.txt":  "x\n",
 	})
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--list-no-ext")
+	parsed := scanJSON(t, "scan", root, "--json", "--list-no-ext")
 	if got := summaryField(t, parsed, "files_without_extension"); got != 2 {
 		t.Errorf("files_without_extension = %d, want 2", got)
 	}
@@ -354,7 +359,7 @@ func TestEmptyDirsAndEmptyResult(t *testing.T) {
 		"a/b/": "",
 		"c/":   "",
 	})
-	parsed := scanJSON(t, "scan", root, "--output", "json")
+	parsed := scanJSON(t, "scan", root, "--json")
 	if got := summaryField(t, parsed, "directories"); got != 4 {
 		t.Errorf("directories = %d, want 4", got)
 	}
@@ -391,7 +396,7 @@ func TestPermissionDenied(t *testing.T) {
 	testutil.Chmod(t, root, "locked", 0o000)
 	testutil.Chmod(t, root, "noread.txt", 0o000)
 
-	parsed := scanJSON(t, "scan", root, "--output", "json")
+	parsed := scanJSON(t, "scan", root, "--json")
 	// locked/ is unreadable (1) and noread.txt fails LOC reading (1).
 	if got := summaryField(t, parsed, "unreadable"); got != 2 {
 		t.Errorf("unreadable = %d, want 2", got)
@@ -417,7 +422,7 @@ func TestDepthAndExclude(t *testing.T) {
 		"d1/d2/c.txt":       "x\n",
 		"node_modules/x.js": "x\n",
 	})
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--depth", "1", "--exclude", "node_modules")
+	parsed := scanJSON(t, "scan", root, "--json", "--depth", "1", "--exclude", "node_modules")
 	if got := summaryField(t, parsed, "files"); got != 2 {
 		t.Errorf("files = %d, want 2", got)
 	}
@@ -435,13 +440,13 @@ func TestTypeFilterAndSort(t *testing.T) {
 		"c.md":  "# c\n",
 		"x.png": "\x89PNG\r\n\x1a\n",
 	})
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--type", "text",
+	parsed := scanJSON(t, "scan", root, "--json", "--type", "text",
 		"--sort-by", "format", "--sort-order", "asc")
 	formats := groupFormats(t, parsed)
 	if strings.Join(formats, ",") != "go,md" {
 		t.Errorf("formats = %v, want [go md]", formats)
 	}
-	parsed = scanJSON(t, "scan", root, "--output", "json", "--type", "binary")
+	parsed = scanJSON(t, "scan", root, "--json", "--type", "binary")
 	formats = groupFormats(t, parsed)
 	if strings.Join(formats, ",") != "png" {
 		t.Errorf("formats = %v, want [png]", formats)
@@ -457,7 +462,7 @@ func TestTopAndSingletonsAreTableOnly(t *testing.T) {
 	})
 
 	// JSON ignores --top and --singletons (R9).
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--top", "1", "--singletons", "collapse")
+	parsed := scanJSON(t, "scan", root, "--json", "--top", "1", "--singletons", "collapse")
 	if got := len(groupFormats(t, parsed)); got != 3 {
 		t.Errorf("JSON groups = %d, want 3 (top/singletons must not affect JSON)", got)
 	}
@@ -512,7 +517,7 @@ func TestStatsSelectionSkipsLOC(t *testing.T) {
 	// count truly skips the read, the file stays readable via DirEntry.
 	testutil.Chmod(t, root, "a.go", 0o000)
 
-	parsed := scanJSON(t, "scan", root, "--output", "json", "--stats", "count", "--method", "ext")
+	parsed := scanJSON(t, "scan", root, "--json", "--stats", "count", "--method", "ext")
 	if got := summaryField(t, parsed, "unreadable"); got != 0 {
 		t.Errorf("unreadable = %d, want 0 (LOC reads must be skipped)", got)
 	}
@@ -538,7 +543,7 @@ func TestSortByLOCForcesComputation(t *testing.T) {
 	})
 	// Sorting by total-loc with only count selected: LOC must still be
 	// computed for ordering, but not emitted.
-	parsed := scanJSON(t, "scan", root, "--output", "json",
+	parsed := scanJSON(t, "scan", root, "--json",
 		"--stats", "count", "--sort-by", "total-loc", "--sort-order", "desc")
 	formats := groupFormats(t, parsed)
 	if strings.Join(formats, ",") != "md,go" {
@@ -619,7 +624,7 @@ func TestExecutablesCounted(t *testing.T) {
 		"plain.txt": "x\n",
 	})
 	testutil.Chmod(t, root, "run.sh", 0o755)
-	parsed := scanJSON(t, "scan", root, "--output", "json")
+	parsed := scanJSON(t, "scan", root, "--json")
 	if got := summaryField(t, parsed, "executables"); got != 1 {
 		t.Errorf("executables = %d, want 1", got)
 	}

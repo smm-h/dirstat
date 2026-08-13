@@ -1,15 +1,18 @@
-// Package jsonout emits the machine-readable JSON output. The schema is a
-// consumer contract (R34): field names are stable, values are raw integers,
-// no ANSI codes, and evolution is additive-only.
+// Package jsonout builds the machine-readable scan document. The document is
+// the scan command's declared payload: the framework carries it as the
+// envelope's payload member under --json and validates it against Schema
+// before writing it. The shape is a consumer contract (R34): field names are
+// stable, values are raw integers, no ANSI codes, and evolution is
+// additive-only.
 package jsonout
 
 import (
 	"bytes"
 	"encoding/json"
-	"io"
 	"strconv"
 
 	"github.com/smm-h/dirstat/internal/scan"
+	"github.com/smm-h/strictcli/go/strictcli"
 )
 
 // Selection reports which stats were selected via --stats. Unselected stats
@@ -101,8 +104,10 @@ func (gj groupJSON) MarshalJSON() ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-type doc struct {
-	Version string      `json:"dirstat_version"`
+// Document is the scan command's machine payload. The binary's own version is
+// deliberately absent: the envelope carries it as app_version, and one fact
+// belongs in one place.
+type Document struct {
 	Root    string      `json:"root"`
 	Method  string      `json:"method"`
 	Config  string      `json:"config,omitempty"`
@@ -111,18 +116,17 @@ type doc struct {
 	NoExt   *[]string   `json:"no_extension_files,omitempty"`
 }
 
-// Write emits the JSON document for a scan result. groups must already be
+// Build assembles the document for a scan result. groups must already be
 // sorted per --sort-by/--sort-order. listNoExt controls the presence of the
 // no_extension_files field. configPath is the absolute path of the scan
 // config file in effect; when empty the additive "config" field is omitted
 // entirely (R46).
-func Write(w io.Writer, version, configPath string, res *scan.Result, groups []scan.Group, sel Selection, listNoExt bool) error {
+func Build(configPath string, res *scan.Result, groups []scan.Group, sel Selection, listNoExt bool) Document {
 	s := res.Summary
-	d := doc{
-		Version: version,
-		Root:    res.Root,
-		Method:  res.Method,
-		Config:  configPath,
+	d := Document{
+		Root:   res.Root,
+		Method: res.Method,
+		Config: configPath,
 		Summary: summaryJSON{
 			Directories:           s.Directories,
 			Files:                 s.Files,
@@ -147,11 +151,68 @@ func Write(w io.Writer, version, configPath string, res *scan.Result, groups []s
 		d.NoExt = &files
 	}
 
-	out, err := json.MarshalIndent(d, "", "  ")
-	if err != nil {
-		return err
-	}
-	out = append(out, '\n')
-	_, err = w.Write(out)
-	return err
+	return d
 }
+
+// intStat is a selected integer stat: present only when --stats asked for it.
+func intStat() map[string]interface{} { return strictcli.SchemaType("integer") }
+
+// locStat is a selected LOC stat: null for binary groups, which is why the
+// declaration is a type list rather than a plain integer.
+func locStat() map[string]interface{} { return strictcli.SchemaType("integer", "null") }
+
+// Schema is the scan command's declared payload schema (strictcli §19.5). It
+// states the same contract R34/R35 states in prose, in the form the framework
+// enforces at emission: a document deviating from it fails the run instead of
+// shipping a wrong shape to a consumer.
+//
+// Every stat property is optional because --stats selects which ones the group
+// objects carry; only the two identity fields are required of a group. The
+// additive fields "config" (R46) and "no_extension_files" are optional for the
+// same reason they are omitempty on the struct.
+var Schema = strictcli.SchemaObject(
+	map[string]interface{}{
+		"root":   strictcli.SchemaType("string"),
+		"method": strictcli.SchemaEnum("ext", "type", "hybrid"),
+		"config": strictcli.SchemaType("string"),
+		"summary": strictcli.SchemaObject(
+			map[string]interface{}{
+				"directories":             intStat(),
+				"files":                   intStat(),
+				"files_without_extension": intStat(),
+				"max_depth":               intStat(),
+				"symlinks":                intStat(),
+				"executables":             intStat(),
+				"unique_formats":          intStat(),
+				"files_sniffed":           intStat(),
+				"unreadable":              intStat(),
+			},
+			[]string{
+				"directories", "files", "files_without_extension", "max_depth",
+				"symlinks", "executables", "unique_formats", "files_sniffed",
+				"unreadable",
+			},
+			false,
+		),
+		"groups": strictcli.SchemaArray(strictcli.SchemaObject(
+			map[string]interface{}{
+				"format":     strictcli.SchemaType("string"),
+				"text":       strictcli.SchemaType("boolean"),
+				"count":      intStat(),
+				"total_size": intStat(),
+				"min_size":   intStat(),
+				"max_size":   intStat(),
+				"avg_size":   intStat(),
+				"total_loc":  locStat(),
+				"min_loc":    locStat(),
+				"max_loc":    locStat(),
+				"avg_loc":    locStat(),
+			},
+			[]string{"format", "text"},
+			false,
+		)),
+		"no_extension_files": strictcli.SchemaArray(strictcli.SchemaType("string")),
+	},
+	[]string{"root", "method", "summary", "groups"},
+	false,
+)

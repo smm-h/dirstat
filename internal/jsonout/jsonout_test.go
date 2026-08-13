@@ -2,11 +2,11 @@ package jsonout
 
 import (
 	"encoding/json"
-	"github.com/smm-h/stricttest/go/hygiene"
 	"strings"
 	"testing"
 
 	"github.com/smm-h/dirstat/internal/scan"
+	"github.com/smm-h/stricttest/go/hygiene"
 )
 
 func fullSelection() Selection {
@@ -34,23 +34,26 @@ func testResult() *scan.Result {
 	}
 }
 
-func writeToString(t *testing.T, res *scan.Result, sel Selection, listNoExt bool) string {
+// marshal renders a built document the way the framework renders it inside the
+// envelope: encoding/json over the same value.
+func marshal(t *testing.T, d Document) string {
 	t.Helper()
-	var sb strings.Builder
-	if err := Write(&sb, "1.2.3", "", res, res.Groups, sel, listNoExt); err != nil {
+	out, err := json.Marshal(d)
+	if err != nil {
 		t.Fatal(err)
 	}
-	return sb.String()
+	return string(out)
 }
 
-func TestWriteConfigField(t *testing.T) {
+func buildToString(t *testing.T, res *scan.Result, sel Selection, listNoExt bool) string {
+	t.Helper()
+	return marshal(t, Build("", res, res.Groups, sel, listNoExt))
+}
+
+func TestBuildConfigField(t *testing.T) {
 	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	// With a config path: additive "config" field directly after "method" (R46).
-	var sb strings.Builder
-	if err := Write(&sb, "1.2.3", "/etc/dirstat.toml", testResult(), nil, fullSelection(), false); err != nil {
-		t.Fatal(err)
-	}
-	out := sb.String()
+	out := marshal(t, Build("/etc/dirstat.toml", testResult(), nil, fullSelection(), false))
 	var parsed map[string]interface{}
 	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
 		t.Fatalf("invalid JSON: %v\n%s", err, out)
@@ -66,23 +69,27 @@ func TestWriteConfigField(t *testing.T) {
 	}
 
 	// Without a config path the field is absent entirely (additive schema, R34).
-	out = writeToString(t, testResult(), fullSelection(), false)
+	out = buildToString(t, testResult(), fullSelection(), false)
 	if strings.Contains(out, `"config"`) {
 		t.Errorf("config field must be omitted when --config is unused:\n%s", out)
 	}
 }
 
-func TestWriteFullSchema(t *testing.T) {
+func TestBuildFullSchema(t *testing.T) {
 	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	res := testResult()
-	out := writeToString(t, res, fullSelection(), true)
+	out := buildToString(t, res, fullSelection(), true)
 
 	var parsed map[string]interface{}
 	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
 		t.Fatalf("output is not valid JSON: %v\n%s", err, out)
 	}
-	if parsed["dirstat_version"] != "1.2.3" || parsed["root"] != "/data/project" || parsed["method"] != "hybrid" {
+	if parsed["root"] != "/data/project" || parsed["method"] != "hybrid" {
 		t.Errorf("bad top-level fields: %v", parsed)
+	}
+	// The binary's version is the envelope's app_version, never a payload field.
+	if _, present := parsed["dirstat_version"]; present {
+		t.Error("the document must not restate the binary version")
 	}
 	summary := parsed["summary"].(map[string]interface{})
 	for key, want := range map[string]float64{
@@ -119,16 +126,13 @@ func TestWriteFullSchema(t *testing.T) {
 	if strings.Contains(out, "\033") {
 		t.Error("JSON output contains ANSI escape")
 	}
-	if !strings.HasSuffix(out, "\n") {
-		t.Error("JSON output must end with a newline")
-	}
 }
 
-func TestWriteFieldOrder(t *testing.T) {
+func TestBuildFieldOrder(t *testing.T) {
 	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
-	out := writeToString(t, testResult(), fullSelection(), false)
+	out := buildToString(t, testResult(), fullSelection(), false)
 	wantOrder := []string{
-		`"dirstat_version"`, `"root"`, `"method"`, `"summary"`,
+		`"root"`, `"method"`, `"summary"`,
 		`"directories"`, `"files"`, `"files_without_extension"`, `"max_depth"`,
 		`"symlinks"`, `"executables"`, `"unique_formats"`, `"files_sniffed"`, `"unreadable"`,
 		`"groups"`, `"format"`, `"text"`, `"count"`,
@@ -148,10 +152,10 @@ func TestWriteFieldOrder(t *testing.T) {
 	}
 }
 
-func TestWriteStatsSelection(t *testing.T) {
+func TestBuildStatsSelection(t *testing.T) {
 	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	sel := Selection{"count": true, "total-size": true}
-	out := writeToString(t, testResult(), sel, false)
+	out := buildToString(t, testResult(), sel, false)
 	for _, absent := range []string{`"min_size"`, `"avg_size"`, `"total_loc"`, `"avg_loc"`} {
 		if strings.Contains(out, absent) {
 			t.Errorf("unselected stat %s present in output:\n%s", absent, out)
@@ -164,26 +168,26 @@ func TestWriteStatsSelection(t *testing.T) {
 	}
 }
 
-func TestWriteNoExtOmittedAndEmpty(t *testing.T) {
+func TestBuildNoExtOmittedAndEmpty(t *testing.T) {
 	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	res := testResult()
-	out := writeToString(t, res, fullSelection(), false)
+	out := buildToString(t, res, fullSelection(), false)
 	if strings.Contains(out, "no_extension_files") {
 		t.Error("no_extension_files must be omitted without --list-no-ext")
 	}
 
 	res.NoExtFiles = nil
-	out = writeToString(t, res, fullSelection(), true)
-	if !strings.Contains(out, `"no_extension_files": []`) {
+	out = buildToString(t, res, fullSelection(), true)
+	if !strings.Contains(out, `"no_extension_files":[]`) {
 		t.Errorf("expected empty array for no_extension_files:\n%s", out)
 	}
 }
 
-func TestWriteEmptyGroups(t *testing.T) {
+func TestBuildEmptyGroups(t *testing.T) {
 	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
 	res := &scan.Result{Root: "/x", Method: "ext"}
-	out := writeToString(t, res, fullSelection(), false)
-	if !strings.Contains(out, `"groups": []`) {
+	out := buildToString(t, res, fullSelection(), false)
+	if !strings.Contains(out, `"groups":[]`) {
 		t.Errorf("expected empty groups array:\n%s", out)
 	}
 }
