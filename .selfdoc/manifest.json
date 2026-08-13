@@ -63,22 +63,22 @@
         },
         {
           "level": 2,
-          "text": ".",
+          "text": "`.`",
           "anchor": ""
         },
         {
           "level": 3,
-          "text": "ExitSuccess",
+          "text": "`ExitSuccess`",
           "anchor": "exitsuccess"
         },
         {
           "level": 3,
-          "text": "ExitGeneral",
+          "text": "`ExitGeneral`",
           "anchor": "exitgeneral"
         },
         {
           "level": 3,
-          "text": "ExitUsage",
+          "text": "`ExitUsage`",
           "anchor": "exitusage"
         }
       ]
@@ -166,67 +166,67 @@
         },
         {
           "level": 2,
-          "text": "internal/classify",
+          "text": "`internal/classify`",
           "anchor": "internalclassify"
         },
         {
           "level": 3,
-          "text": "MethodExt",
+          "text": "`MethodExt`",
           "anchor": "methodext"
         },
         {
           "level": 3,
-          "text": "MethodType",
+          "text": "`MethodType`",
           "anchor": "methodtype"
         },
         {
           "level": 3,
-          "text": "MethodHybrid",
+          "text": "`MethodHybrid`",
           "anchor": "methodhybrid"
         },
         {
           "level": 3,
-          "text": "GroupNoExtension",
+          "text": "`GroupNoExtension`",
           "anchor": "groupnoextension"
         },
         {
           "level": 3,
-          "text": "GroupUnknown",
+          "text": "`GroupUnknown`",
           "anchor": "groupunknown"
         },
         {
           "level": 3,
-          "text": "Class",
+          "text": "`Class`",
           "anchor": "class"
         },
         {
           "level": 3,
-          "text": "Classifier",
+          "text": "`Classifier`",
           "anchor": "classifier"
         },
         {
           "level": 3,
-          "text": "New",
+          "text": "`New`",
           "anchor": "new"
         },
         {
           "level": 3,
-          "text": "NormalizeExt",
+          "text": "`NormalizeExt`",
           "anchor": "normalizeext"
         },
         {
           "level": 3,
-          "text": "Classifier.ExtIsText",
+          "text": "`Classifier.ExtIsText`",
           "anchor": "classifierextistext"
         },
         {
           "level": 3,
-          "text": "Classifier.MimeIsText",
+          "text": "`Classifier.MimeIsText`",
           "anchor": "classifiermimeistext"
         },
         {
           "level": 3,
-          "text": "Classifier.File",
+          "text": "`Classifier.File`",
           "anchor": "classifierfile"
         }
       ]
@@ -243,27 +243,27 @@
         },
         {
           "level": 2,
-          "text": "internal/config",
+          "text": "`internal/config`",
           "anchor": "internalconfig"
         },
         {
           "level": 3,
-          "text": "Theme",
+          "text": "`Theme`",
           "anchor": "theme"
         },
         {
           "level": 3,
-          "text": "TextExtensions",
+          "text": "`TextExtensions`",
           "anchor": "textextensions"
         },
         {
           "level": 3,
-          "text": "TextMimetypes",
+          "text": "`TextMimetypes`",
           "anchor": "textmimetypes"
         },
         {
           "level": 3,
-          "text": "LoadTheme",
+          "text": "`LoadTheme`",
           "anchor": "loadtheme"
         }
       ]
@@ -280,22 +280,32 @@
         },
         {
           "level": 2,
-          "text": "internal/jsonout",
+          "text": "`internal/jsonout`",
           "anchor": "internaljsonout"
         },
         {
           "level": 3,
-          "text": "Selection",
+          "text": "`Schema`",
+          "anchor": "schema"
+        },
+        {
+          "level": 3,
+          "text": "`Selection`",
           "anchor": "selection"
         },
         {
           "level": 3,
-          "text": "Write",
-          "anchor": "write"
+          "text": "`Document`",
+          "anchor": "document"
         },
         {
           "level": 3,
-          "text": "groupJSON.MarshalJSON",
+          "text": "`Build`",
+          "anchor": "build"
+        },
+        {
+          "level": 3,
+          "text": "`groupJSON.MarshalJSON`",
           "anchor": "groupjsonmarshaljson"
         }
       ]
@@ -312,27 +322,27 @@
         },
         {
           "level": 2,
-          "text": "internal/render",
+          "text": "`internal/render`",
           "anchor": "internalrender"
         },
         {
           "level": 3,
-          "text": "Options",
+          "text": "`Options`",
           "anchor": "options"
         },
         {
           "level": 3,
-          "text": "FormatError",
+          "text": "`FormatError`",
           "anchor": "formaterror"
         },
         {
           "level": 3,
-          "text": "DetectThemeName",
+          "text": "`DetectThemeName`",
           "anchor": "detectthemename"
         },
         {
           "level": 3,
-          "text": "Render",
+          "text": "`Render`",
           "anchor": "render"
         }
       ]
@@ -349,102 +359,102 @@
         },
         {
           "level": 2,
-          "text": "internal/scan",
+          "text": "`internal/scan`",
           "anchor": "internalscan"
         },
         {
           "level": 3,
-          "text": "SingletonsGroup",
+          "text": "`SingletonsGroup`",
           "anchor": "singletonsgroup"
         },
         {
           "level": 3,
-          "text": "IgnoredInclude",
+          "text": "`IgnoredInclude`",
           "anchor": "ignoredinclude"
         },
         {
           "level": 3,
-          "text": "IgnoredExclude",
+          "text": "`IgnoredExclude`",
           "anchor": "ignoredexclude"
         },
         {
           "level": 3,
-          "text": "IgnoredOnly",
+          "text": "`IgnoredOnly`",
           "anchor": "ignoredonly"
         },
         {
           "level": 3,
-          "text": "HiddenInclude",
+          "text": "`HiddenInclude`",
           "anchor": "hiddeninclude"
         },
         {
           "level": 3,
-          "text": "HiddenExclude",
+          "text": "`HiddenExclude`",
           "anchor": "hiddenexclude"
         },
         {
           "level": 3,
-          "text": "TypeText",
+          "text": "`TypeText`",
           "anchor": "typetext"
         },
         {
           "level": 3,
-          "text": "TypeBinary",
+          "text": "`TypeBinary`",
           "anchor": "typebinary"
         },
         {
           "level": 3,
-          "text": "TypeBoth",
+          "text": "`TypeBoth`",
           "anchor": "typeboth"
         },
         {
           "level": 3,
-          "text": "StatNames",
+          "text": "`StatNames`",
           "anchor": "statnames"
         },
         {
           "level": 3,
-          "text": "Options",
+          "text": "`Options`",
           "anchor": "options"
         },
         {
           "level": 3,
-          "text": "Summary",
+          "text": "`Summary`",
           "anchor": "summary"
         },
         {
           "level": 3,
-          "text": "Group",
+          "text": "`Group`",
           "anchor": "group"
         },
         {
           "level": 3,
-          "text": "Result",
+          "text": "`Result`",
           "anchor": "result"
         },
         {
           "level": 3,
-          "text": "IsLOCStat",
+          "text": "`IsLOCStat`",
           "anchor": "islocstat"
         },
         {
           "level": 3,
-          "text": "SortGroups",
+          "text": "`SortGroups`",
           "anchor": "sortgroups"
         },
         {
           "level": 3,
-          "text": "CollapseSingletons",
+          "text": "`CollapseSingletons`",
           "anchor": "collapsesingletons"
         },
         {
           "level": 3,
-          "text": "Scan",
+          "text": "`Scan`",
           "anchor": "scan"
         },
         {
           "level": 3,
-          "text": "ignoreMatcher.Match",
+          "text": "`ignoreMatcher.Match`",
           "anchor": "ignorematchermatch"
         }
       ]
@@ -461,37 +471,37 @@
         },
         {
           "level": 2,
-          "text": "internal/scanconfig",
+          "text": "`internal/scanconfig`",
           "anchor": "internalscanconfig"
         },
         {
           "level": 3,
-          "text": "AllowedKeys",
+          "text": "`AllowedKeys`",
           "anchor": "allowedkeys"
         },
         {
           "level": 3,
-          "text": "Config",
+          "text": "`Config`",
           "anchor": "config"
         },
         {
           "level": 3,
-          "text": "Load",
+          "text": "`Load`",
           "anchor": "load"
         },
         {
           "level": 3,
-          "text": "ExplicitKeys",
+          "text": "`ExplicitKeys`",
           "anchor": "explicitkeys"
         },
         {
           "level": 3,
-          "text": "Config.Has",
+          "text": "`Config.Has`",
           "anchor": "confighas"
         },
         {
           "level": 3,
-          "text": "Config.Overlay",
+          "text": "`Config.Overlay`",
           "anchor": "configoverlay"
         }
       ]
@@ -508,7 +518,7 @@
         },
         {
           "level": 2,
-          "text": "internal/test",
+          "text": "`internal/test`",
           "anchor": "internaltest"
         }
       ]
@@ -525,17 +535,17 @@
         },
         {
           "level": 2,
-          "text": "internal/testutil",
+          "text": "`internal/testutil`",
           "anchor": "internaltestutil"
         },
         {
           "level": 3,
-          "text": "WriteTree",
+          "text": "`WriteTree`",
           "anchor": "writetree"
         },
         {
           "level": 3,
-          "text": "Chmod",
+          "text": "`Chmod`",
           "anchor": "chmod"
         }
       ]
@@ -587,8 +597,8 @@
         },
         {
           "level": 2,
-          "text": "8. JSON output",
-          "anchor": "8-json-output"
+          "text": "8. Machine output",
+          "anchor": "8-machine-output"
         },
         {
           "level": 2,
@@ -614,5 +624,6 @@
     }
   ],
   "posts": [],
-  "last_gen": "2026-08-12T03:44:03.451050+00:00"
+  "last_gen": "2026-08-13T18:27:32.225794+00:00",
+  "theme": "minimal"
 }

@@ -29,7 +29,6 @@ Summarize the files under a directory tree, grouped by format, with counts, size
 | `--sort-by` |  | str | `["count"]` |  | sort column, in precedence order when repeated: format, count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc |
 | `--sort-order` |  | str | desc |  | sort direction: asc or desc, applied uniformly to every --sort-by column |
 | `--top` |  | int | -1 |  | keep only the first N groups after sorting (table output only); -1 or 0 = all |
-| `--output` |  | str | table |  | output format: table (colored terminal tables) or json (stable machine-readable schema) |
 | `--show` |  | str | both |  | sections to render: summary, table, or both (table output only) |
 | `--combined` |  | bool | True |  | render one merged table with text and binary rows distinguished by color, instead of separate text/binary tables |
 | `--singletons` |  | str | show |  | show one-file formats as-is, or collapse them into a single (singletons) row (table output only) |
