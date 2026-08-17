@@ -1,6 +1,6 @@
 ---
 title: internal/jsonout
-description: "The machine-readable JSON writer: a stable, additive-only document with the scan summary, the per-format groups, and the extensionless file list."
+description: "The scan command's declared payload: a stable, additive-only document carrying the scan summary, the per-format groups and the extensionless file list, validated against the schema this package owns before the envelope carries it."
 generated: true
 nav_group: "API Reference"
 nav_order: 4
