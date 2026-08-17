@@ -1,202 +1,94 @@
 {
+  "schema_version": 2,
+  "defaults": {
+    "schema_version": 2,
+    "app": {
+      "env_prefix": null,
+      "config": false,
+      "config_format": "json",
+      "config_path": null,
+      "config_conflict_mode": "cli-wins",
+      "proc_observe_allowlist": [],
+      "global_flags": [],
+      "commands": {},
+      "groups": {},
+      "deprecated": {},
+      "tag_contracts": {},
+      "checks": {},
+      "config_fields": {},
+      "infra": {}
+    },
+    "flag": {
+      "short": null,
+      "env": null,
+      "env_separator": null,
+      "prefixed": true,
+      "choices": null,
+      "elect_by": null,
+      "unique": false,
+      "conflict_mode": null,
+      "negatable": null,
+      "nullable": false
+    },
+    "arg": {
+      "variadic": false,
+      "choices": null
+    },
+    "choice": {
+      "flags": []
+    },
+    "choice_record": {
+      "help": null
+    },
+    "command": {
+      "consequential": false,
+      "dry_run_supported": true,
+      "dry_run_unsupported_reason": null,
+      "update_of": null,
+      "write_mode": null,
+      "payload_schema": null,
+      "owns_stdout": false,
+      "passthrough": false,
+      "flags": [],
+      "flag_sets": [],
+      "args": [],
+      "tags": [],
+      "constraints": [],
+      "hidden": false,
+      "interactive": false,
+      "config_fields": [],
+      "grants": [],
+      "forwarding": null
+    },
+    "group": {
+      "commands": {},
+      "groups": {},
+      "deprecated": {},
+      "tags": [],
+      "hidden": false
+    },
+    "config_field": {
+      "default": null,
+      "bound_commands": []
+    },
+    "check": {
+      "scope": null
+    },
+    "infra": {
+      "roots": [],
+      "handshakes": [],
+      "connections": []
+    }
+  },
+  "project_id": "github.com/smm-h/dirstat",
+  "name": "dirstat",
+  "version": "dev",
+  "help": "Summarize files in a directory tree, grouped by format, with aggregate statistics",
   "commands": {
     "scan": {
-      "args": [
-        {
-          "default": ".",
-          "help": "directory to summarize (default: current directory)",
-          "name": "where",
-          "required": false
-        }
-      ],
-      "effect": "read_only",
-      "flags": [
-        {
-          "choices": [
-            "ext",
-            "type",
-            "hybrid"
-          ],
-          "default": "hybrid",
-          "help": "grouping method: ext (extension only, no sniffing), type (content-sniff every file), hybrid (trust known text extensions, content-sniff everything else)",
-          "name": "method",
-          "type": "str"
-        },
-        {
-          "default": -1,
-          "help": "maximum directory depth below the root; -1 = unlimited; the root is depth 0",
-          "name": "depth",
-          "type": "int"
-        },
-        {
-          "default": [
-            ".git",
-            "node_modules",
-            ".venv",
-            "vendor",
-            "build",
-            "dist",
-            "target",
-            "zig-out",
-            "zig-pkg",
-            ".next",
-            ".svelte-kit",
-            "__pycache__",
-            ".mypy_cache",
-            ".ruff_cache",
-            ".pytest_cache",
-            ".hypothesis",
-            ".gradle",
-            ".idea",
-            ".wrangler",
-            ".vscode"
-          ],
-          "help": "exact base name to skip, matching directories and files; repeatable; passing the flag replaces the built-in default list entirely",
-          "name": "exclude",
-          "repeatable": true,
-          "type": "str",
-          "unique": true
-        },
-        {
-          "default": "",
-          "help": "path to a TOML scan-config file (keys: exclude, method, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error",
-          "name": "config",
-          "type": "str"
-        },
-        {
-          "choices": [
-            "include",
-            "exclude",
-            "only"
-          ],
-          "default": "exclude",
-          "help": "gitignored-path handling: include (no matching at all), exclude (drop ignored paths), only (keep only ignored paths); when the target is not inside a git work tree, exclude and only behave as if no patterns exist",
-          "name": "ignored",
-          "type": "str"
-        },
-        {
-          "choices": [
-            "include",
-            "exclude"
-          ],
-          "default": "include",
-          "help": "dot-prefixed entry handling: include or exclude; the root directory itself is never treated as hidden",
-          "name": "hidden",
-          "type": "str"
-        },
-        {
-          "help": "stat to compute and show (repeatable; default: all): count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc",
-          "name": "stats",
-          "repeatable": true,
-          "type": "str",
-          "unique": true
-        },
-        {
-          "choices": [
-            "text",
-            "binary",
-            "both"
-          ],
-          "default": "both",
-          "help": "filter groups by text/binary classification: text, binary, or both",
-          "name": "type",
-          "type": "str"
-        },
-        {
-          "default": [
-            "count"
-          ],
-          "help": "sort column, in precedence order when repeated: format, count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc",
-          "name": "sort-by",
-          "repeatable": true,
-          "type": "str",
-          "unique": true
-        },
-        {
-          "choices": [
-            "asc",
-            "desc"
-          ],
-          "default": "desc",
-          "help": "sort direction: asc or desc, applied uniformly to every --sort-by column",
-          "name": "sort-order",
-          "type": "str"
-        },
-        {
-          "default": -1,
-          "help": "keep only the first N groups after sorting (table output only); -1 or 0 = all",
-          "name": "top",
-          "type": "int"
-        },
-        {
-          "choices": [
-            "summary",
-            "table",
-            "both"
-          ],
-          "default": "both",
-          "help": "sections to render: summary, table, or both (table output only)",
-          "name": "show",
-          "type": "str"
-        },
-        {
-          "default": true,
-          "help": "render one merged table with text and binary rows distinguished by color, instead of separate text/binary tables",
-          "name": "combined",
-          "negatable": true,
-          "type": "bool"
-        },
-        {
-          "choices": [
-            "show",
-            "collapse"
-          ],
-          "default": "show",
-          "help": "show one-file formats as-is, or collapse them into a single (singletons) row (table output only)",
-          "name": "singletons",
-          "type": "str"
-        },
-        {
-          "default": false,
-          "help": "list the paths of extensionless files (a section in table output, a field in JSON output)",
-          "name": "list-no-ext",
-          "negatable": true,
-          "type": "bool"
-        },
-        {
-          "default": true,
-          "help": "show the text/binary color legend under the combined table (needs active colors)",
-          "name": "legend",
-          "negatable": true,
-          "type": "bool"
-        },
-        {
-          "default": true,
-          "help": "use ANSI colors; auto-disabled when stdout is not a TTY",
-          "name": "colors",
-          "negatable": true,
-          "type": "bool"
-        },
-        {
-          "default": true,
-          "help": "human-readable sizes and thousands separators (table output only)",
-          "name": "human",
-          "negatable": true,
-          "type": "bool"
-        },
-        {
-          "choices": [
-            "unicode",
-            "ascii"
-          ],
-          "default": "unicode",
-          "help": "table border character set: unicode box-drawing characters or plain ASCII borders",
-          "name": "style",
-          "type": "str"
-        }
-      ],
-      "help": "Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.",
       "name": "scan",
+      "help": "Summarize the files under a directory tree, grouped by format, with counts, sizes, and lines of code as terminal tables or JSON.",
+      "effect": "read_only",
       "payload_schema": {
         "additionalProperties": false,
         "properties": {
@@ -329,58 +221,362 @@
           "groups"
         ],
         "type": "object"
-      }
+      },
+      "flags": [
+        {
+          "name": "method",
+          "help": "how a file's format group is decided",
+          "value_schema": {
+            "type": "string",
+            "enum": [
+              "ext",
+              "type",
+              "hybrid"
+            ]
+          },
+          "presence": "default",
+          "default": "hybrid",
+          "choices": [
+            {
+              "value": "ext",
+              "help": "group by extension only, sniffing nothing"
+            },
+            {
+              "value": "type",
+              "help": "content-sniff every file"
+            },
+            {
+              "value": "hybrid",
+              "help": "trust known text extensions, content-sniff everything else"
+            }
+          ]
+        },
+        {
+          "name": "depth",
+          "help": "maximum directory depth below the root; -1 = unlimited; the root is depth 0",
+          "value_schema": {
+            "type": "integer"
+          },
+          "presence": "default",
+          "default": -1
+        },
+        {
+          "name": "exclude",
+          "help": "exact base name to skip, matching directories and files; repeatable; passing the flag replaces the built-in default list entirely",
+          "value_schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "presence": "default",
+          "default": [
+            ".git",
+            "node_modules",
+            ".venv",
+            "vendor",
+            "build",
+            "dist",
+            "target",
+            "zig-out",
+            "zig-pkg",
+            ".next",
+            ".svelte-kit",
+            "__pycache__",
+            ".mypy_cache",
+            ".ruff_cache",
+            ".pytest_cache",
+            ".hypothesis",
+            ".gradle",
+            ".idea",
+            ".wrangler",
+            ".vscode"
+          ],
+          "unique": true
+        },
+        {
+          "name": "config",
+          "help": "path to a TOML scan-config file (keys: exclude, method, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error",
+          "value_schema": {
+            "type": "string"
+          },
+          "presence": "default",
+          "default": ""
+        },
+        {
+          "name": "ignored",
+          "help": "gitignored-path handling; outside a git work tree, exclude and only behave as if no patterns exist",
+          "value_schema": {
+            "type": "string",
+            "enum": [
+              "include",
+              "exclude",
+              "only"
+            ]
+          },
+          "presence": "default",
+          "default": "exclude",
+          "choices": [
+            {
+              "value": "include",
+              "help": "no gitignore matching at all"
+            },
+            {
+              "value": "exclude",
+              "help": "drop the paths git ignores"
+            },
+            {
+              "value": "only",
+              "help": "keep only the paths git ignores"
+            }
+          ]
+        },
+        {
+          "name": "hidden",
+          "help": "dot-prefixed entry handling; the root directory itself is never treated as hidden",
+          "value_schema": {
+            "type": "string",
+            "enum": [
+              "include",
+              "exclude"
+            ]
+          },
+          "presence": "default",
+          "default": "include",
+          "choices": [
+            {
+              "value": "include",
+              "help": "walk into dot-prefixed entries"
+            },
+            {
+              "value": "exclude",
+              "help": "skip dot-prefixed entries"
+            }
+          ]
+        },
+        {
+          "name": "stats",
+          "help": "stat to compute and show (repeatable): count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc; omitted, every stat is shown",
+          "value_schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "presence": "optional",
+          "unique": true
+        },
+        {
+          "name": "type",
+          "help": "filter groups by their text/binary classification",
+          "value_schema": {
+            "type": "string",
+            "enum": [
+              "text",
+              "binary",
+              "both"
+            ]
+          },
+          "presence": "default",
+          "default": "both",
+          "choices": [
+            {
+              "value": "text",
+              "help": "keep the text groups"
+            },
+            {
+              "value": "binary",
+              "help": "keep the binary groups"
+            },
+            {
+              "value": "both",
+              "help": "keep every group"
+            }
+          ]
+        },
+        {
+          "name": "sort-by",
+          "help": "sort column, in precedence order when repeated: format, count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc",
+          "value_schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "presence": "default",
+          "default": [
+            "count"
+          ],
+          "unique": true
+        },
+        {
+          "name": "sort-order",
+          "help": "sort direction, applied uniformly to every --sort-by column",
+          "value_schema": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "presence": "default",
+          "default": "desc",
+          "choices": [
+            {
+              "value": "asc",
+              "help": "smallest first"
+            },
+            {
+              "value": "desc",
+              "help": "largest first"
+            }
+          ]
+        },
+        {
+          "name": "top",
+          "help": "keep only the first N groups after sorting (table output only); -1 or 0 = all",
+          "value_schema": {
+            "type": "integer"
+          },
+          "presence": "default",
+          "default": -1
+        },
+        {
+          "name": "show",
+          "help": "sections to render (table output only)",
+          "value_schema": {
+            "type": "string",
+            "enum": [
+              "summary",
+              "table",
+              "both"
+            ]
+          },
+          "presence": "default",
+          "default": "both",
+          "choices": [
+            {
+              "value": "summary",
+              "help": "the summary section alone"
+            },
+            {
+              "value": "table",
+              "help": "the format tables alone"
+            },
+            {
+              "value": "both",
+              "help": "the summary and the tables"
+            }
+          ]
+        },
+        {
+          "name": "combined",
+          "help": "render one merged table with text and binary rows distinguished by color, instead of separate text/binary tables",
+          "value_schema": {
+            "type": "boolean"
+          },
+          "presence": "default",
+          "default": true,
+          "negatable": true
+        },
+        {
+          "name": "singletons",
+          "help": "how one-file formats are rendered (table output only)",
+          "value_schema": {
+            "type": "string",
+            "enum": [
+              "show",
+              "collapse"
+            ]
+          },
+          "presence": "default",
+          "default": "show",
+          "choices": [
+            {
+              "value": "show",
+              "help": "one row per one-file format, as-is"
+            },
+            {
+              "value": "collapse",
+              "help": "one (singletons) row standing for all of them"
+            }
+          ]
+        },
+        {
+          "name": "list-no-ext",
+          "help": "list the paths of extensionless files (a section in table output, a field in JSON output)",
+          "value_schema": {
+            "type": "boolean"
+          },
+          "presence": "default",
+          "default": false,
+          "negatable": true
+        },
+        {
+          "name": "legend",
+          "help": "show the text/binary color legend under the combined table (needs active colors)",
+          "value_schema": {
+            "type": "boolean"
+          },
+          "presence": "default",
+          "default": true,
+          "negatable": true
+        },
+        {
+          "name": "colors",
+          "help": "use ANSI colors; auto-disabled when stdout is not a TTY",
+          "value_schema": {
+            "type": "boolean"
+          },
+          "presence": "default",
+          "default": true,
+          "negatable": true
+        },
+        {
+          "name": "human",
+          "help": "human-readable sizes and thousands separators (table output only)",
+          "value_schema": {
+            "type": "boolean"
+          },
+          "presence": "default",
+          "default": true,
+          "negatable": true
+        },
+        {
+          "name": "style",
+          "help": "table border character set",
+          "value_schema": {
+            "type": "string",
+            "enum": [
+              "unicode",
+              "ascii"
+            ]
+          },
+          "presence": "default",
+          "default": "unicode",
+          "choices": [
+            {
+              "value": "unicode",
+              "help": "unicode box-drawing borders"
+            },
+            {
+              "value": "ascii",
+              "help": "plain ASCII borders"
+            }
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "where",
+          "help": "directory to summarize; omitted, the current directory",
+          "value_schema": {
+            "type": "string"
+          },
+          "presence": "default",
+          "default": "."
+        }
+      ]
     }
-  },
-  "defaults": {
-    "app": {
-      "commands": {},
-      "config": false,
-      "deprecated": {},
-      "env_prefix": null,
-      "global_flags": [],
-      "groups": {},
-      "tag_contracts": {}
-    },
-    "arg": {
-      "choices": null,
-      "default": null,
-      "required": true,
-      "type": "str",
-      "variadic": false
-    },
-    "command": {
-      "args": [],
-      "constraints": [],
-      "flags": [],
-      "hidden": false,
-      "interactive": false,
-      "passthrough": false,
-      "tags": []
-    },
-    "flag": {
-      "choices": null,
-      "default": null,
-      "env": null,
-      "env_separator": null,
-      "hidden": false,
-      "negatable": null,
-      "repeatable": false,
-      "short": null,
-      "unique": false
-    },
-    "group": {
-      "commands": {},
-      "deprecated": {},
-      "groups": {},
-      "hidden": false,
-      "tags": []
-    },
-    "schema_version": 1
-  },
-  "help": "Summarize files in a directory tree, grouped by format, with aggregate statistics",
-  "name": "dirstat",
-  "project_id": "github.com/smm-h/dirstat",
-  "schema_version": 1,
-  "version": "dev"
+  }
 }
