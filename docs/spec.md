@@ -40,8 +40,14 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
 - R7. Single command: `dirstat scan [where]`. `where` is an optional positional
   argument, default `"."`, the directory to summarize. A missing or non-directory
   path is a hard error (exit code for usage/input error, message to stderr).
-- R8. Flags (strictcli conventions: enums via `Choices`, bools with explicit
-  `Default`, auto `--no-*` negation; short names only where listed):
+- R8. Flags (strictcli conventions: every flag and the positional argument
+  declares exactly one presence -- `Required()`, `Optional()` or `Default(v)`;
+  a closed set is declared as `Choices(Ch(<value>, <help>) ...)`, one record per
+  value, so `--help` describes each value beneath its flag; auto `--no-*`
+  negation on bools; short names only where listed). `scan` is `read_only`, so
+  a declared default is legal on it -- the mutating-default ban reaches only
+  commands that write. The Default column below reads `optional` where the flag
+  declares no value at all:
 
   | Flag | Type | Default | Semantics |
   |---|---|---|---|
@@ -51,7 +57,7 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   | `--config` | string | `""` (none) | Path to a TOML scan-config file (§12); no default path, never auto-discovered |
   | `--ignored` | choice: `include`, `exclude`, `only` | `exclude` | Gitignored-path handling (§5) |
   | `--hidden` | choice: `include`, `exclude` | `include` | Dot-prefixed entries; the root dir itself is never treated as hidden |
-  | `--stats` | string, repeatable, unique | all | Which stats to compute/show; valid: `count`, `total-size`, `min-size`, `max-size`, `avg-size`, `total-loc`, `min-loc`, `max-loc`, `avg-loc`; invalid value = hard error |
+  | `--stats` | string, repeatable, unique | optional (absent = all) | Which stats to compute/show; valid: `count`, `total-size`, `min-size`, `max-size`, `avg-size`, `total-loc`, `min-loc`, `max-loc`, `avg-loc`; invalid value = hard error |
   | `--type` | choice: `text`, `binary`, `both` | `both` | Filter groups by text/binary classification |
   | `--sort-by` | string, repeatable, unique | `count` | Sort columns, in precedence order; valid: `format` plus the nine stat names; invalid = hard error |
   | `--sort-order` | choice: `asc`, `desc` | `desc` | Applied to all sort columns |
