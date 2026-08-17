@@ -16,30 +16,30 @@ Summarize the files under a directory tree, grouped by format, with counts, size
 
 ## Flags
 
-| Name | Short | Type | Default | Env | Description |
+| Name | Short | Type | Presence | Env | Description |
 | --- | --- | --- | --- | --- | --- |
-| `--method` |  | str | hybrid |  | grouping method: ext (extension only, no sniffing), type (content-sniff every file), hybrid (trust known text extensions, content-sniff everything else) |
-| `--depth` |  | int | -1 |  | maximum directory depth below the root; -1 = unlimited; the root is depth 0 |
-| `--exclude` |  | str | `[".git", "node_modules", ".venv", "vendor", "build", "dist", "target", "zig-out", "zig-pkg", ".next", ".svelte-kit", "__pycache__", ".mypy_cache", ".ruff_cache", ".pytest_cache", ".hypothesis", ".gradle", ".idea", ".wrangler", ".vscode"]` |  | exact base name to skip, matching directories and files; repeatable; passing the flag replaces the built-in default list entirely |
-| `--config` |  | str |  |  | path to a TOML scan-config file (keys: exclude, method, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error |
-| `--ignored` |  | str | exclude |  | gitignored-path handling: include (no matching at all), exclude (drop ignored paths), only (keep only ignored paths); when the target is not inside a git work tree, exclude and only behave as if no patterns exist |
-| `--hidden` |  | str | include |  | dot-prefixed entry handling: include or exclude; the root directory itself is never treated as hidden |
-| `--stats` |  | str |  |  | stat to compute and show (repeatable; default: all): count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc |
-| `--type` |  | str | both |  | filter groups by text/binary classification: text, binary, or both |
-| `--sort-by` |  | str | `["count"]` |  | sort column, in precedence order when repeated: format, count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc |
-| `--sort-order` |  | str | desc |  | sort direction: asc or desc, applied uniformly to every --sort-by column |
-| `--top` |  | int | -1 |  | keep only the first N groups after sorting (table output only); -1 or 0 = all |
-| `--show` |  | str | both |  | sections to render: summary, table, or both (table output only) |
-| `--combined` |  | bool | True |  | render one merged table with text and binary rows distinguished by color, instead of separate text/binary tables |
-| `--singletons` |  | str | show |  | show one-file formats as-is, or collapse them into a single (singletons) row (table output only) |
-| `--list-no-ext` |  | bool |  |  | list the paths of extensionless files (a section in table output, a field in JSON output) |
-| `--legend` |  | bool | True |  | show the text/binary color legend under the combined table (needs active colors) |
-| `--colors` |  | bool | True |  | use ANSI colors; auto-disabled when stdout is not a TTY |
-| `--human` |  | bool | True |  | human-readable sizes and thousands separators (table output only) |
-| `--style` |  | str | unicode |  | table border character set: unicode box-drawing characters or plain ASCII borders |
+| `--method` |  | str | default: `hybrid` |  | how a file's format group is decided Values: `ext` (group by extension only, sniffing nothing), `type` (content-sniff every file), `hybrid` (trust known text extensions, content-sniff everything else). |
+| `--depth` |  | int | default: `-1` |  | maximum directory depth below the root; -1 = unlimited; the root is depth 0 |
+| `--exclude` |  | list[str] (unique) | default: `[".git", "node_modules", ".venv", "vendor", "build", "dist", "target", "zig-out", "zig-pkg", ".next", ".svelte-kit", "__pycache__", ".mypy_cache", ".ruff_cache", ".pytest_cache", ".hypothesis", ".gradle", ".idea", ".wrangler", ".vscode"]` |  | exact base name to skip, matching directories and files; repeatable; passing the flag replaces the built-in default list entirely |
+| `--config` |  | str | default: `` |  | path to a TOML scan-config file (keys: exclude, method, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error |
+| `--ignored` |  | str | default: `exclude` |  | gitignored-path handling; outside a git work tree, exclude and only behave as if no patterns exist Values: `include` (no gitignore matching at all), `exclude` (drop the paths git ignores), `only` (keep only the paths git ignores). |
+| `--hidden` |  | str | default: `include` |  | dot-prefixed entry handling; the root directory itself is never treated as hidden Values: `include` (walk into dot-prefixed entries), `exclude` (skip dot-prefixed entries). |
+| `--stats` |  | list[str] (unique) | optional |  | stat to compute and show (repeatable): count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc; omitted, every stat is shown |
+| `--type` |  | str | default: `both` |  | filter groups by their text/binary classification Values: `text` (keep the text groups), `binary` (keep the binary groups), `both` (keep every group). |
+| `--sort-by` |  | list[str] (unique) | default: `["count"]` |  | sort column, in precedence order when repeated: format, count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc |
+| `--sort-order` |  | str | default: `desc` |  | sort direction, applied uniformly to every --sort-by column Values: `asc` (smallest first), `desc` (largest first). |
+| `--top` |  | int | default: `-1` |  | keep only the first N groups after sorting (table output only); -1 or 0 = all |
+| `--show` |  | str | default: `both` |  | sections to render (table output only) Values: `summary` (the summary section alone), `table` (the format tables alone), `both` (the summary and the tables). |
+| `--combined`, `--no-combined` |  | bool | default: `true` |  | render one merged table with text and binary rows distinguished by color, instead of separate text/binary tables |
+| `--singletons` |  | str | default: `show` |  | how one-file formats are rendered (table output only) Values: `show` (one row per one-file format, as-is), `collapse` (one (singletons) row standing for all of them). |
+| `--list-no-ext`, `--no-list-no-ext` |  | bool | default: `false` |  | list the paths of extensionless files (a section in table output, a field in JSON output) |
+| `--legend`, `--no-legend` |  | bool | default: `true` |  | show the text/binary color legend under the combined table (needs active colors) |
+| `--colors`, `--no-colors` |  | bool | default: `true` |  | use ANSI colors; auto-disabled when stdout is not a TTY |
+| `--human`, `--no-human` |  | bool | default: `true` |  | human-readable sizes and thousands separators (table output only) |
+| `--style` |  | str | default: `unicode` |  | table border character set Values: `unicode` (unicode box-drawing borders), `ascii` (plain ASCII borders). |
 
 ## Arguments
 
-| Name | Required | Description |
-| --- | --- | --- |
-| `where` | no | directory to summarize (default: current directory) |
+| Name | Type | Presence | Description |
+| --- | --- | --- | --- |
+| `where` | str | default: `.` | directory to summarize; omitted, the current directory |
