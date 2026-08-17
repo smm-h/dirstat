@@ -5,7 +5,7 @@
   "diagnostics": [],
   "dry_run": false,
   "exit_code": 0,
-  "interface_version": 1,
+  "interface_version": 2,
   "payload": {
     "config": "ROOT/dirstat.toml",
     "groups": [
@@ -103,5 +103,6 @@
     }
   },
   "preview": [],
-  "preview_error": null
+  "preview_error": null,
+  "writes": null
 }
