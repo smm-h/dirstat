@@ -34,7 +34,7 @@ func registerScanCmd(app *strictcli.App) {
 		strictcli.WithEffect(strictcli.EffectReadOnly),
 		strictcli.WithFlags(
 			strictcli.StringFlag("method",
-				"how a file's format group is decided",
+				"how each scanned file's format group is decided before it is counted",
 				strictcli.Choices(
 					strictcli.Ch("ext", "group by extension only, sniffing nothing"),
 					strictcli.Ch("type", "content-sniff every file"),
@@ -69,7 +69,7 @@ func registerScanCmd(app *strictcli.App) {
 				"stat to compute and show (repeatable): count, total-size, min-size, max-size, avg-size, total-loc, min-loc, max-loc, avg-loc; omitted, every stat is shown",
 				strictcli.Repeatable(), strictcli.Unique(true), strictcli.Optional()),
 			strictcli.StringFlag("type",
-				"filter groups by their text/binary classification",
+				"filter the reported groups by their text/binary classification",
 				strictcli.Choices(
 					strictcli.Ch("text", "keep the text groups"),
 					strictcli.Ch("binary", "keep the binary groups"),
@@ -88,7 +88,7 @@ func registerScanCmd(app *strictcli.App) {
 				"keep only the first N groups after sorting (table output only); -1 or 0 = all",
 				strictcli.Default(-1)),
 			strictcli.StringFlag("show",
-				"sections to render (table output only)",
+				"which sections the human table output renders; ignored in machine mode",
 				strictcli.Choices(
 					strictcli.Ch("summary", "the summary section alone"),
 					strictcli.Ch("table", "the format tables alone"),
@@ -116,7 +116,7 @@ func registerScanCmd(app *strictcli.App) {
 				"human-readable sizes and thousands separators (table output only)",
 				strictcli.Default(true)),
 			strictcli.StringFlag("style",
-				"table border character set",
+				"which character set the human table's borders are drawn with",
 				strictcli.Choices(
 					strictcli.Ch("unicode", "unicode box-drawing borders"),
 					strictcli.Ch("ascii", "plain ASCII borders"),

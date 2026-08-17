@@ -225,7 +225,7 @@
       "flags": [
         {
           "name": "method",
-          "help": "how a file's format group is decided",
+          "help": "how each scanned file's format group is decided before it is counted",
           "value_schema": {
             "type": "string",
             "enum": [
@@ -368,7 +368,7 @@
         },
         {
           "name": "type",
-          "help": "filter groups by their text/binary classification",
+          "help": "filter the reported groups by their text/binary classification",
           "value_schema": {
             "type": "string",
             "enum": [
@@ -443,7 +443,7 @@
         },
         {
           "name": "show",
-          "help": "sections to render (table output only)",
+          "help": "which sections the human table output renders; ignored in machine mode",
           "value_schema": {
             "type": "string",
             "enum": [
@@ -544,7 +544,7 @@
         },
         {
           "name": "style",
-          "help": "table border character set",
+          "help": "which character set the human table's borders are drawn with",
           "value_schema": {
             "type": "string",
             "enum": [
