@@ -1,6 +1,6 @@
 ---
 title: internal/jsonout
-description: "The scan command's declared payload: a stable, additive-only document carrying the scan summary, the per-format groups and the extensionless file list, validated against the schema this package owns before the envelope carries it."
+description: "The scan command's declared payload: a stable, additive-only document with the summary, per-format groups and extensionless files, checked before it ships."
 generated: true
 nav_group: "API Reference"
 nav_order: 4
