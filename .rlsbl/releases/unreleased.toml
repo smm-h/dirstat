@@ -2,11 +2,26 @@
 format_version = 1
 # Version bump type: patch, minor, major, infra, or prerelease
 #   prerelease: advance an existing pre-release (0.6.0-beta.0 -> -beta.1)
-bump = ""
+bump = "minor"
 # Short description of this release (required)
-description = ""
+description = "The strictcli v0.33.0 declaration regime: declared presence on every flag and argument, and a helped record per closed-set value."
 # Optional context explaining why these changes were made
-context = ""
+context = """
+strictcli v0.33.0 makes presence a declaration rather than an inference and
+replaces bare choice values with records. dirstat's one command is read_only,
+so the release's other headline rule -- no framework-picked value on a command
+that writes -- reaches nothing here and every defaulted flag keeps its default.
+
+Two declarations changed shape: --stats replaces Default(nil), the value-shaped
+spelling of optionality the framework now refuses, with Optional(), and the
+positional argument drops the removed ArgRequired(bool) form for ArgDefault
+alone. The eight closed-set flags declare one record per value with its own
+help, so --help and the generated flag table describe what each value does.
+
+The scan payload is unchanged field for field, which is what the regenerated
+golden documents show: the only diff in them is the framework envelope's own
+interface_version and its new writes member.
+"""
 # Pre-release channel: alpha, beta, rc, or stable (ordered;
 # demotion is an error). With patch/minor/major it ENTERS the
 # channel (0.5.2 + minor + alpha -> 0.6.0-alpha.0); with
