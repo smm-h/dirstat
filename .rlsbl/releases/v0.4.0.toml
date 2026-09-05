@@ -32,3 +32,7 @@ interface_version and its new writes member.
 # blog = false
 include = ["go"]
 exclude = []
+candidate_sha = "43ba33409fa9aecf0a5c5dbac71a8ec3cef67d2e"
+
+[tree_hashes]
+"." = "4a239b3223e5b44e9953e805f92ffc5d7c74a223"

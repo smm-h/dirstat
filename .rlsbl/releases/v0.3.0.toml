@@ -38,3 +38,7 @@ a schema-driven CLI reference, and a complete API reference.
 # blog = false
 include = ["go"]
 exclude = []
+candidate_sha = "bb63338a996ee011f31dce72e68da150b836e9a7"
+
+[tree_hashes]
+"." = "4715349cbe1c650560ae7f8d405a99c69da35460"
