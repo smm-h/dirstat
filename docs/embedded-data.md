@@ -1,6 +1,6 @@
 ---
 title: Embedded Data
-description: "How dirstat classifies files as text or binary using embedded extension and MIME type lists, and which directories are excluded by default."
+description: "How dirstat classifies files as text or binary using embedded extension and MIME type lists, how canonical format aliases merge group names, and which directories are excluded by default."
 ---
 # Embedded Data
 

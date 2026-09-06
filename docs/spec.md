@@ -1,6 +1,6 @@
 ---
 title: dirstat v1 specification
-description: Authoritative v1 specification for dirstat, with numbered requirements covering the CLI and its flag declarations, traversal, statistics, and output.
+description: Authoritative v1 specification for dirstat, with numbered requirements covering the CLI and its flag declarations, traversal, classification and canonical format naming, statistics, and output.
 ---
 # dirstat — v1 specification
 
