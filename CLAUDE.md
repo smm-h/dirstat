@@ -42,6 +42,6 @@ go test ./internal/test -run TestGolden -args -update   # regenerate golden JSON
 - **The payload shape is a consumer contract:** field names are stable, evolution is additive-only. Never remove or rename fields.
 - **Rendering-only flags never affect the payload** (`--show`, `--combined`, `--singletons`, `--legend`, `--colors`, `--human`, `--style`, `--top`).
 - **Determinism:** worker-pool results are stored by index; groups are sorted with a full tie-break. Two runs must produce identical output.
-- **Embedded classification data:** the text lists and themes are `go:embed` data under `internal/config/data/`; changing them means a rebuild. The only runtime file input is the explicit `--config` TOML scan-config (spec §11): never auto-discovered, scan-semantic keys only, file/CLI overlap is a hard error.
+- **Embedded classification data:** the text lists, the canonical format alias table (`--formats canonical`) and the themes are `go:embed` data under `internal/config/data/`; changing them means a rebuild. The only runtime file input is the explicit `--config` TOML scan-config (spec §11): never auto-discovered, scan-semantic keys only, file/CLI overlap is a hard error.
 - **`.strictcli/schema.json`** is committed; regenerate with `./dirstat --dump-schema` after changing the CLI surface.
 - **Releases:** rlsbl-managed (`.rlsbl/`), JSONL changelog required for every commit.

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "name": "dirstat",
   "slug": "dirstat",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "dirstat summarizes the files in a directory tree, grouped by format, with aggregate statistics (counts, sizes, lines of code) rendered as a colored terminal table or as JSON.",
   "language": "go",
   "base_url": "https://github.com/smm-h/dirstat",
@@ -110,6 +110,11 @@
         },
         {
           "level": 2,
+          "text": "Canonical format aliases",
+          "anchor": "canonical-format-aliases"
+        },
+        {
+          "level": 2,
           "text": "Default excludes",
           "anchor": "default-excludes"
         },
@@ -186,6 +191,16 @@
         },
         {
           "level": 3,
+          "text": "`FormatsRaw`",
+          "anchor": "formatsraw"
+        },
+        {
+          "level": 3,
+          "text": "`FormatsCanonical`",
+          "anchor": "formatscanonical"
+        },
+        {
+          "level": 3,
           "text": "`GroupNoExtension`",
           "anchor": "groupnoextension"
         },
@@ -213,6 +228,11 @@
           "level": 3,
           "text": "`NormalizeExt`",
           "anchor": "normalizeext"
+        },
+        {
+          "level": 3,
+          "text": "`ShebangFormat`",
+          "anchor": "shebangformat"
         },
         {
           "level": 3,
@@ -260,6 +280,11 @@
           "level": 3,
           "text": "`TextMimetypes`",
           "anchor": "textmimetypes"
+        },
+        {
+          "level": 3,
+          "text": "`CanonicalFormats`",
+          "anchor": "canonicalformats"
         },
         {
           "level": 3,
@@ -406,6 +431,16 @@
           "level": 3,
           "text": "`TypeBoth`",
           "anchor": "typeboth"
+        },
+        {
+          "level": 3,
+          "text": "`FormatsRaw`",
+          "anchor": "formatsraw"
+        },
+        {
+          "level": 3,
+          "text": "`FormatsCanonical`",
+          "anchor": "formatscanonical"
         },
         {
           "level": 3,
@@ -624,6 +659,6 @@
     }
   ],
   "posts": [],
-  "last_gen": "2026-08-13T18:27:32.225794+00:00",
+  "last_gen": "2026-09-06T18:02:12.158262+00:00",
   "theme": "minimal"
 }
