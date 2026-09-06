@@ -66,11 +66,27 @@ Every flag is documented in `dirstat scan --help` and in the generated [docs/cli
 | `type` | Content-sniff every file; group by detected MIME type |
 | `hybrid` (default) | Files with an extension behave as in `ext`; extensionless files are sniffed and grouped by MIME type |
 
+## Format names
+
+`--formats` decides how the group name the method chose is spelled. It changes no
+verdict: the same files are read, sniffed and classified either way.
+
+| Mode | Behavior |
+|--------|----------|
+| `raw` (default) | The extension or sniffed MIME type verbatim, so `a.mjs` and `b.js` are separate groups and an extensionless script counts under `text/plain` |
+| `canonical` | Alias formats merge (`mjs`/`cjs` into `js`, `h` into `c`, `hpp` into `cpp`, `text/x-python` into `py`), and an extensionless file with a shebang is named by its interpreter (`#!/usr/bin/env -S uv run python` counts under `py`) |
+
+The alias table is embedded from `internal/config/data/canonical_formats.txt`. The
+shebang reader strips an `env` wrapper (including its `-S` form and `NAME=value`
+assignments), resolves the `uv run X` and `uvx X` runner forms, and drops a
+trailing version (`python3.12` reads as `python`); an interpreter it does not
+know falls through to content sniffing.
+
 ## Configuration
 
 `dirstat scan --config <path>` reads scan defaults from a TOML file. There is no default config path and no auto-discovery — dirstat never picks up config from XDG, HOME, the current directory, or the scanned tree; the file is used only when `--config` is passed.
 
-Allowed keys are exactly the scan-semantic flags (names with underscores): `exclude`, `method`, `depth`, `ignored`, `hidden`, `type`, `stats`, `sort_by`, `sort_order`. Rendering and output options (`colors`, `style`, `output`, `top`, ...) cannot be set from a file. Values are validated up front with the same rules as the flags; any unknown key, wrong type, or invalid value is a hard error before scanning starts.
+Allowed keys are exactly the scan-semantic flags (names with underscores): `exclude`, `method`, `formats`, `depth`, `ignored`, `hidden`, `type`, `stats`, `sort_by`, `sort_order`. Rendering and output options (`colors`, `style`, `output`, `top`, ...) cannot be set from a file. Values are validated up front with the same rules as the flags; any unknown key, wrong type, or invalid value is a hard error before scanning starts.
 
 A key may come from the file or from the command line, never both: setting a key in the file and also passing its flag is a hard error, so there is no silent override. Flags for keys the file does not set remain usable alongside `--config`.
 
@@ -78,6 +94,7 @@ A key may come from the file or from the command line, never both: setting a key
 # scan.toml
 exclude = ["node_modules", ".git", "dist"]  # replaces the built-in default list
 method = "ext"
+formats = "canonical"
 depth = 3
 stats = ["count", "total-size"]
 ```

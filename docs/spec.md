@@ -52,6 +52,7 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   | Flag | Type | Default | Semantics |
   |---|---|---|---|
   | `--method` | choice: `ext`, `type`, `hybrid` | `hybrid` | Grouping method (§3) |
+  | `--formats` | choice: `raw`, `canonical` | `raw` | How the chosen group's name is spelled (R48, R49) |
   | `--depth` | int | `-1` | Max directory depth below root; `-1` = unlimited; root is depth 0 |
   | `--exclude` | string, repeatable, unique | curated list (R45) | Exact base-name matches to skip (dirs and files) |
   | `--config` | string | `""` (none) | Path to a TOML scan-config file (§12); no default path, never auto-discovered |
@@ -94,6 +95,45 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
   means binary. Extensionless files are sniffed and grouped by MIME type,
   falling back to `(no extension)` when sniffing yields nothing. A sniff that
   cannot read the file makes the file unreadable (R20).
+
+Added after 0.4.0, and numbered from the end of the requirement list per the
+numbering convention: `--formats` decides how the group name chosen by R11–R13
+is spelled, without changing which files are grouped together by method,
+which files are sniffed, or the text/binary verdict.
+
+- R48. `--formats raw` (default) counts every file under the group name R11–R13
+  produced, verbatim: the normalized extension, the sniffed MIME type, or
+  `(no extension)`/`(unknown)`. `--formats canonical` maps that name through an
+  embedded alias table (`internal/config/data/canonical_formats.txt`, `old new`
+  pairs, one per line, `#` comments) before the file is counted, so alias
+  formats merge into one group: `mjs`/`cjs` into `js`, `mts`/`cts` into `ts`,
+  `h` into `c`, `hh`/`hpp` into `cpp`, and the script MIME types the sniffer
+  emits (`text/x-python`, `text/x-shellscript`, `text/x-perl`, `text/x-ruby`,
+  `text/x-php`, `text/x-lua`, `text/x-tcl`) into their format names. A name the
+  table does not list is unchanged. A malformed line in the table is a hard
+  error when the table is read, never a skipped line. `formats` is also a scan
+  config key (R42), with the flag/file conflict rule of R43 applying to it.
+- R49. Under `--formats canonical`, an extensionless file whose first line is a
+  shebang is named by its interpreter, before the MIME sniff gets a say: the
+  sniffer has no signature for most scripts and answers `text/plain`, which
+  names nothing. An `env` wrapper is stripped (its options, its `-S` and
+  `--split-string` forms, and any `NAME=value` assignments), the `uv run X` and
+  `uvx X` runner forms resolve to `X`, and a trailing version suffix is dropped
+  (`python3.12` reads as `python`). The mapping is `python*` → `py`,
+  `bash`/`sh`/`zsh`/`dash`/`ksh` → `sh`, `node`/`deno`/`bun` → `js`, `perl` →
+  `pl`, `ruby` → `rb`, `php` → `php`, `fish` → `fish`, `awk`/`gawk` → `awk`,
+  `Rscript` → `r`, `lua` → `lua`. An interpreter outside the mapping falls
+  through to the sniff, whose result still goes through the alias table (R48).
+  The sniff still runs either way: it decides text/binary (R15) and counts
+  toward `Files sniffed`, and the shebang only names the group. `ext`, which
+  reads no content at all (R11), is untouched.
+- R50. The payload shape is unchanged by `--formats` (R34): only group names,
+  their counts and `unique_formats` differ, so `raw` output stays byte-identical
+  to what pre-`--formats` versions produced. Tests: table-driven unit tests for
+  the alias-table parser and the shebang parser (env forms, runner forms,
+  version stripping, unknown-interpreter fallthrough), a config-key test, and
+  integration tests pinning the merged groups and a shebang-named group against
+  the real embedded table.
 
 ## 4. Text/binary classification
 
@@ -276,7 +316,7 @@ rendering and output options are rejected with a hard error naming the key.
   path and, for parse errors, line/column (go-toml-edit `ParseError`). Loaded and
   fully validated before any scanning starts.
 - R42. Allowed keys (flag names with underscores), exactly the scan-semantic set:
-  `exclude` (string array), `method`, `depth` (integer), `ignored`, `hidden`,
+  `exclude` (string array), `method`, `formats`, `depth` (integer), `ignored`, `hidden`,
   `type`, `stats` (string array), `sort_by` (string array), `sort_order`. Values
   are validated with the same rules as the corresponding flags (choices, valid
   stat names, uniqueness). Any unknown key, rendering/output key (e.g. `colors`,

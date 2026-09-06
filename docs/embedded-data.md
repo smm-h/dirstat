@@ -88,6 +88,14 @@ The list contains 48 MIME types:
 | `inode/x-empty` | Empty file |
 | `image/svg+xml` | Vector graphics (text-based) |
 
+## Canonical format aliases
+
+The alias table is embedded from `internal/config/data/canonical_formats.txt` via `go:embed` and is read only under `--formats canonical`. Each line is an `old new` pair: a raw group name -- a normalized extension or a sniffed MIME type -- and the format name that group is counted under. Lines starting with `#` are comments, and a line that is not a pair is a hard error rather than a skipped line.
+
+The table merges module variants into their language (`mjs` and `cjs` into `js`, `mts` and `cts` into `ts`), headers into their language (`h` into `c`, `hh` and `hpp` into `cpp`), and the script MIME types the sniffer emits into format names (`text/x-python` into `py`, `text/x-shellscript` into `sh`, and the same for Perl, Ruby, PHP, Lua and Tcl). A group name the table does not list is counted under its raw name.
+
+Canonical mode also names extensionless scripts by their shebang interpreter, before the MIME sniff gets a say -- the sniffer has no signature for most scripts and answers `text/plain`, which names nothing. The interpreter is read after stripping an `env` wrapper (its options, its `-S`/`--split-string` forms, and any `NAME=value` assignments), unwrapping the `uv run X` and `uvx X` runner forms, and dropping a trailing version suffix, so `#!/usr/bin/env -S uv run python` and `#!/usr/bin/python3.12` both count under `py`. The sniff still runs: it decides text vs. binary, and the shebang only names the group. An interpreter outside the mapping falls through to the sniffed MIME type, which then goes through the alias table.
+
 ## Default excludes
 
 When `--exclude` is not explicitly passed (and no config file sets `exclude`), dirstat skips these directories and files by exact base-name match during traversal. Excluded directories are pruned entirely -- their contents are not descended into, counted, or classified.
