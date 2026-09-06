@@ -23,3 +23,7 @@ byte-identical output; canonical is opt-in via --formats or the config key.
 # blog = false
 include = ["go"]
 exclude = []
+candidate_sha = "e25d37076a6b63a36f9d99a70c1aa7aff803225e"
+
+[tree_hashes]
+"." = "8f0e1d2d1acc8cbdf05f67a9f781e624ecaa9951"
