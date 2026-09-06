@@ -35,10 +35,17 @@ const (
 	TypeBoth   = "both"
 )
 
+// Values for Options.Formats.
+const (
+	FormatsRaw       = classify.FormatsRaw
+	FormatsCanonical = classify.FormatsCanonical
+)
+
 // Options configures a scan.
 type Options struct {
 	Root       string   // absolute path of the directory to scan
 	Method     string   // classify.MethodExt, MethodType, or MethodHybrid
+	Formats    string   // FormatsRaw or FormatsCanonical: how group names are spelled
 	Depth      int      // max directory depth below root; -1 = unlimited; root is depth 0
 	Exclude    []string // exact base names to skip (dirs and files)
 	Ignored    string   // IgnoredInclude, IgnoredExclude, or IgnoredOnly
@@ -48,7 +55,8 @@ type Options struct {
 	ListNoExt  bool     // collect relative paths of extensionless files
 	TextExts   map[string]struct{}
 	TextMimes  map[string]struct{}
-	Workers    int // worker pool size; 0 = runtime.GOMAXPROCS(0)
+	Aliases    map[string]string // canonical format aliases; read in FormatsCanonical only
+	Workers    int               // worker pool size; 0 = runtime.GOMAXPROCS(0)
 }
 
 // Summary holds the tree-wide summary statistics.
@@ -152,7 +160,7 @@ func classifyFiles(opts *Options, files []fileEntry) []fileResult {
 		workers = len(files)
 	}
 
-	cls := classify.New(opts.Method, opts.TextExts, opts.TextMimes)
+	cls := classify.New(opts.Method, opts.Formats, opts.TextExts, opts.TextMimes, opts.Aliases)
 	indices := make(chan int)
 	var wg sync.WaitGroup
 	for range workers {

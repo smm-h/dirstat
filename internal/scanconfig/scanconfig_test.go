@@ -35,6 +35,7 @@ func TestLoadHappyAllKeys(t *testing.T) {
 	path := writeConfig(t, `
 exclude = [".git", "node_modules"]
 method = "ext"
+formats = "canonical"
 depth = 3
 ignored = "include"
 hidden = "exclude"
@@ -53,13 +54,13 @@ sort_order = "asc"
 		}
 	}
 	kwargs := map[string]interface{}{
-		"exclude": []interface{}{"old"}, "method": "hybrid", "depth": -1,
+		"exclude": []interface{}{"old"}, "method": "hybrid", "formats": "raw", "depth": -1,
 		"ignored": "exclude", "hidden": "include", "type": "both",
 		"stats": []interface{}{}, "sort_by": []interface{}{"count"}, "sort_order": "desc",
 	}
 	cfg.Overlay(kwargs)
 	want := map[string]interface{}{
-		"exclude": []interface{}{".git", "node_modules"}, "method": "ext", "depth": 3,
+		"exclude": []interface{}{".git", "node_modules"}, "method": "ext", "formats": "canonical", "depth": 3,
 		"ignored": "include", "hidden": "exclude", "type": "text",
 		"stats":   []interface{}{"count", "total-size"},
 		"sort_by": []interface{}{"format", "count"}, "sort_order": "asc",

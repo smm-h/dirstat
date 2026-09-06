@@ -33,9 +33,18 @@ func TestNormalizeExt(t *testing.T) {
 }
 
 func testClassifier(method string) *Classifier {
+	return testCanonicalClassifier(method, FormatsRaw)
+}
+
+// testCanonicalClassifier builds a classifier with a small alias table, so the
+// canonical-mode tests never depend on the real embedded one.
+func testCanonicalClassifier(method, formats string) *Classifier {
 	exts := map[string]struct{}{"go": {}, "txt": {}, "md": {}, "svg": {}}
 	mimes := map[string]struct{}{"application/json": {}, "image/svg+xml": {}}
-	return New(method, exts, mimes)
+	aliases := map[string]string{
+		"mjs": "js", "h": "c", "text/x-shellscript": "sh",
+	}
+	return New(method, formats, exts, mimes, aliases)
 }
 
 func TestMimeIsText(t *testing.T) {

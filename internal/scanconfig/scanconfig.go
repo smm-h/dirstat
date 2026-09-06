@@ -17,7 +17,7 @@ import (
 // AllowedKeys is the exact set of keys a scan config file may contain
 // (flag names with underscores), in canonical order (R42).
 var AllowedKeys = []string{
-	"exclude", "method", "depth", "ignored", "hidden",
+	"exclude", "method", "formats", "depth", "ignored", "hidden",
 	"type", "stats", "sort_by", "sort_order",
 }
 
@@ -33,6 +33,7 @@ var renderingKeys = map[string]bool{
 // flag registrations in scan.go (R8).
 var choices = map[string][]string{
 	"method":     {"ext", "type", "hybrid"},
+	"formats":    {"raw", "canonical"},
 	"ignored":    {"include", "exclude", "only"},
 	"hidden":     {"include", "exclude"},
 	"type":       {"text", "binary", "both"},
@@ -41,7 +42,7 @@ var choices = map[string][]string{
 
 // flagToKey maps the CLI flag names of the R42 set to config key names.
 var flagToKey = map[string]string{
-	"exclude": "exclude", "method": "method", "depth": "depth",
+	"exclude": "exclude", "method": "method", "formats": "formats", "depth": "depth",
 	"ignored": "ignored", "hidden": "hidden", "type": "type",
 	"stats": "stats", "sort-by": "sort_by", "sort-order": "sort_order",
 }
@@ -113,7 +114,7 @@ func (c *Config) setKey(key string, val interface{}) error {
 			return err
 		}
 		c.values[key] = items
-	case "method", "ignored", "hidden", "type", "sort_order":
+	case "method", "formats", "ignored", "hidden", "type", "sort_order":
 		s, ok := val.(string)
 		if !ok {
 			return wrongType(key, "a string", val)

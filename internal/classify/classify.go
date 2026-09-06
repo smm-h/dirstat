@@ -15,6 +15,12 @@ const (
 	MethodHybrid = "hybrid"
 )
 
+// Format naming modes: how the group name a file lands in is spelled.
+const (
+	FormatsRaw       = "raw"
+	FormatsCanonical = "canonical"
+)
+
 // Group names for files that could not be assigned a real format.
 const (
 	GroupNoExtension = "(no extension)"
@@ -32,13 +38,35 @@ type Class struct {
 // Classifier classifies files per a fixed method and embedded lists.
 type Classifier struct {
 	method    string
+	formats   string
 	textExts  map[string]struct{}
 	textMimes map[string]struct{}
+	aliases   map[string]string
 }
 
-// New returns a Classifier for the given method ("ext", "type", or "hybrid").
-func New(method string, textExts, textMimes map[string]struct{}) *Classifier {
-	return &Classifier{method: method, textExts: textExts, textMimes: textMimes}
+// New returns a Classifier for the given method ("ext", "type", or "hybrid")
+// and format naming mode ("raw" or "canonical"). aliases is the canonical
+// alias table, read only in canonical mode.
+func New(method, formats string, textExts, textMimes map[string]struct{}, aliases map[string]string) *Classifier {
+	return &Classifier{
+		method:    method,
+		formats:   formats,
+		textExts:  textExts,
+		textMimes: textMimes,
+		aliases:   aliases,
+	}
+}
+
+// canonicalize maps a raw group name through the alias table. In raw mode, and
+// for a name the table does not list, the name is returned unchanged.
+func (c *Classifier) canonicalize(name string) string {
+	if c.formats != FormatsCanonical {
+		return name
+	}
+	if to, ok := c.aliases[name]; ok {
+		return to
+	}
+	return name
 }
 
 // NormalizeExt returns the normalized extension of a file name: the suffix
@@ -103,9 +131,21 @@ func (c *Classifier) File(absPath, name string, size int64) (Class, error) {
 		if ext == "" {
 			cls.Group = GroupNoExtension
 		} else {
-			cls.Group = ext
+			cls.Group = c.canonicalize(ext)
 		}
 		cls.Text = empty || c.ExtIsText(ext)
+	}
+
+	// In canonical mode an extensionless file's shebang names its format
+	// before the MIME sniff gets a say: the sniffer has no signature for most
+	// scripts and answers text/plain, which names nothing. The sniff still
+	// runs below -- it decides text/binary, and the shebang only names the
+	// group. Methods that never read content (ext) are untouched.
+	shebang := ""
+	if ext == "" && c.formats == FormatsCanonical && c.method != MethodExt {
+		if g, ok := ShebangFormat(readShebang(absPath)); ok {
+			shebang = g
+		}
 	}
 
 	switch c.method {
@@ -121,8 +161,11 @@ func (c *Classifier) File(absPath, name string, size int64) (Class, error) {
 			cls.Group = GroupUnknown
 			cls.Text = empty
 		} else {
-			cls.Group = mime
+			cls.Group = c.canonicalize(mime)
 			cls.Text = empty || c.MimeIsText(mime)
+		}
+		if shebang != "" {
+			cls.Group = shebang
 		}
 	default: // hybrid
 		if ext != "" {
@@ -150,8 +193,11 @@ func (c *Classifier) File(absPath, name string, size int64) (Class, error) {
 			cls.Group = GroupNoExtension
 			cls.Text = empty
 		} else {
-			cls.Group = mime
+			cls.Group = c.canonicalize(mime)
 			cls.Text = empty || c.MimeIsText(mime)
+		}
+		if shebang != "" {
+			cls.Group = shebang
 		}
 	}
 	return cls, nil

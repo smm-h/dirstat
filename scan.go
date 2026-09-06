@@ -40,6 +40,12 @@ func registerScanCmd(app *strictcli.App) {
 					strictcli.Ch("type", "content-sniff every file"),
 					strictcli.Ch("hybrid", "trust known text extensions, content-sniff everything else"),
 				), strictcli.Default("hybrid")),
+			strictcli.StringFlag("formats",
+				"how the chosen group's name is spelled before files are counted under it",
+				strictcli.Choices(
+					strictcli.Ch("raw", "the extension or sniffed MIME type exactly as it came out"),
+					strictcli.Ch("canonical", "merge alias formats (mjs into js, h into c) and name extensionless scripts by their shebang interpreter"),
+				), strictcli.Default("raw")),
 			strictcli.IntFlag("depth",
 				"maximum directory depth below the root; -1 = unlimited; the root is depth 0",
 				strictcli.Default(-1)),
@@ -47,7 +53,7 @@ func registerScanCmd(app *strictcli.App) {
 				"exact base name to skip, matching directories and files; repeatable; passing the flag replaces the built-in default list entirely",
 				strictcli.Repeatable(), strictcli.Unique(true), strictcli.Default(defaultExcludes)),
 			strictcli.StringFlag("config",
-				"path to a TOML scan-config file (keys: exclude, method, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error",
+				"path to a TOML scan-config file (keys: exclude, method, formats, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error",
 				strictcli.Default("")),
 			strictcli.StringFlag("ignored",
 				"gitignored-path handling; outside a git work tree, exclude and only behave as if no patterns exist",
@@ -268,6 +274,7 @@ func handleScan(ctx *strictcli.Context, kwargs map[string]interface{}) strictcli
 	res, err := scan.Scan(scan.Options{
 		Root:       root,
 		Method:     kwargs["method"].(string),
+		Formats:    kwargs["formats"].(string),
 		Depth:      kwargs["depth"].(int),
 		Exclude:    stringList(kwargs, "exclude"),
 		Ignored:    kwargs["ignored"].(string),
@@ -277,6 +284,7 @@ func handleScan(ctx *strictcli.Context, kwargs map[string]interface{}) strictcli
 		ListNoExt:  listNoExt,
 		TextExts:   config.TextExtensions(),
 		TextMimes:  config.TextMimetypes(),
+		Aliases:    config.CanonicalFormats(),
 	})
 	if err != nil {
 		errorf(colorsFlag, "%s", err)

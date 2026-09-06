@@ -1,0 +1,24 @@
+# Canonical format aliases (--formats canonical)
+# One "old new" pair per line: a raw group name and the format it merges into.
+# Left side is either a normalized extension or a sniffed MIME type; right side
+# is the canonical format name the group is counted under.
+
+# JavaScript and TypeScript module variants
+mjs js
+cjs js
+mts ts
+cts ts
+
+# C and C++ headers merge into their language
+h c
+hh cpp
+hpp cpp
+
+# MIME types the content sniffer emits for extensionless scripts
+text/x-python py
+text/x-shellscript sh
+text/x-perl pl
+text/x-ruby rb
+text/x-php php
+text/x-lua lua
+text/x-tcl tcl

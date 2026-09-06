@@ -7,10 +7,11 @@ package config
 import (
 	"embed"
 	"encoding/json"
+	"fmt"
 	"strings"
 )
 
-//go:embed data/text_extensions.txt data/text_mimetypes.txt data/colors_dark.json data/colors_light.json
+//go:embed data/text_extensions.txt data/text_mimetypes.txt data/canonical_formats.txt data/colors_dark.json data/colors_light.json
 var dataFS embed.FS
 
 // parseList extracts whitespace-separated, lowercased tokens from an embedded
@@ -32,6 +33,35 @@ func parseList(raw string) map[string]struct{} {
 	return set
 }
 
+// parsePairs extracts "old new" pairs from an embedded pair file, skipping
+// blank lines and #-comment lines. Both tokens are lowercased and stripped of
+// a leading dot, matching parseList's normalization. A line that does not hold
+// exactly two tokens is malformed: embedded data is compiled in, so a bad line
+// is a defect in the data file and never a line to skip.
+func parsePairs(raw string) (map[string]string, error) {
+	pairs := make(map[string]string)
+	for i, line := range strings.Split(raw, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		fields := strings.Fields(line)
+		if len(fields) != 2 {
+			return nil, fmt.Errorf("line %d: %q is not an \"old new\" pair", i+1, line)
+		}
+		from := strings.TrimPrefix(strings.ToLower(fields[0]), ".")
+		to := strings.TrimPrefix(strings.ToLower(fields[1]), ".")
+		if from == "" || to == "" {
+			return nil, fmt.Errorf("line %d: %q has an empty token", i+1, line)
+		}
+		if prev, dup := pairs[from]; dup {
+			return nil, fmt.Errorf("line %d: %q is mapped twice (to %q and %q)", i+1, from, prev, to)
+		}
+		pairs[from] = to
+	}
+	return pairs, nil
+}
+
 func mustRead(name string) string {
 	b, err := dataFS.ReadFile("data/" + name)
 	if err != nil {
@@ -50,6 +80,17 @@ func TextExtensions() map[string]struct{} {
 // as text even though they do not start with "text/".
 func TextMimetypes() map[string]struct{} {
 	return parseList(mustRead("text_mimetypes.txt"))
+}
+
+// CanonicalFormats returns the alias table applied to group names under
+// --formats canonical: raw group name (a normalized extension or a sniffed
+// MIME type) to the canonical format it is counted under.
+func CanonicalFormats() map[string]string {
+	pairs, err := parsePairs(mustRead("canonical_formats.txt"))
+	if err != nil {
+		panic("dirstat: embedded canonical_formats.txt is malformed: " + err.Error())
+	}
+	return pairs
 }
 
 // Theme holds the ANSI 256-color codes for one color theme. Each value is a
