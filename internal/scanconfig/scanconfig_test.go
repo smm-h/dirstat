@@ -283,10 +283,10 @@ func TestExplicitKeys(t *testing.T) {
 			[]string{"dirstat", "scan", "--config", "f.toml", "--colors", "--top=3"},
 			nil},
 		{"all scan keys",
-			[]string{"dirstat", "scan", "--exclude=a", "--method=ext", "--depth=1",
-				"--ignored=only", "--hidden=exclude", "--type=text",
+			[]string{"dirstat", "scan", "--exclude=a", "--method=ext", "--formats=canonical",
+				"--depth=1", "--ignored=only", "--hidden=exclude", "--type=text",
 				"--stats=count", "--sort-by=format", "--sort-order=asc"},
-			[]string{"exclude", "method", "depth", "ignored", "hidden", "type",
+			[]string{"exclude", "method", "formats", "depth", "ignored", "hidden", "type",
 				"stats", "sort_by", "sort_order"}},
 	}
 	for _, tc := range tests {
@@ -298,5 +298,35 @@ func TestExplicitKeys(t *testing.T) {
 		if !reflect.DeepEqual(got, wantSet) {
 			t.Errorf("%s: ExplicitKeys(%v) = %v, want %v", tc.name, tc.argv, got, wantSet)
 		}
+	}
+}
+
+// TestLoadFormatsKey: the formats key is a scan-semantic setting like method,
+// so a config file may carry it, with the same closed value set the flag
+// declares.
+func TestLoadFormatsKey(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
+	for _, value := range []string{"raw", "canonical"} {
+		path := writeConfig(t, `formats = "`+value+`"`)
+		cfg, err := Load(path)
+		if err != nil {
+			t.Fatalf("Load formats = %q: %v", value, err)
+		}
+		if !cfg.Has("formats") {
+			t.Errorf("Has(formats) = false for formats = %q", value)
+		}
+		kwargs := map[string]interface{}{"formats": "raw"}
+		cfg.Overlay(kwargs)
+		if kwargs["formats"] != value {
+			t.Errorf("Overlay set formats = %v, want %q", kwargs["formats"], value)
+		}
+	}
+
+	msg := loadErr(t, `formats = "bogus"`)
+	if !strings.Contains(msg, `"bogus"`) || !strings.Contains(msg, "raw") || !strings.Contains(msg, "canonical") {
+		t.Errorf("error %q does not name the invalid value and the valid ones", msg)
+	}
+	if msg := loadErr(t, `formats = 1`); !strings.Contains(msg, "must be a string") {
+		t.Errorf("error %q does not report the wrong type", msg)
 	}
 }

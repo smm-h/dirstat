@@ -1,6 +1,7 @@
 package test
 
 import (
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -66,5 +67,49 @@ func TestCanonicalResolvesShebangInterpreter(t *testing.T) {
 	}
 	if g := findGroup(t, canon, "py"); g["text"] != true {
 		t.Errorf("canonical py group: text = %v, want true", g["text"])
+	}
+}
+
+func TestFormatsDefaultsToRaw(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
+	root := t.TempDir()
+	testutil.WriteTree(t, root, map[string]string{
+		"a.mjs":  "export const a = 1;\n",
+		"b.js":   "const b = 2;\n",
+		"script": "#!/usr/bin/env python3\nprint('hi')\n",
+	})
+	omitted := groupFormats(t, scanJSON(t, "scan", root, "--json",
+		"--sort-by", "format", "--sort-order", "asc"))
+	explicit := groupFormats(t, scanJSON(t, "scan", root, "--json", "--formats", "raw",
+		"--sort-by", "format", "--sort-order", "asc"))
+	if strings.Join(omitted, ",") != strings.Join(explicit, ",") {
+		t.Errorf("omitted --formats = %v, explicit raw = %v", omitted, explicit)
+	}
+	if strings.Join(omitted, ",") != "js,mjs,text/x-python" {
+		t.Errorf("raw formats = %v, want [js mjs text/x-python]", omitted)
+	}
+}
+
+func TestFormatsFromConfigFile(t *testing.T) {
+	hygiene.Isolate(t, hygiene.Preserve(hygiene.GoPath, hygiene.GoModCache, hygiene.GoCache))
+	root := t.TempDir()
+	testutil.WriteTree(t, root, map[string]string{
+		"a.mjs":       "export const a = 1;\n",
+		"b.js":        "const b = 2;\n",
+		"dirstat.tml": "formats = \"canonical\"\n",
+	})
+	cfg := filepath.Join(root, "dirstat.tml")
+
+	parsed := scanJSON(t, "scan", root, "--json", "--config", cfg,
+		"--sort-by", "format", "--sort-order", "asc")
+	if got := strings.Join(groupFormats(t, parsed), ","); got != "js,tml" {
+		t.Errorf("formats = %s, want js,tml (the config file's canonical mode)", got)
+	}
+
+	// The same key on both sides is the documented conflict, not a silent
+	// override (R43).
+	_, stderr, code := runDirstat(t, "scan", root, "--config", cfg, "--formats", "raw")
+	if code != 2 || !strings.Contains(stderr, "--formats") {
+		t.Errorf("config/flag conflict: exit %d, stderr %q", code, stderr)
 	}
 }
