@@ -252,6 +252,29 @@
           ]
         },
         {
+          "name": "formats",
+          "help": "how the chosen group's name is spelled before files are counted under it",
+          "value_schema": {
+            "type": "string",
+            "enum": [
+              "raw",
+              "canonical"
+            ]
+          },
+          "presence": "default",
+          "default": "raw",
+          "choices": [
+            {
+              "value": "raw",
+              "help": "the extension or sniffed MIME type exactly as it came out"
+            },
+            {
+              "value": "canonical",
+              "help": "merge alias formats (mjs into js, h into c) and name extensionless scripts by their shebang interpreter"
+            }
+          ]
+        },
+        {
           "name": "depth",
           "help": "maximum directory depth below the root; -1 = unlimited; the root is depth 0",
           "value_schema": {
@@ -296,7 +319,7 @@
         },
         {
           "name": "config",
-          "help": "path to a TOML scan-config file (keys: exclude, method, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error",
+          "help": "path to a TOML scan-config file (keys: exclude, method, formats, depth, ignored, hidden, type, stats, sort_by, sort_order); never auto-discovered; a key set both in the file and on the command line is an error",
           "value_schema": {
             "type": "string"
           },
