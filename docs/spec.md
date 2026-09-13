@@ -25,8 +25,10 @@ requirement is numbered (R1, R2, ...) so audits can address them individually.
 - R4. selfdoc-managed root templates only: `selfdoc.json` with
   `root_files: ["docs/_README.md", "docs/_CLAUDE.md"]`; no docs site, no deploy
   config. Generated `README.md`/`CLAUDE.md` are committed and chmod 444.
-- R5. Version `0.1.0` in `VERSION`; binary version via `-X main.version` ldflags
-  with `debug.ReadBuildInfo()` fallback (safegit pattern). MIT LICENSE,
+- R5. Version `0.1.0` in `VERSION`; binary version via `-X main.Version` ldflags
+  with `debug.ReadBuildInfo()` fallback. The symbol name must match the one
+  `.goreleaser.yml` injects: the linker silently ignores an `-X` naming a
+  symbol that does not exist. MIT LICENSE,
   `Copyright (c) 2026 smm-h`.
 - R6. Dependencies: strictcli, `github.com/gabriel-vasile/mimetype` (content
   sniffing), go-git's `plumbing/format/gitignore` package (ignore matching),
