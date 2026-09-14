@@ -2,6 +2,18 @@
 
 # Changelog
 
+## 0.6.0
+
+The documentation joins the unified site at https://smmh.dev/dirstat/, and the project describes itself consistently in its README, package documentation and manifest.
+
+### Features
+
+- **Documentation joins the unified site at https://smmh.dev/dirstat/, and the project describes itself consistently.** The README, the docs landing page, the Go package comment and the project manifest now carry one definition of what dirstat is, and the docs site's internal cross-links resolve.
+
+### Fixes
+
+- **Correct version reporting.** Released binaries reported a fallback version instead of the released one, because the linker's `-X` target named a symbol that did not exist.
+
 ## 0.5.0
 
 New --formats canonical mode: merges alias formats (mjs/js, h/c, hpp/cpp) and names extensionless scripts by their shebang interpreter.

@@ -1,5 +1,5 @@
 {
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Directory statistics CLI that groups every file under a tree by format and reports counts, sizes and lines of code as a colored terminal table or as JSON",
   "source": [
     {
@@ -48,7 +48,7 @@
   },
   "versions": [
     {
-      "version": "0.5.0"
+      "version": "0.6.0"
     }
   ],
   "locales": [
