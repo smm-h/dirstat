@@ -82,7 +82,7 @@
   },
   "project_id": "github.com/smm-h/dirstat",
   "name": "dirstat",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "help": "Summarize files in a directory tree, grouped by format, with aggregate statistics",
   "commands": {
     "scan": {

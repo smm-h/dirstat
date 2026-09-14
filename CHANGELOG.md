@@ -2,6 +2,14 @@
 
 # Changelog
 
+## 0.6.1
+
+Documentation frontmatter converted to TOML for the current selfdoc; no user-facing change.
+
+### Infrastructure
+
+- Documentation frontmatter converted to TOML for the current selfdoc; no user-facing change.
+
 ## 0.6.0
 
 The documentation joins the unified site at https://smmh.dev/dirstat/, and the project describes itself consistently in its README, package documentation and manifest.
