@@ -1,6 +1,6 @@
 {
   "version": "0.5.0",
-  "description": "dirstat summarizes the files in a directory tree, grouped by format, with aggregate statistics (counts, sizes, lines of code) rendered as a colored terminal table or as JSON.",
+  "description": "Directory statistics CLI that groups every file under a tree by format and reports counts, sizes and lines of code as a colored terminal table or as JSON",
   "source": [
     {
       "path": ".",
@@ -29,7 +29,7 @@
   ],
   "docs": "docs/",
   "output": "docs/_build/",
-  "base_url": "https://github.com/smm-h/dirstat",
+  "base_url": "https://smmh.dev/dirstat",
   "root_files": [
     "docs/_README.md",
     "docs/_CLAUDE.md"
@@ -45,5 +45,27 @@
     "same_as": [
       "https://github.com/smm-h"
     ]
+  },
+  "versions": [
+    {
+      "version": "0.5.0"
+    }
+  ],
+  "locales": [
+    {
+      "code": "en",
+      "label": "English",
+      "default": true
+    }
+  ],
+  "repo": "https://github.com/smm-h/dirstat",
+  "topology": {
+    "slug": "dirstat",
+    "docs_base": "https://smmh.dev",
+    "posts_base": "https://smmh.dev/blog"
+  },
+  "assembly": {
+    "repo": "smm-h/selfdoc-cache",
+    "pages_project": "smmh"
   }
 }

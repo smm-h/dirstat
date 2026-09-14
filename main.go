@@ -1,5 +1,10 @@
-// Package main is the dirstat CLI entry point. It registers the scan command
-// via strictcli and dispatches to the scan handler.
+// Command dirstat groups every file under a directory tree by format and
+// reports counts, sizes and lines of code as a colored terminal table or as
+// JSON.
+//
+// The binary registers a single command, scan, via strictcli and dispatches to
+// its handler. Machine output is the framework's --json envelope, whose payload
+// is the scan document built by internal/jsonout.
 package main
 
 import (

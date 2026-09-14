@@ -137,4 +137,4 @@ To scan everything with no exclusions:
 exclude = []
 ```
 
-A key set both in the config file and on the command line is a hard error -- use one or the other. See the [spec](spec.html) (R41-R47) for full config file semantics.
+A key set both in the config file and on the command line is a hard error -- use one or the other. See the [spec](spec.md) (R41-R47) for full config file semantics.
