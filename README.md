@@ -2,9 +2,7 @@
 
 # dirstat
 
-dirstat summarizes the files in a directory tree, grouped by format, with aggregate statistics (counts, sizes, lines of code) rendered as a colored terminal table or as JSON.
-
-Built for speed: no subprocesses, parallel scanning, single static binary.
+dirstat is a directory statistics CLI that groups every file under a tree by format and reports counts, sizes and lines of code as a colored terminal table or as JSON. It is built for developers and agents sizing up an unfamiliar repository, and for tooling that wants the same numbers as a machine-readable document. Every classification list and format alias table is compiled into one static binary, so a scan spawns no subprocesses, reads no configuration file it was not explicitly handed, and classifies files across a worker pool.
 
 ## Quick start
 
