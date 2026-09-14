@@ -1,7 +1,7 @@
----
-title: Embedded Data
-description: "How dirstat classifies files as text or binary, how canonical format aliases merge group names, and which directories are excluded by default."
----
++++
+title = "Embedded Data"
+description = "How dirstat classifies files as text or binary, how canonical format aliases merge group names, and which directories are excluded by default."
++++
 # Embedded Data
 
 dirstat embeds several data files into the binary at build time via `go:embed`. These control file classification and default traversal behavior. There are no runtime config files for classification -- changing the lists requires a rebuild.

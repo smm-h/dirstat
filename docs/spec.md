@@ -1,7 +1,7 @@
----
-title: dirstat v1 specification
-description: Authoritative v1 specification for dirstat, with numbered requirements for the CLI, traversal, classification, canonical naming, statistics, and output.
----
++++
+title = "dirstat v1 specification"
+description = "Authoritative v1 specification for dirstat, with numbered requirements for the CLI, traversal, classification, canonical naming, statistics, and output."
++++
 # dirstat — v1 specification
 
 dirstat summarizes the files in a directory tree, grouped by format, with aggregate
