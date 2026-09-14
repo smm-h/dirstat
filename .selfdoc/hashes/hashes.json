@@ -26,11 +26,13 @@
   },
   "en/cli-scan.md": {
     "content": "422598603aeece365b6f7c27586aa24d9a4662d3302f20affe2f0964ad713d5d",
-    "description": "bad3138987bd328591ac5f919211e2904e207b7b60bf2fdcedfe8b5083f213c0"
+    "description": "bad3138987bd328591ac5f919211e2904e207b7b60bf2fdcedfe8b5083f213c0",
+    "schema_hash": "56dae7a0f64524bb8689121db0638bcdc3772813cc5b44c03111cb28afa3ae1d"
   },
   "en/dirstat.md": {
     "content": "23da820e5a22cea4018940051bc360daa057abde5b3130d67f61a70b1af8c974",
-    "description": "0fecf3b0d0c9f545c83915b6251e5c6c6f90a5b44c1d5eb9dcfb88bcd5cea1c2"
+    "description": "0fecf3b0d0c9f545c83915b6251e5c6c6f90a5b44c1d5eb9dcfb88bcd5cea1c2",
+    "source_docstring": "6ca3365f0841811211782d9f946f7c7d6130e03ad19e9114a897dd0bd506ddd8"
   },
   "en/embedded-data.md": {
     "content": "1c36781be2198e8c2821d0051aaa94e40115d551504e58db58b742728b9c5b67",
@@ -46,35 +48,43 @@
   },
   "en/internal-classify.md": {
     "content": "7a8a12da4c04e79c98c1cd9d7d1bf2f534a7f4cafbde26adf6f877944aa3f6e0",
-    "description": "a8a267ebc9cacaf2e4e3de6dbff6cd5e520e5a0d970f24e2b2725bb56c99b9ae"
+    "description": "a8a267ebc9cacaf2e4e3de6dbff6cd5e520e5a0d970f24e2b2725bb56c99b9ae",
+    "source_docstring": "8274236c9c064150f7976fc7b549f1c9c4a306c3a3868400259e7fd9cac469aa"
   },
   "en/internal-config.md": {
     "content": "e2fc71f9686720d45a6044595aa30dc771f721f2b519a2c4e57a83e9fec47f04",
-    "description": "d16b225eb3b6113f41721581f5b39d5a34bddfe058b4468f01326a78f5fa2c0e"
+    "description": "d16b225eb3b6113f41721581f5b39d5a34bddfe058b4468f01326a78f5fa2c0e",
+    "source_docstring": "b9abbc06574a198fc86e32757eab87479db61dad070dc23ea96d502a9f40168e"
   },
   "en/internal-jsonout.md": {
     "content": "126b3c4813451dacc4ce065cdf22588180218166d5a72fce7213bdbd4fa29353",
-    "description": "dacd88cbbb45626591502938b97a58b506779edce824f88a9d1dc59e0e145593"
+    "description": "dacd88cbbb45626591502938b97a58b506779edce824f88a9d1dc59e0e145593",
+    "source_docstring": "fde21b604da500b7dccb7084392d00e5822ab7dc3ee18904f44beb5604a36677"
   },
   "en/internal-render.md": {
     "content": "6130ad22cc542f21990c6e3dbe79088f277e8d6d8e9dad956c0db8de8f5db03c",
-    "description": "eaac8edcc0b241ba1b1f37ee1b38f46f86a66020e65914e82077e89eef376a64"
+    "description": "eaac8edcc0b241ba1b1f37ee1b38f46f86a66020e65914e82077e89eef376a64",
+    "source_docstring": "f9aab29854bc2e7566e0e3a5d5223355f1b5a699057ffd60e92e49a7e4bc7e61"
   },
   "en/internal-scan.md": {
     "content": "16d8171a6d6a6bcba5966f61eedfd4be225899bc1123884d28627855b4608eef",
-    "description": "a08f8448f5996c090095c8b875bb3c5f4c72302bca893f5087b34b59bb0d7ff8"
+    "description": "a08f8448f5996c090095c8b875bb3c5f4c72302bca893f5087b34b59bb0d7ff8",
+    "source_docstring": "0dd96c8ecdbecb0fb34480a77f200c1189ac1824d755254bbce6743a1ba102cb"
   },
   "en/internal-scanconfig.md": {
     "content": "f06a214ab7d299aaf942d574a5d841ffe46abe5b46d5e77b71381f1aa5eabc7c",
-    "description": "4e200ccb54b694e74d29dcd249f11fdc3c962edbaab001adcf79f35e6228a1a5"
+    "description": "4e200ccb54b694e74d29dcd249f11fdc3c962edbaab001adcf79f35e6228a1a5",
+    "source_docstring": "aff9e3a078961dd7797037e0fd21f838a879fc34acaabd2a84856812540d5e31"
   },
   "en/internal-test.md": {
     "content": "96b86b05fb71bef714449ba34cae3450a73189ad1baf4b0d80fa593377bc5348",
-    "description": "f0cdad5d23fe3df3f4d2d90dab3b11f5aeee75fd4ea64ee0a5a8df72aff911e0"
+    "description": "f0cdad5d23fe3df3f4d2d90dab3b11f5aeee75fd4ea64ee0a5a8df72aff911e0",
+    "source_docstring": "fb3ecd68310f13dcea9ed9368a686b6a7b4037e90fc757829540f2c3e104d063"
   },
   "en/internal-testutil.md": {
     "content": "d4f1f5142f5ac8a26e31904ec0bc284bfc0ff0263722567ee5a500bfb07befcc",
-    "description": "4b74ddc8dc8a3f52044355de42b8fc810c9afdcc286d6621af14bdf2163a0f8e"
+    "description": "4b74ddc8dc8a3f52044355de42b8fc810c9afdcc286d6621af14bdf2163a0f8e",
+    "source_docstring": "f5410e0a1533ca2391e33c41cea97b2d8d525e9705a31e87e9555f28e9627761"
   },
   "en/spec.md": {
     "content": "2f3a0d40442894686fc0e34c62eb1bee00c92675d271b8fd033c9dd2aef6ee60",
