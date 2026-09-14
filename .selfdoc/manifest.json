@@ -154,11 +154,16 @@
     },
     {
       "path": "index.md",
-      "title": "Documentation",
+      "title": "dirstat",
       "type": "doc",
       "headings": [
         {
           "level": 1,
+          "text": "dirstat",
+          "anchor": "dirstat"
+        },
+        {
+          "level": 2,
           "text": "Documentation",
           "anchor": "documentation"
         }
@@ -664,6 +669,6 @@
     }
   ],
   "posts": [],
-  "last_gen": "2026-09-14T15:25:06.525751+00:00",
+  "last_gen": "2026-09-14T15:28:58.232092+00:00",
   "theme": "minimal"
 }
