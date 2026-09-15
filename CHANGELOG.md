@@ -2,6 +2,14 @@
 
 # Changelog
 
+## 0.6.2
+
+The tool describes itself with one sentence everywhere including --help, and its documentation moved onto selfdoc's .stricttools/ layout.
+
+### Fixes
+
+- **The tool describes itself with one sentence everywhere, including `--help`.** The `--help` header, README, docs site and package metadata now carry the same description.
+
 ## 0.6.1
 
 Documentation frontmatter converted to TOML for the current selfdoc; no user-facing change.
