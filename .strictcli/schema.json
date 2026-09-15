@@ -83,7 +83,7 @@
   "project_id": "github.com/smm-h/dirstat",
   "name": "dirstat",
   "version": "0.6.1",
-  "help": "Summarize files in a directory tree, grouped by format, with aggregate statistics",
+  "help": "Fast, single-binary directory statistics CLI: every file under a tree grouped by format, with counts, sizes, and lines of code, as a colored terminal table or as JSON",
   "commands": {
     "scan": {
       "name": "scan",

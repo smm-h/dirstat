@@ -1,10 +1,12 @@
 +++
 title = "dirstat"
-description = "dirstat is a directory statistics CLI that groups every file under a tree by format and reports counts, sizes and lines of code as a table or as JSON."
+description = "Fast, single-binary directory statistics CLI: every file under a tree grouped by format, with counts, sizes, and lines of code, as a colored terminal table or as JSON."
 +++
 # dirstat
 
-dirstat is a directory statistics CLI that groups every file under a tree by format and reports counts, sizes and lines of code as a colored terminal table or as JSON. Grouping is by extension, by sniffed content type, or by a hybrid of the two, and every classification list is compiled into the single static binary.
+Fast, single-binary directory statistics CLI: every file under a tree grouped by format, with counts, sizes, and lines of code, as a colored terminal table or as JSON.
+
+Grouping is by extension, by sniffed content type, or by a hybrid of the two, and every classification list is compiled into the single static binary.
 
 ## Documentation
 

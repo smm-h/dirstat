@@ -1,6 +1,6 @@
-// Command dirstat groups every file under a directory tree by format and
-// reports counts, sizes and lines of code as a colored terminal table or as
-// JSON.
+// Command dirstat: Fast, single-binary directory statistics CLI: every file
+// under a tree grouped by format, with counts, sizes, and lines of code, as a
+// colored terminal table or as JSON.
 //
 // The binary registers a single command, scan, via strictcli and dispatches to
 // its handler. Machine output is the framework's --json envelope, whose payload
@@ -16,7 +16,7 @@ import (
 // classification_test.go).
 func newApp() *strictcli.App {
 	app := strictcli.NewApp("dirstat", Version,
-		"Summarize files in a directory tree, grouped by format, with aggregate statistics")
+		"Fast, single-binary directory statistics CLI: every file under a tree grouped by format, with counts, sizes, and lines of code, as a colored terminal table or as JSON")
 	registerScanCmd(app)
 	return app
 }
