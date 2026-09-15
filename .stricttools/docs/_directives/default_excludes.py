@@ -29,9 +29,24 @@ _DESCRIPTIONS = {
 }
 
 
+def _project_root():
+    """Return the project root: the nearest ancestor holding selfdoc.json.
+
+    Found by marker rather than by a parent count, so this resolves correctly
+    wherever the docs tree sits inside the repository.
+    """
+    directory = os.path.dirname(os.path.abspath(__file__))
+    while True:
+        if os.path.isfile(os.path.join(directory, "selfdoc.json")):
+            return directory
+        parent = os.path.dirname(directory)
+        if parent == directory:
+            raise RuntimeError("no selfdoc.json above " + __file__)
+        directory = parent
+
+
 def resolve(attrs, config, body):
-    # Find project root: this file is at docs/_directives/default_excludes.py
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    project_root = _project_root()
     scan_go = os.path.join(project_root, "scan.go")
 
     with open(scan_go) as f:
