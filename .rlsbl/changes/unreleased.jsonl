@@ -1,1 +1,2 @@
 {"format_version":1,"id":"18d598cc864a1be0e81dd1802be74662adccf7c91262fa37","commits":["f2feaef3b763bad74d6b4d0e5f67533cf6040056"],"user_facing":true,"description":"**The tool describes itself with one sentence everywhere, including `--help`.** The `--help` header, README, docs site and package metadata now carry the same description.","type":"fix"}
+{"format_version":1,"id":"18d59e09be9bf2742229f1fdbb6e4b25ac048c167bce9e7f","commits":["86f4e04ada6af072d9c0be5a3a336730cfe69897"],"user_facing":false}
