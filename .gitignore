@@ -1,7 +1,6 @@
 /dirstat
 .rlsbl/lock
 .rlsbl-monorepo/lock
-docs/_build/
 coverage/
 dist/
 .env
