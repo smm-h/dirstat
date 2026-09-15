@@ -2,7 +2,7 @@
 
 # dirstat
 
-Directory statistics CLI that groups every file under a tree by format and reports counts, sizes and lines of code as a colored terminal table or as JSON
+Fast, single-binary directory statistics CLI: every file under a tree grouped by format, with counts, sizes, and lines of code, as a colored terminal table or as JSON
 
 The authoritative specification is `docs/spec.md` (numbered requirements R1–R47).
 

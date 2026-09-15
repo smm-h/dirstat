@@ -2,8 +2,8 @@
   "schema_version": 1,
   "name": "dirstat",
   "slug": "dirstat",
-  "version": "0.6.0",
-  "description": "Directory statistics CLI that groups every file under a tree by format and reports counts, sizes and lines of code as a colored terminal table or as JSON",
+  "version": "0.6.1",
+  "description": "Fast, single-binary directory statistics CLI: every file under a tree grouped by format, with counts, sizes, and lines of code, as a colored terminal table or as JSON",
   "language": "go",
   "base_url": "https://smmh.dev/dirstat",
   "pages": [
@@ -669,6 +669,6 @@
     }
   ],
   "posts": [],
-  "last_gen": "2026-09-14T17:15:15.134592+00:00",
+  "last_gen": "2026-09-15T20:33:33.637494+00:00",
   "theme": "minimal"
 }

@@ -10,7 +10,7 @@ nav_order = 91
 
 # dirstat CLI Reference
 
-Summarize files in a directory tree, grouped by format, with aggregate statistics
+Fast, single-binary directory statistics CLI: every file under a tree grouped by format, with counts, sizes, and lines of code, as a colored terminal table or as JSON
 
 Version: :-: var key="project.version"
 
